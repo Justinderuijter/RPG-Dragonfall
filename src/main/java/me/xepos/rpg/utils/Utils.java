@@ -3,7 +3,6 @@ package me.xepos.rpg.utils;
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.AttributeModifierData;
-import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.enums.ModifierType;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -322,15 +321,15 @@ public final class Utils {
         }
     }
 
-    public static void addDTModifier(XRPGPlayer xrpgPlayer, DamageTakenSource source, double amount) {
-        if (xrpgPlayer.dmgTakenMultipliers.containsKey(source))
-            xrpgPlayer.dmgTakenMultipliers.put(source, amount);
+    public static void addDTModifier(XRPGPlayer xrpgPlayer, String sourceName, double amount) {
+        if (xrpgPlayer.dmgTakenMultipliers.containsKey(sourceName))
+            xrpgPlayer.dmgTakenMultipliers.put(sourceName, amount);
     }
 
     @SuppressWarnings("all")
-    public static void removeDTModifier(XRPGPlayer xrpgPlayer, DamageTakenSource source) {
-        if (xrpgPlayer.dmgTakenMultipliers.containsKey(source))
-            xrpgPlayer.dmgTakenMultipliers.remove(source);
+    public static void removeDTModifier(XRPGPlayer xrpgPlayer, String sourceName) {
+        if (xrpgPlayer.dmgTakenMultipliers.containsKey(sourceName))
+            xrpgPlayer.dmgTakenMultipliers.remove(sourceName);
     }
 
     public static RayTraceResult rayTrace(LivingEntity caster, double range, FluidCollisionMode collisionMode) {

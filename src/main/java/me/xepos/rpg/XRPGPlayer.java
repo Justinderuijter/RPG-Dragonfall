@@ -1,6 +1,5 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.handlers.EventHandler;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.IFollowerContainer;
@@ -24,7 +23,8 @@ public class XRPGPlayer {
     private int freeChangeTickets = 2;
 
     //Status Effects
-    public transient ConcurrentHashMap<DamageTakenSource, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
+    public transient ConcurrentHashMap<String, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
+    private transient double damageTakenMultiplier = 1.0;
     private transient boolean canUseShield = true;
     private transient boolean isStunned = false;
     private transient long lastStunTime = 0;
@@ -194,6 +194,18 @@ public class XRPGPlayer {
 
     public void setMaximumMana(int maximumMana) {
         this.maximumMana = maximumMana;
+    }
+
+    public double getDamageTakenMultiplier(){
+        return damageTakenMultiplier;
+    }
+
+    public void recalculateDamageTakenMultiplier(){
+        double base = 1.0;
+        for (String id:dmgTakenMultipliers.keySet()) {
+            base *= dmgTakenMultipliers.get(id);
+        }
+        this.damageTakenMultiplier = base;
     }
 
     public long getLastClassChangeTime() {

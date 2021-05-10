@@ -2,7 +2,6 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tasks.RemoveDTModifierTask;
@@ -55,14 +54,14 @@ public class Aegis extends XRPGSkill {
             List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), xRange, yRange, zRange, p -> p instanceof Player && getPartyManager().isPlayerAllied(player, (Player) p)));
             for (Player target : nearbyPlayers) {
                 //Applying the DTModifier if event is cancelled
-                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, DamageTakenSource.AEGIS, getDamageMultiplier());
+                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, this, getDamageMultiplier());
                 Bukkit.getServer().getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
                     XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(target);
-                    Utils.addDTModifier(xrpgTarget, DamageTakenSource.AEGIS, getDamageMultiplier());
+                    Utils.addDTModifier(xrpgTarget, getName(), getDamageMultiplier());
                     target.sendMessage(player.getDisplayName() + " Granted you " + getSkillName() + "!");
 
-                    new RemoveDTModifierTask(player, xrpgTarget, DamageTakenSource.AEGIS).runTaskLater(getPlugin(), (long) duration * 20);
+                    new RemoveDTModifierTask(player, xrpgTarget, this).runTaskLater(getPlugin(), (long) duration * 20);
                 }
             }
             if (nearbyPlayers.size() > 0) {

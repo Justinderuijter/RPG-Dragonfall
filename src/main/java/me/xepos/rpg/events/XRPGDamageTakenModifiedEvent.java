@@ -2,7 +2,7 @@ package me.xepos.rpg.events;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.enums.DamageTakenSource;
+import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -13,13 +13,15 @@ public class XRPGDamageTakenModifiedEvent extends Event {
 
     private final XRPGPlayer xrpgPlayer;
     private final XRPGPlayer targetPlayer;
-    private final DamageTakenSource source;
+    private final XRPGSkill skill;
 
-    public XRPGDamageTakenModifiedEvent(Player sourcePlayer, Player targetPlayer, DamageTakenSource source) {
+    public XRPGDamageTakenModifiedEvent(Player sourcePlayer, Player targetPlayer, XRPGSkill skill) {
         final XRPG plugin = XRPG.getPlugin(XRPG.class);
         this.xrpgPlayer = plugin.getXRPGPlayer(sourcePlayer);
         this.targetPlayer = plugin.getXRPGPlayer(targetPlayer);
-        this.source = source;
+        this.skill = skill;
+
+        this.xrpgPlayer.recalculateDamageTakenMultiplier();
     }
 
 
@@ -31,8 +33,8 @@ public class XRPGDamageTakenModifiedEvent extends Event {
         return targetPlayer;
     }
 
-    public DamageTakenSource getSource() {
-        return source;
+    public XRPGSkill getSourceSkill() {
+        return skill;
     }
 
     @Override

@@ -4,7 +4,6 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
-import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
@@ -67,13 +66,10 @@ public class PlayerListener implements Listener {
         if (e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
             XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
-            if (xrpgPlayer.dmgTakenMultipliers.size() > 0) {
-                for (DamageTakenSource dtSource : xrpgPlayer.dmgTakenMultipliers.keySet()) {
-                    e.setDamage(e.getDamage() * xrpgPlayer.dmgTakenMultipliers.get(dtSource));
-                }
-            }
+
+            e.setDamage(e.getDamage() * xrpgPlayer.getDamageTakenMultiplier());
+
             xrpgPlayer.getEventHandler("DAMAGE_TAKEN").invoke(e);
-            //xrpgPlayer.onHurt(e);
         }
     }
 

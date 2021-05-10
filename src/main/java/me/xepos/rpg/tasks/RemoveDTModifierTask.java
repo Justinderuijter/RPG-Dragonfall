@@ -1,8 +1,8 @@
 package me.xepos.rpg.tasks;
 
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.events.XRPGDamageTakenRemovedEvent;
+import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,9 +12,9 @@ public class RemoveDTModifierTask extends BukkitRunnable {
 
     private final Player sourcePlayer;
     private final XRPGPlayer targetPlayer;
-    private final DamageTakenSource source;
+    private final XRPGSkill source;
 
-    public RemoveDTModifierTask(Player sourcePlayer, XRPGPlayer target, DamageTakenSource sourceAbility) {
+    public RemoveDTModifierTask(Player sourcePlayer, XRPGPlayer target, XRPGSkill sourceAbility) {
         this.sourcePlayer = sourcePlayer;
         this.targetPlayer = target;
         this.source = sourceAbility;
@@ -24,6 +24,6 @@ public class RemoveDTModifierTask extends BukkitRunnable {
     public void run() {
         XRPGDamageTakenRemovedEvent eventRemove = new XRPGDamageTakenRemovedEvent(sourcePlayer, targetPlayer.getPlayer(), source);
         Bukkit.getServer().getPluginManager().callEvent(eventRemove);
-        Utils.removeDTModifier(targetPlayer, source);
+        Utils.removeDTModifier(targetPlayer, source.getName());
     }
 }

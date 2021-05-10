@@ -3,7 +3,6 @@ package me.xepos.rpg.commands;
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.handlers.EventHandler;
 import me.xepos.rpg.skills.base.XRPGSkill;
@@ -40,7 +39,7 @@ public class XRPGDebug implements CommandExecutor {
                             player.sendMessage("Fireballs: " + plugin.projectiles.size());
                             return true;
                         case "damagetaken":
-                            for (DamageTakenSource d : plugin.getXRPGPlayer(player).dmgTakenMultipliers.keySet()) {
+                            for (String d : plugin.getXRPGPlayer(player).dmgTakenMultipliers.keySet()) {
                                 player.sendMessage(plugin.getXRPGPlayer(player).dmgTakenMultipliers.get(d).toString());
                             }
                             player.sendMessage("dmgTakenMP" + plugin.getXRPGPlayer(player).dmgTakenMultipliers.size());

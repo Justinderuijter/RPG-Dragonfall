@@ -2,7 +2,6 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.skills.base.FireballStackData;
 import me.xepos.rpg.skills.base.XRPGSkill;
@@ -82,7 +81,6 @@ public class Shatter extends XRPGSkill {
 
     public void shatterLogic(PlayerInteractEvent e, LivingEntity livingEntity) {
 
-        DamageTakenSource damageTakenSource = DamageTakenSource.SHATTER;
         final double duration = getSkillVariables().getDouble("duration", 4);
         PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, (int) (duration * 20), 1, false, false, false);
 
@@ -96,14 +94,14 @@ public class Shatter extends XRPGSkill {
                 //Add potion effect and fire event
                 targetPlayer.addPotionEffect(potionEffect);
                 targetPlayer.damage(getDamage(), e.getPlayer());
-                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(e.getPlayer(), targetPlayer, damageTakenSource, shatterDTAmount);
+                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(e.getPlayer(), targetPlayer, this, shatterDTAmount);
                 Bukkit.getServer().getPluginManager().callEvent(event);
 
                 //Apply DTModifier if the event isn't cancelled
                 if (!event.isCancelled()) {
                     XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(targetPlayer);
-                    Utils.addDTModifier(xrpgTarget, damageTakenSource, shatterDTAmount);
-                    new RemoveDTModifierTask(e.getPlayer(), xrpgTarget, damageTakenSource).runTaskLater(getPlugin(), (long) shatterDTDuration * 20L);
+                    Utils.addDTModifier(xrpgTarget, getSkillName(), shatterDTAmount);
+                    new RemoveDTModifierTask(e.getPlayer(), xrpgTarget, this).runTaskLater(getPlugin(), (long) shatterDTDuration * 20L);
                 }
             }
         } else {

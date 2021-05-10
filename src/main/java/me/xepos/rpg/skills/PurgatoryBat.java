@@ -63,7 +63,7 @@ public class PurgatoryBat extends XRPGSkill {
             bat.setCustomName("Purgatory bat");
             bat.setCustomNameVisible(false);
 
-            new PurgatoryBatTask(bat, player, getDamage(), maxCount, false, dtAmount, getPlugin(), (long) duration * 20L)
+            new PurgatoryBatTask(bat, player, getDamage(), maxCount, this, dtAmount, getPlugin(), (long) duration * 20L)
                     .runTaskTimer(getPlugin(), 10, (long) interval * 20L);
 
             setRemainingCooldown(getCooldown());
