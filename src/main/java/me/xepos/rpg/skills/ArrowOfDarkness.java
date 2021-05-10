@@ -9,6 +9,7 @@ import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffect;
@@ -36,10 +37,12 @@ public class ArrowOfDarkness extends XRPGBowSkill {
 
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
 
-        final int duration = (int) (getSkillVariables().getDouble("duration", 20.0) * 20);
+        final int duration = (int) (getSkillVariables().getDouble("duration", 10.0) * 20);
         final int amplifier = getSkillVariables().getInt("amplifier", 1);
 
-        getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, false, false, 20, new PotionEffect(PotionEffectType.HARM, duration, amplifier, false, false, true)));
+        ProjectileData data = new ProjectileData(arrow, 20, new PotionEffect(PotionEffectType.HARM, duration, amplifier, false, false, true));
+
+        getPlugin().projectiles.put(arrow.getUniqueId(), data);
 
         setRemainingCooldown(getCooldown());
     }

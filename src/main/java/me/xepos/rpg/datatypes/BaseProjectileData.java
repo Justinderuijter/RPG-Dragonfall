@@ -9,25 +9,22 @@ public class BaseProjectileData implements IClearable {
     private final Projectile projectile;
     private final long despawnTime;
     private boolean summonsLightning;
-    private final boolean shouldTeleport;
+    private boolean shouldTeleport;
     private final PotionEffect potionEffect;
     private boolean shouldBounce = false;
 
-    public BaseProjectileData(Projectile projectile, boolean summonLightning, boolean teleportShooter, int secondsToLive, PotionEffect potionEffect) {
+    public BaseProjectileData(Projectile projectile, int secondsToLive){
         this.projectile = projectile;
-        this.summonsLightning = summonLightning;
-        this.shouldTeleport = teleportShooter;
-        this.despawnTime = System.currentTimeMillis() + secondsToLive * 20L;
+        this.despawnTime = secondsToLive;
+        this.potionEffect = null;
+    }
+
+    public BaseProjectileData(Projectile projectile, int secondsToLive, PotionEffect potionEffect){
+        this.projectile = projectile;
+        this.despawnTime = secondsToLive;
         this.potionEffect = potionEffect;
     }
 
-    public BaseProjectileData(Projectile projectile, boolean summonLightning, boolean teleportShooter, int secondsToLive) {
-        this.projectile = projectile;
-        this.summonsLightning = summonLightning;
-        this.shouldTeleport = teleportShooter;
-        this.despawnTime = System.currentTimeMillis() + secondsToLive * 20L;
-        this.potionEffect = null;
-    }
 
     public Projectile getProjectile() {
         return projectile;
@@ -43,13 +40,18 @@ public class BaseProjectileData implements IClearable {
         return summonsLightning;
     }
 
+    public boolean shouldTeleport() {
+        return shouldTeleport;
+    }
+
+    public void shouldTeleport(boolean shouldTeleport) {
+        this.shouldTeleport = shouldTeleport;
+    }
+
     public void setSummonsLightning(boolean summonsLightning) {
         this.summonsLightning = summonsLightning;
     }
 
-    public boolean shouldTeleport() {
-        return this.shouldTeleport;
-    }
 
     public void summonCloud() {
         if (potionEffect != null) {

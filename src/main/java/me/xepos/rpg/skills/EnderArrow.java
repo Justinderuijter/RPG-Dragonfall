@@ -9,6 +9,7 @@ import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
@@ -33,7 +34,10 @@ public class EnderArrow extends XRPGBowSkill {
         Arrow arrow = (Arrow) e.getProjectile();
 
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
-        getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, false, true, 30));
+        ProjectileData data = new ProjectileData(arrow, 30);
+        data.shouldTeleport(true);
+
+        getPlugin().projectiles.put(arrow.getUniqueId(), data);
         setRemainingCooldown(getCooldown());
     }
 

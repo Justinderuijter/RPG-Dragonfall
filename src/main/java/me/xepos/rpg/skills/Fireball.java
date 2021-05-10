@@ -53,7 +53,9 @@ public class Fireball extends XRPGSkill {
 
         if (!getPlugin().projectiles.containsKey(fireball.getUniqueId())) {
             //For some reason damage is halved so doubling it to get proper value
-            getPlugin().projectiles.put(fireball.getUniqueId(), new ProjectileData(fireball, getDamage() * 2, false, false, 10));
+            ProjectileData data = new ProjectileData(fireball, getDamage() * 2,20);
+
+            getPlugin().projectiles.put(fireball.getUniqueId(), data);
         }
 
         this.incrementFireBallStacks(this.fireballStackData.getMaxFireballStacks());

@@ -34,7 +34,11 @@ public class ExplosiveShot extends XRPGBowSkill {
         final boolean setFire = getSkillVariables().getBoolean("explosion-fire", false);
         final boolean breakBlocks = getSkillVariables().getBoolean("explosion-break-block", false);
 
-        getPlugin().projectiles.put(arrow.getUniqueId(), new ExplosiveProjectileData(arrow, yield, breakBlocks, setFire, 20));
+        ExplosiveProjectileData data = new ExplosiveProjectileData(arrow, yield, 20);
+        data.setsFire(setFire);
+        data.destroysBlocks(breakBlocks);
+
+        getPlugin().projectiles.put(arrow.getUniqueId(), data);
         setRemainingCooldown(getCooldown());
     }
 

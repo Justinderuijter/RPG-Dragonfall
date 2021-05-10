@@ -151,7 +151,10 @@ public class ProjectileListener implements Listener {
                     newProjectile.setShooter(data.getProjectile().getShooter());
 
                     if (!plugin.projectiles.containsKey(newProjectile.getUniqueId())) {
-                        ProjectileData projectileData = new ProjectileData(newProjectile, data.getDamage(), data.summonsLightning(), data.shouldTeleport(), 10000);
+                        ProjectileData projectileData = new ProjectileData(newProjectile, data.getDamage(), 20);
+                        projectileData.setSummonsLightning(data.summonsLightning());
+                        projectileData.shouldTeleport(data.shouldTeleport());
+
                         projectileData.setShouldBounce(true);
                         plugin.projectiles.put(newProjectile.getUniqueId(), projectileData);
                     }
