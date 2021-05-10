@@ -1,0 +1,69 @@
+display:
+  name: "Sorcerer"
+  icon: ENCHANTED_BOOK
+  description:
+    - "A midrange class with the ability to cast dark spells"
+    - "Book of Blood, Darkness and Flame"
+    - "Focused on being a nuisance and disrupting the enemy"
+    - "Can apply debuffs as well as cleansing debuffs from its allies"
+    - "Medium damage, high crowd control, high utility"
+
+default: false
+enabled: true
+allow-bow: true
+allow-shield: false
+
+health-multiplier: 1.0
+speed-multiplier: 1.0
+
+damage-multipliers:
+  preferred:
+    items:
+      - "BOOK"
+    multiplier: 1.1
+  others:
+    multipliers: 1.0
+
+skills:
+  Overheat:
+    name: "Overheat"
+    required-tag: "flamebook"
+    damage: 5.0
+    damage-per-armor: 0.5
+    range: 16.0
+    delay: 5.0
+    cooldown: 20.0
+  Souldraw:
+    required-tag: "darkbook"
+    damage: 4.0
+    heal-per-damage: 0.5
+    cooldown: 1.0
+  TrailOfFlames:
+    name: "Trail of Flames"
+    required-tag: "flamebook"
+    damage: 4.0
+    interval: 0.5
+    max-ticks: 10
+    ignore-villagers: true
+    cooldown: 12.0
+  VoidParadox:
+    name: "Void Paradox"
+    required-tag: "darkbook"
+    damage: 5.0
+    range: 16
+    duration: 5.0
+    cooldown: 30.0
+  BloodCorruption:
+    name: "Blood Corruption"
+    required-tag: "bloodbook"
+    damage-per-block: 1.0
+    range: 16
+    duration: 4.0
+    cooldown: 20.0
+  BloodPurification:
+    name: "Blood Purification"
+    required-tag: "bloodbook"
+    x-range: 10.0
+    y-range: 5.0
+    z-range: 10.0
+    cooldown: 15.0

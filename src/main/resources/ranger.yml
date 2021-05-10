@@ -1,0 +1,60 @@
+display:
+  name: "Ranger"
+  icon: BOW
+  description:
+    - "A ranged class focused using the bow"
+    - "Switch between different arrow types"
+    - "Add tipped arrows to the mix for even more power"
+    - "High damage, medium mobility and low crowd control"
+
+default: false
+enabled: true
+allow-bow: true
+allow-shield: false
+
+health-multiplier: 1.0
+speed-multiplier: 1.0
+
+damage-multipliers:
+  preferred:
+    items:
+      - "sword"
+    multiplier: 1.3
+  others:
+    multipliers: 1.0
+
+skills:
+  Focus:
+    name: "Focus"
+  SnipeShot:
+    name: "Snipe Shot"
+    damage-multiplier: 1.5
+    pierce: 1
+    cooldown: 6.0
+  ExplosiveShot:
+    name: "Explosive Shot"
+    explosion-yield: 2.0
+    explosion-fire: false
+    explosion-break-block: false
+    cooldown: 12.0
+  LightningArrow:
+    name: "Lightning Arrow"
+    cooldown: 8.0
+  ArrowOfHunger:
+    name: "Arrow of Hunger"
+    damage-multiplier: 1.0
+    duration: 20.0
+    amplifier: 3
+    cooldown: 5
+  ArrowOfDarkness:
+    name: "Arrow of Darkness"
+    duration: 20.0
+    amplifier: 1
+    cooldown: 12
+  EnderArrow:
+    name: "Ender Arrow"
+    cooldown: 20.0
+  SoulShot:
+    name: "Soul Shot"
+    percent-health-damage: 0.25
+    cooldown: 15

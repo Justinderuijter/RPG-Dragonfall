@@ -1,0 +1,45 @@
+display:
+  name: "Brawler"
+  icon: POPPY
+  description:
+    - "A melee class that uses its fists as its weapon"
+    - "Draw power from your armor"
+    - "Choice between healing and extra damage"
+    - "high damage, low mobilty, no crowd control"
+
+default: false
+enabled: true
+allow-bow: false
+allow-shield: true
+
+health-multiplier: 1.0
+speed-multiplier: 1.0
+
+damage-multipliers:
+  preferred:
+    items:
+      - "sword"
+    multiplier: 1.3
+  others:
+    multipliers: 1.0
+
+skills:
+  LotusStrike:
+    name: "Lotus Strike"
+    required-items:
+      - AIR
+    duration: 6
+    enchant-to-crit-ratio: 3.125
+    enchant-to-fire-ticks: 15
+    enchant-to-lotus-haste-ratio: 2.0
+  InnerStrength:
+    name: "Inner Strength"
+    required-items:
+      - AIR
+    duration: 6
+    heal: 3.0
+
+
+
+
+

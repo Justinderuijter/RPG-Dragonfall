@@ -1,0 +1,36 @@
+MySQL:
+  use MySQL: false
+  host: "localhost"
+  port: "3306"
+  database: ""
+  username: "root"
+  password: ""
+  SSL: false
+
+# You can currently only have one party manager.
+# A party manager decided viable targets for skills with AoE effects
+# Or more advanced projectile based skills.
+# Currently supported: Factions3, FactionsUUID, Parties
+
+Party Manager Type: "Factions"
+
+# You can have as many protection managers as you like
+# As long as they are supported by the plugin.
+# It is however recommended to not go above 2-3.
+# If you wish to not use any, simple remove all from the list below.
+# Currently supported: Factions3, FactionsUUID and WorldGuard 7.0+
+Protection Managers:
+  - "Factions"
+# - "WorldGuard"
+
+Mana:
+  enabled: false
+  recovery-delay: 5
+  recovery-amount: 5
+
+Garbage Collection:
+  # Time that should pass between garbage collection.
+  # Set to 0 to disable garbage collection.
+  Timer: 120
+  # Will send message in console if true.
+  Verbose: false

@@ -1,0 +1,20 @@
+name: ClassesOfDragonfal
+version: ${project.version}
+main: me.xepos.rpg.XRPG
+api-version: 1.16
+softdepend:
+  - Factions
+  - Parties
+  - WorldGuard
+commands:
+  xrpgdebug:
+    description: debug command
+    usage: /<command> <number>
+  xrpgreload:
+    description: reloads xrpg configuration
+    usage: /<command>
+  changeclass:
+    description: changes your XRPG class
+    usage: /<command> <class>
+    aliases:
+      - cs
