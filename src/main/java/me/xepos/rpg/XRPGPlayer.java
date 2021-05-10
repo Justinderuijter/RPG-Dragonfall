@@ -62,8 +62,7 @@ public class XRPGPlayer {
         //Damage Handlers
         put("DAMAGE_DEALT", new EventHandler());
         put("DAMAGE_TAKEN", new EventHandler());
-        put("DAMAGE_TAKEN_FIRE", new EventHandler());
-        put("DAMAGE_TAKEN_FALL", new EventHandler());
+        put("DAMAGE_TAKEN_ENVIRONMENTAL", new EventHandler());
 
         //Bow Handlers
         put("SHOOT_BOW", new ShootBowEventHandler());

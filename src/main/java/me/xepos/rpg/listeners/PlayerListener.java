@@ -36,16 +36,34 @@ public class PlayerListener implements Listener {
 
     //Giving other plugins more opportunity to cancel this event
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onEnvironmentalDamage(EntityDamageEvent e){
-        if (e.getEntity() instanceof Player){
-            if (e.getCause() == EntityDamageEvent.DamageCause.FALL){
-                //Fall damage trigger
+    public void onDamage(EntityDamageEvent event){
+        if (event.getEntity() instanceof Player){
+            if (event instanceof EntityDamageByEntityEvent){
 
-            }else if (e.getCause() == EntityDamageEvent.DamageCause.FIRE
-            || e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK
-            || e.getCause() == EntityDamageEvent.DamageCause.LAVA
-            || e.getCause() == EntityDamageEvent.DamageCause.HOT_FLOOR){
-                //Fire damage trigger
+                EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+                if (e.getDamager() instanceof Player && e.getEntity() instanceof LivingEntity) {
+                    XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer((Player) e.getDamager());
+                    if (xrpgPlayer.isStunned())
+                        e.setCancelled(true);
+                    else
+                        xrpgPlayer.getEventHandler("DAMAGE_DEALT").invoke(e);
+                }
+
+                if (e.getEntity() instanceof Player) {
+                    Player player = (Player) e.getEntity();
+                    XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
+
+                    e.setDamage(e.getDamage() * xrpgPlayer.getDamageTakenMultiplier());
+
+                    xrpgPlayer.getEventHandler("DAMAGE_TAKEN").invoke(e);
+
+                }
+
+            }else{
+                Player player = (Player) event.getEntity();
+                XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
+
+                xrpgPlayer.getEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").invoke(event);
             }
         }
     }
@@ -54,22 +72,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onHit(EntityDamageByEntityEvent e) {
 
-        if (e.getDamager() instanceof Player && e.getEntity() instanceof LivingEntity) {
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer((Player) e.getDamager());
-            if (xrpgPlayer.isStunned())
-                e.setCancelled(true);
-            else
-                xrpgPlayer.getEventHandler("DAMAGE_DEALT").invoke(e);
-        }
 
-        if (e.getEntity() instanceof Player) {
-            Player player = (Player) e.getEntity();
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
-
-            e.setDamage(e.getDamage() * xrpgPlayer.getDamageTakenMultiplier());
-
-            xrpgPlayer.getEventHandler("DAMAGE_TAKEN").invoke(e);
-        }
     }
 
     @EventHandler
