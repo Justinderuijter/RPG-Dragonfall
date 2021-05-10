@@ -5,6 +5,8 @@ import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -50,7 +52,6 @@ public class RavagerLandTask extends BukkitRunnable {
 
     private void damageAndSlowTarget(LivingEntity livingEntity) {
         livingEntity.damage(damage, player);
-        //TODO: Fix this
-        //livingEntity.addPotionEffect(RavagerConfig.getInstance().slowEffect);
+        livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 1, false, false, true));
     }
 }

@@ -9,6 +9,8 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Focus extends XRPGSkill {
 
     public Focus(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
@@ -23,7 +25,10 @@ public class Focus extends XRPGSkill {
         if (!(event instanceof EntityShootBowEvent)) return;
         EntityShootBowEvent e = (EntityShootBowEvent) event;
         if (e.getProjectile() instanceof Arrow) {
-            ((Arrow) e.getProjectile()).setCritical(true);
+            int random = ThreadLocalRandom.current().nextInt(0, 100);
+            if (random < getSkillVariables().getInt("activation-chance", 30)) {
+                ((Arrow) e.getProjectile()).setCritical(true);
+            }
         }
 
 

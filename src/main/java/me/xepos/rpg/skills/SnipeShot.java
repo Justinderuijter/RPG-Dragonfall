@@ -12,6 +12,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class SnipeShot extends XRPGBowSkill {
+    //TODO: implement headshot
     public SnipeShot(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
