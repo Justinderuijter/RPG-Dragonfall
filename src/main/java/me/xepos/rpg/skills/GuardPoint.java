@@ -24,7 +24,7 @@ public class GuardPoint extends XRPGSkill {
         Player player = (Player) e.getEntity();
 
         if (player.isBlocking()){
-            Utils.healLivingEntity(player, 1.0);
+            Utils.healLivingEntity(player, getSkillVariables().getDouble("heal", 1.0));
         }
     }
 

@@ -12,24 +12,26 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Aegis extends XRPGSkill {
+    private boolean isActive = false;
 
     public Aegis(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this);
     }
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerInteractEvent)) return;
+        if (!(event instanceof EntityDamageByEntityEvent)) return;
 
-        doAegis((PlayerInteractEvent) event);
+        doAegis((EntityDamageByEntityEvent) event);
     }
 
     @Override
@@ -38,13 +40,9 @@ public class Aegis extends XRPGSkill {
     }
 
     @SuppressWarnings("unchecked")
-    private void doAegis(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
+    private void doAegis(EntityDamageByEntityEvent e) {
+        Player player = (Player) e.getEntity();
         if (player.getInventory().getItemInOffHand().getType() == Material.SHIELD) {
-            if (!isSkillReady()) {
-                player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
-                return;
-            }
 
             final double duration = getSkillVariables().getDouble("duration", 4.0);
             final double xRange = getSkillVariables().getDouble("x-range", 8);

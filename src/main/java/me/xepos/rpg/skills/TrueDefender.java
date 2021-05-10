@@ -10,6 +10,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class TrueDefender extends XRPGSkill {
+    private boolean isActive = false;
+
     public TrueDefender(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
     }
@@ -21,8 +23,9 @@ public class TrueDefender extends XRPGSkill {
         Player player = (Player) e.getEntity();
         LivingEntity damager = (LivingEntity) e.getDamager();
 
+        int duration = (int)(getSkillVariables().getDouble("duration", 3.0) * 20);
 
-        player.setNoDamageTicks(60);
+        player.setNoDamageTicks(duration);
         damager.setNoDamageTicks(0);
         damager.damage(e.getDamage(), player);
 

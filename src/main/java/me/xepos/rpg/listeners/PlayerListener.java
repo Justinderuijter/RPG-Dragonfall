@@ -46,7 +46,6 @@ public class PlayerListener implements Listener {
             || e.getCause() == EntityDamageEvent.DamageCause.LAVA
             || e.getCause() == EntityDamageEvent.DamageCause.HOT_FLOOR){
                 //Fire damage trigger
-
             }
         }
     }
