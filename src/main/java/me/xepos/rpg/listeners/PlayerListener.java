@@ -16,6 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.*;
@@ -32,6 +33,23 @@ public class PlayerListener implements Listener {
     public PlayerListener(XRPG plugin, IDatabaseManager databaseManager) {
         this.plugin = plugin;
         this.databaseManager = databaseManager;
+    }
+
+    //Giving other plugins more opportunity to cancel this event
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEnvironmentalDamage(EntityDamageEvent e){
+        if (e.getEntity() instanceof Player){
+            if (e.getCause() == EntityDamageEvent.DamageCause.FALL){
+                //Fall damage trigger
+
+            }else if (e.getCause() == EntityDamageEvent.DamageCause.FIRE
+            || e.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK
+            || e.getCause() == EntityDamageEvent.DamageCause.LAVA
+            || e.getCause() == EntityDamageEvent.DamageCause.HOT_FLOOR){
+                //Fire damage trigger
+
+            }
+        }
     }
 
     //Giving other plugins more opportunity to cancel this event

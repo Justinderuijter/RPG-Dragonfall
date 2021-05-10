@@ -60,8 +60,10 @@ public class XRPGPlayer {
         put("SNEAK_RIGHT_CLICK_ENTITY", new EventHandler());
 
         //Damage Handlers
-        put("DAMAGE_TAKEN", new EventHandler());
         put("DAMAGE_DEALT", new EventHandler());
+        put("DAMAGE_TAKEN", new EventHandler());
+        put("DAMAGE_TAKEN_FIRE", new EventHandler());
+        put("DAMAGE_TAKEN_FALL", new EventHandler());
 
         //Bow Handlers
         put("SHOOT_BOW", new ShootBowEventHandler());
