@@ -1,10 +1,15 @@
 package me.xepos.rpg.configuration;
 
+import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.AttributeModifierData;
+import me.xepos.rpg.enums.ModifierType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,10 +27,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class ClassLoader {
     private final XRPG plugin;
-    private static final File rpgFolder = Bukkit.getServer().getPluginManager().getPlugin("RPG").getDataFolder();
+    private static final File rpgFolder = Bukkit.getServer().getPluginManager().getPlugin("ClassesOfDragonfall").getDataFolder();
     private static final File classFolder = new File(rpgFolder, "Classes");
 
     public ClassLoader(XRPG plugin) {
@@ -43,15 +49,16 @@ public class ClassLoader {
         try {
             if (isDirEmpty(classFolder)) {
                 ArrayList<String> files = new ArrayList<String>() {{
-                    add("assassin");
-                    add("bard");
-                    add("brawler");
-                    add("guardian");
-                    add("necromancer");
-                    add("ranger");
-                    add("ravager");
-                    add("sorcerer");
-                    add("wizard");
+                    add("sentinel");
+                    //add("assassin");
+                    //add("bard");
+                    //add("brawler");
+                    //add("guardian");
+                    //add("necromancer");
+                    //add("ranger");
+                    //add("ravager");
+                    //add("sorcerer");
+                    //add("wizard");
                 }};
                 for (String fileName : files) {
                     Bukkit.getLogger().info(fileName + ".yml");
@@ -75,7 +82,9 @@ public class ClassLoader {
             FileConfiguration classConfig = plugin.getFileConfiguration(classId);
             if (classConfig == null) {
                 classConfig = plugin.getFileConfiguration(plugin.getDefaultClassId());
+                if (classConfig == null) return; //Default returned null too
             }
+
 
             //Change class clears all handlers, after that we set skills
             xrpgPlayer.setShieldAllowed(classConfig.getBoolean("allow-shield", true));
@@ -129,12 +138,68 @@ public class ClassLoader {
                     plugin.setDefaultClassId(fileName);
                 }
 
+                registerAttributes(fileConfiguration, fileName);
+
                 configurationHashMap.put(fileName, fileConfiguration);
             }
             Bukkit.getLogger().info("Loaded " + file.getName());
         }
         return configurationHashMap;
     }
+
+    private void registerAttributes(FileConfiguration fileConfiguration, String fileName){
+
+        ConfigurationSection attributeSection = fileConfiguration.getConfigurationSection("attributes");
+        if (attributeSection != null) {
+            AttributeModifierManager attributeModifierManager = AttributeModifierManager.getInstance();
+            for (String key : attributeSection.getKeys(false)) {
+                loadAttributeModifier(attributeSection, key, fileName, attributeModifierManager);
+            }
+        }
+    }
+
+    private void loadAttributeModifier(ConfigurationSection attributeSection, String key, String fileName, AttributeModifierManager manager){
+        String keyType = key.substring(0, key.indexOf('-')).toUpperCase();
+
+        Attribute attribute = null;
+        switch (keyType){
+            case "HEALTH":
+                attribute = Attribute.GENERIC_MAX_HEALTH;
+                break;
+            case "ARMOR":
+                attribute = Attribute.GENERIC_ARMOR;
+                break;
+            case "TOUGHNESS":
+                attribute = Attribute.GENERIC_ARMOR_TOUGHNESS;
+                break;
+            case "MOVESPEED":
+                attribute = Attribute.GENERIC_MOVEMENT_SPEED;
+                break;
+            case "ATTACKSPEED":
+                attribute = Attribute.GENERIC_ATTACK_SPEED;
+                break;
+            default:
+                break;
+        }
+
+        if (attribute != null) {
+            if (key.endsWith("flat-bonus")) {
+                String name = fileName.toUpperCase() + "_" + keyType + "_FLAT";
+                double amount = attributeSection.getDouble(key);
+
+                if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(name))
+                    manager.put(ModifierType.POSITIVE, name, new AttributeModifier(UUID.randomUUID(), name, amount, AttributeModifier.Operation.ADD_NUMBER), attribute);
+
+            } else if (key.endsWith("multiplier")) {
+                String name = fileName.toUpperCase() + "_" + keyType + "_SCALING";
+                double amount = attributeSection.getDouble(key) - 1;
+
+                if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(name))
+                    manager.put(ModifierType.POSITIVE, name, new AttributeModifier(UUID.randomUUID(), name, amount, AttributeModifier.Operation.MULTIPLY_SCALAR_1), attribute);
+            }
+        }
+    }
+
 
     @SuppressWarnings("ConstantConditions")
     public List<ItemStack> initializeMenu() {

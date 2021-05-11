@@ -5,10 +5,7 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.enums.ModifierType;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
@@ -223,6 +220,11 @@ public final class Utils {
      */
     @SuppressWarnings("all")
     public static boolean addUniqueModifier(LivingEntity entity, AttributeModifierData modifierData) {
+        if (modifierData == null || modifierData.getAttributeModifier() == null || modifierData.getAttribute() == null){
+            Bukkit.getLogger().warning("Error loading modifier");
+            return false;
+        }
+
         if (!entity.getAttribute(modifierData.getAttribute()).getModifiers().contains(modifierData.getAttributeModifier())) {
             entity.getAttribute(modifierData.getAttribute()).addModifier(modifierData.getAttributeModifier());
             return true;

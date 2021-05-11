@@ -1,13 +1,16 @@
 package me.xepos.rpg.listeners;
 
+import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
+import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -92,9 +95,11 @@ public class PlayerListener implements Listener {
             xrpgPlayer.setPlayer(player);
         }
 
-
         if (xrpgPlayer != null && xrpgPlayer.getPlayer() != null) {
+            //Adds modifiers specified in the class config
+            addClassModifiers(xrpgPlayer);
             player.sendMessage("You are now " + xrpgPlayer.getClassDisplayName());
+
         } else {
             player.kickPlayer("Something went wrong while loading XRPG data.");
         }
@@ -192,6 +197,16 @@ public class PlayerListener implements Listener {
     private void doBowCycle(ItemStack item, XRPGPlayer xrpgPlayer) {
         if (item != null && item.getType() == Material.BOW) {
             ((ShootBowEventHandler) xrpgPlayer.getEventHandler("SHOOT_BOW")).next();
+        }
+    }
+
+    private void addClassModifiers(XRPGPlayer xrpgPlayer){
+        AttributeModifierManager manager = AttributeModifierManager.getInstance();
+        for (String id: manager.getModifiers(ModifierType.POSITIVE).keySet()) {
+            if (id.startsWith(xrpgPlayer.getClassId().toUpperCase())){
+                Utils.addUniqueModifier(xrpgPlayer.getPlayer(), manager.get(ModifierType.POSITIVE, id));
+                xrpgPlayer.getPlayer().sendMessage("Added " + id);
+            }
         }
     }
 }

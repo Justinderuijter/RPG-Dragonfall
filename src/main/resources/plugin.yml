@@ -1,4 +1,4 @@
-name: ClassesOfDragonfal
+name: ClassesOfDragonfall
 version: ${project.version}
 main: me.xepos.rpg.XRPG
 api-version: 1.16
