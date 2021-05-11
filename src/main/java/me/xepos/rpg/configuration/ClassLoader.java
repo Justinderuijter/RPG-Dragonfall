@@ -50,6 +50,7 @@ public class ClassLoader {
             if (isDirEmpty(classFolder)) {
                 ArrayList<String> files = new ArrayList<String>() {{
                     add("sentinel");
+                    add("explorer");
                     //add("assassin");
                     //add("bard");
                     //add("brawler");

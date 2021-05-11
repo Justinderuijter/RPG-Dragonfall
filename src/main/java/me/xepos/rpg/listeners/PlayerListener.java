@@ -1,5 +1,6 @@
 package me.xepos.rpg.listeners;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
@@ -191,6 +192,22 @@ public class PlayerListener implements Listener {
                 return;
             }
             xrpgPlayer.getEventHandler("SHOOT_BOW").invoke(e);
+        }
+    }
+
+    @EventHandler
+    public void onToggleSprint(PlayerToggleSprintEvent e){
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
+        if (xrpgPlayer != null){
+            xrpgPlayer.getEventHandler("SPRINT").invoke(e);
+        }
+    }
+
+    @EventHandler
+    public void onToggleSprint(PlayerJumpEvent e){
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
+        if (xrpgPlayer != null){
+            xrpgPlayer.getEventHandler("JUMP").invoke(e);
         }
     }
 

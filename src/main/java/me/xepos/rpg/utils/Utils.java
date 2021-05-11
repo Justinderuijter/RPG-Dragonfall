@@ -259,6 +259,10 @@ public final class Utils {
      */
     @SuppressWarnings("all")
     public static boolean removeUniqueModifier(LivingEntity entity, AttributeModifierData modifierData) {
+        if (modifierData == null || modifierData.getAttributeModifier() == null || modifierData.getAttribute() == null){
+            return false;
+        }
+
         if (entity.getAttribute(modifierData.getAttribute()).getModifiers().contains(modifierData.getAttributeModifier())) {
             entity.getAttribute(modifierData.getAttribute()).removeModifier(modifierData.getAttributeModifier());
             return true;

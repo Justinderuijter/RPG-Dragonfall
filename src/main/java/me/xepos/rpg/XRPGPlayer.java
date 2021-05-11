@@ -1,9 +1,12 @@
 package me.xepos.rpg;
 
+import me.xepos.rpg.datatypes.AttributeModifierData;
+import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.handlers.EventHandler;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.IFollowerContainer;
 import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -67,8 +70,14 @@ public class XRPGPlayer {
         //Bow Handlers
         put("SHOOT_BOW", new ShootBowEventHandler());
 
+        //Movement Handlers
+        put("SPRINT", new EventHandler());
+        put("JUMP", new EventHandler());
+
         //Other Handlers
+        put("HEALTH_REGEN", new EventHandler());
         put("CONSUME_ITEM", new EventHandler());
+
     }};
 
 
@@ -141,6 +150,11 @@ public class XRPGPlayer {
 
     public void resetClassData(String classId, String classDisplayName) {
         if (classId == null || classId.equals("")) return;
+
+        AttributeModifierManager manager = AttributeModifierManager.getInstance();
+        for (String id:manager.getModifiers(ModifierType.POSITIVE).keySet()) {
+            Utils.removeUniqueModifier(getPlayer(), manager.get(ModifierType.POSITIVE, id));
+        }
 
         this.classId = classId;
         this.classDisplay = classDisplayName;
