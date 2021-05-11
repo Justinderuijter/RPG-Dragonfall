@@ -1,0 +1,18 @@
+display:
+  name: "Scholar"
+  icon: GOLDEN_APPLE
+  description:
+    - "A tanky melee class focused on survivability"
+    - "Call upon Aegis' to protect you and your allies"
+    - "Draw the attention of nearby mobs with your attacks"
+    - "medium damage, low mobility, high defense"
+
+default: false
+enabled: true
+allow-bow: true
+allow-shield: true
+
+skills:
+  Blessed:
+    multiplier: 1.25
+    mana-increase: 5

@@ -18,10 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -70,13 +67,6 @@ public class PlayerListener implements Listener {
                 xrpgPlayer.getEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").invoke(event);
             }
         }
-    }
-
-    //Giving other plugins more opportunity to cancel this event
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onHit(EntityDamageByEntityEvent e) {
-
-
     }
 
     @EventHandler
@@ -166,6 +156,14 @@ public class PlayerListener implements Listener {
             xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK_ENTITY").invoke(e);
         } else {
             xrpgPlayer.getEventHandler("RIGHT_CLICK_ENTITY").invoke(e);
+        }
+    }
+
+    public void onHealthRegen(EntityRegainHealthEvent e){
+        if (!(e.getEntity() instanceof Player)) return;
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getEntity().getUniqueId());
+        if (xrpgPlayer != null){
+            xrpgPlayer.getEventHandler("HEALTH_REGEN").invoke(e);
         }
     }
 

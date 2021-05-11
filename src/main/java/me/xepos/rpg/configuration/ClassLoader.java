@@ -51,6 +51,7 @@ public class ClassLoader {
                 ArrayList<String> files = new ArrayList<String>() {{
                     add("sentinel");
                     add("explorer");
+                    add("scholar");
                     //add("assassin");
                     //add("bard");
                     //add("brawler");
