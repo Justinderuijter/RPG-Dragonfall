@@ -22,7 +22,7 @@ public class Fireball extends XRPGSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         fireballStackData = new FireballStackData(xrpgPlayer, skillVariables, plugin);
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

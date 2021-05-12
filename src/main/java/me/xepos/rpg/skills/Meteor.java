@@ -21,13 +21,13 @@ public class Meteor extends XRPGSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         this.fireballStackData = fireballStackData;
-        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     public Meteor(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Meteor extends XRPGSkill {
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("RIGHT_CLICK").getSkills()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("RIGHT_CLICK").getSkills().values()) {
             if (skill instanceof me.xepos.rpg.skills.Fireball) {
                 this.fireballStackData = ((me.xepos.rpg.skills.Fireball) skill).getFireballStackData();
                 return;

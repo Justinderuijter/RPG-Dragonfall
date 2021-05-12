@@ -17,7 +17,7 @@ public class Focus extends XRPGSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         setRemainingCooldown(-1);
-        ((ShootBowEventHandler) xrpgPlayer.getEventHandler("SHOOT_BOW")).addPassiveSkill(this);
+        ((ShootBowEventHandler) xrpgPlayer.getEventHandler("SHOOT_BOW")).addPassiveSkill(this.getClass().getSimpleName(),this);
     }
 
     @Override

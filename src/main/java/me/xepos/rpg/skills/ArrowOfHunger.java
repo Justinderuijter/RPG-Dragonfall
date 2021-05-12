@@ -19,7 +19,7 @@ public class ArrowOfHunger extends XRPGBowSkill {
     public ArrowOfHunger(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this);
+        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

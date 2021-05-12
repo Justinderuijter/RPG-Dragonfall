@@ -4,11 +4,13 @@ import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.event.Event;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ShootBowEventHandler extends EventHandler {
     private byte currentIndex = 0;
-    private List<XRPGSkill> passiveSkills = new ArrayList<>();
+    private HashMap<String, XRPGSkill> passiveSkills = new HashMap<>();
 
     public void next() {
         if (!getSkills().isEmpty()) {
@@ -20,7 +22,7 @@ public class ShootBowEventHandler extends EventHandler {
     }
 
     public XRPGSkill getCurrentSkill() {
-        return getSkills().get(currentIndex);
+        return (XRPGSkill) getSkills().values().toArray()[currentIndex];
     }
 
     @Override
@@ -31,7 +33,7 @@ public class ShootBowEventHandler extends EventHandler {
 
     @Override
     public void invoke(Event e) {
-        for (XRPGSkill passiveSkill : passiveSkills) {
+        for (XRPGSkill passiveSkill : passiveSkills.values()) {
             passiveSkill.activate(e);
         }
 
@@ -40,20 +42,20 @@ public class ShootBowEventHandler extends EventHandler {
         }
     }
 
-    public List<XRPGSkill> getPassiveSkills() {
+    public HashMap<String, XRPGSkill> getPassiveSkills() {
         return passiveSkills;
     }
 
-    public void setPassiveSkills(List<XRPGSkill> skills) {
+    public void setPassiveSkills(HashMap<String, XRPGSkill> skills) {
         this.passiveSkills = skills;
     }
 
-    public void addPassiveSkill(XRPGSkill skill) {
-        if (!passiveSkills.contains(skill))
-            passiveSkills.add(skill);
+    public void addPassiveSkill(String skillId, XRPGSkill skill) {
+        if (!passiveSkills.containsKey(skillId))
+            passiveSkills.put(skillId, skill);
     }
 
-    public void removePassiveSkill(XRPGSkill skill) {
-        passiveSkills.remove(skill);
+    public void removePassiveSkill(String skillId) {
+        passiveSkills.remove(skillId);
     }
 }

@@ -14,7 +14,7 @@ public class GuardPoint extends XRPGSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         setRemainingCooldown(-1);
-        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class PotionAoE extends XRPGSkill {
     public PotionAoE(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this);
+        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

@@ -26,7 +26,7 @@ public class ShadowSneak extends XRPGSkill {
     public ShadowSneak(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").addSkill(this);
+        xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

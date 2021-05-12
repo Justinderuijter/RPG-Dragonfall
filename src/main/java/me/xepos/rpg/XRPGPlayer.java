@@ -1,6 +1,8 @@
 package me.xepos.rpg;
 
 import me.xepos.rpg.datatypes.AttributeModifierData;
+import me.xepos.rpg.datatypes.ClassData;
+import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.handlers.EventHandler;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
@@ -9,10 +11,7 @@ import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class XRPGPlayer {
@@ -241,5 +240,23 @@ public class XRPGPlayer {
 
     public void addEventHandler(String handlerName, EventHandler handler) {
         this.handlerList.put(handlerName.toUpperCase(), handler);
+    }
+
+    //////////////////////////////////
+    //                              //
+    //             Data             //
+    //                              //
+    //////////////////////////////////
+
+    public PlayerData extractData(){
+        Set<String> skills = new HashSet<>();
+        for (EventHandler handler:handlerList.values()) {
+            skills.addAll(handler.getSkills().keySet());
+        }
+
+        PlayerData playerData = new PlayerData(this.classId, this.freeChangeTickets, this.lastClassChangeTime);
+        playerData.addClassData(this.classId, new ClassData(this.getPlayer().getHealth(), skills));
+
+        return playerData;
     }
 }

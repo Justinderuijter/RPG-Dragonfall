@@ -17,7 +17,7 @@ public class Fortified extends XRPGSkill {
     public Fortified(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

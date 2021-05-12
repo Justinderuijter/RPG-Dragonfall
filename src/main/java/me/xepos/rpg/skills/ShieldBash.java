@@ -27,7 +27,7 @@ public class ShieldBash extends XRPGSkill {
 
         AttributeModifierManager.getInstance().put(ModifierType.NEGATIVE, mod.getName(), mod, Attribute.GENERIC_MOVEMENT_SPEED);
 
-        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

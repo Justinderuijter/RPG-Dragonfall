@@ -1,17 +1,18 @@
 package me.xepos.rpg.database;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.ClassLoader;
+import me.xepos.rpg.datatypes.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class JSONDatabaseManager implements IDatabaseManager {
@@ -69,13 +70,18 @@ public class JSONDatabaseManager implements IDatabaseManager {
     @SuppressWarnings("all")
     public void savePlayerData(XRPGPlayer xrpgPlayer) {
         String playerData = gson.toJson(xrpgPlayer);
-        File test = new File(playerDataFolder, xrpgPlayer.getPlayerId().toString() + ".json");
+        File dataFile = new File(playerDataFolder, xrpgPlayer.getPlayerId().toString() + ".json");
         try {
-            test.createNewFile();
-            FileWriter myWriter = new FileWriter(test);
+            dataFile.createNewFile();
+            FileWriter myWriter = new FileWriter(dataFile);
             myWriter.write(playerData);
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
+
+            File test = new File(playerDataFolder, "test.json");
+            FileWriter myWriter2 = new FileWriter(test);
+            myWriter2.write(gson.toJson(xrpgPlayer.extractData()));
+            myWriter2.close();
         } catch (IOException e) {
             System.out.println("An error occurred while trying to save player data.");
             e.printStackTrace();

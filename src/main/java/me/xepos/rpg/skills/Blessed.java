@@ -11,7 +11,7 @@ public class Blessed extends XRPGSkill {
     public Blessed(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("HEALTH_REGEN");
+        xrpgPlayer.getEventHandler("HEALTH_REGEN").addSkill(this.getClass().getSimpleName() ,this);
         xrpgPlayer.setMaximumMana(xrpgPlayer.getMaximumMana() + getSkillVariables().getInt("mana-increase", 5));
     }
 

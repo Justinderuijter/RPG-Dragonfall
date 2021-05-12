@@ -20,7 +20,7 @@ public class PurgatoryBat extends XRPGSkill {
     public PurgatoryBat(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -37,7 +37,6 @@ public class PurgatoryBat extends XRPGSkill {
 
     }
 
-    @SuppressWarnings("all")
     private void doPurgatoryBat(Player player) {
         if (!isSkillReady()) {
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));

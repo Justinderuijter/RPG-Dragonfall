@@ -19,13 +19,13 @@ public class BoneShield extends XRPGSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         this.armyOfTheUndead = armyOfTheUndead;
-        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     public BoneShield(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class BoneShield extends XRPGSkill {
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("DAMAGE DEALT").getSkills()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("DAMAGE DEALT").getSkills().values()) {
             if (skill instanceof ArmyOfTheUndead) {
                 this.armyOfTheUndead = (ArmyOfTheUndead) skill;
                 return;
