@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.instrument.Instrumentation;
 import java.util.HashMap;
 import java.util.UUID;
 

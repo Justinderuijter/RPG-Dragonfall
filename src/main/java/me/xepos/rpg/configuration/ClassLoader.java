@@ -87,20 +87,24 @@ public class ClassLoader {
                 if (classConfig == null) return; //Default returned null too
             }
 
-
+            Bukkit.getLogger().info("Classloader: " + 1);
             //Change class clears all handlers, after that we set skills
             xrpgPlayer.setShieldAllowed(classConfig.getBoolean("allow-shield", true));
+
             xrpgPlayer.resetClassData(classId, plugin.getFileConfiguration(classId).getString("display.name", "???"));
 
+            Bukkit.getLogger().info("Classloader: " + 2);
             ConfigurationSection skillSection = classConfig.getConfigurationSection("skills");
             if (skillSection == null) {
                 Bukkit.getLogger().info("Could not find Skills section in " + classId);
             } else {
+                Bukkit.getLogger().info("Classloader: " + 3);
                 for (String skillId : skillSection.getKeys(false)) {
                     ConfigurationSection skillDataSection = skillSection.getConfigurationSection(skillId);
 
                     if (skillDataSection != null) {
                         try {
+                            Bukkit.getLogger().info("Classloader: " + 4);
                             Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillDataSection.getName());
                             Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
 
@@ -115,9 +119,11 @@ public class ClassLoader {
                 }
             }
 
+            Bukkit.getLogger().info("Classloader: " + 5);
             for (String handler : xrpgPlayer.getHandlerList().keySet()) {
                 xrpgPlayer.getEventHandler(handler).initialize();
             }
+            Bukkit.getLogger().info("Classloader: " + 6);
         });
     }
 

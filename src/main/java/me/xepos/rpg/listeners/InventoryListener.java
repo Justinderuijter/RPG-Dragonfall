@@ -4,6 +4,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.ClassLoader;
 import me.xepos.rpg.events.XRPGClassChangedEvent;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -65,6 +66,7 @@ public class InventoryListener implements Listener {
                 if (!event.isCancelled()) {
                     Bukkit.broadcastMessage(xrpgPlayer.getPlayer().getName() + " changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName + "!");
                     classLoader.load(classId, xrpgPlayer);
+                    Utils.removeAllModifiers(player);
                 }
             }
 

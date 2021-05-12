@@ -3,10 +3,10 @@ package me.xepos.rpg.datatypes;
 import java.util.HashMap;
 
 public class PlayerData {
-    private String classId = "test";
+    private String classId;
     private long lastClassChange = 0;
     private int freeChangeTickets = 2;
-    private HashMap<String, ClassData> classes = new HashMap<>();
+    private final HashMap<String, ClassData> classes = new HashMap<>();
 
     public PlayerData(String classId, int freeChangeTickets, long lastClassChange){
         this.classId = classId;
@@ -14,7 +14,21 @@ public class PlayerData {
         this.lastClassChange = lastClassChange;
     }
 
+    public void setClassId(String classId){
+        this.classId = classId;
+    }
 
+    public String getClassId() {
+        return classId;
+    }
+
+    public long getLastClassChange() {
+        return lastClassChange;
+    }
+
+    public int getFreeChangeTickets() {
+        return freeChangeTickets;
+    }
 
     public ClassData getClassData(String classId){
         return classes.get(classId);
