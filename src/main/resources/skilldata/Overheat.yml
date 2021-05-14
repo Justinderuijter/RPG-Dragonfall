@@ -1,0 +1,7 @@
+name: "Overheat"
+required-tag: "flamebook"
+damage: 5.0
+damage-per-armor: 0.5
+range: 16.0
+delay: 5.0
+cooldown: 20.0

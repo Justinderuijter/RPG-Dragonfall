@@ -1,0 +1,8 @@
+name: "Ballad"
+max-procs: 10
+interval: 1
+heal-per-proc: 1.0
+x-range: 10.0
+y-range: 5.0
+z-range: 10.0
+cooldown: 15

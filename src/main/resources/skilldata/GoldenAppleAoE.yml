@@ -1,0 +1,5 @@
+name: "Golden Apple AoE"
+x-range: 10.0
+y-range: 5.0
+z-range: 10.0
+cooldown: 5.0

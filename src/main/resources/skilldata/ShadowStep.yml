@@ -1,0 +1,5 @@
+name: "Shadow Step"
+required-items:
+  - SWORD
+duration: 5.0
+cooldown: 20.0

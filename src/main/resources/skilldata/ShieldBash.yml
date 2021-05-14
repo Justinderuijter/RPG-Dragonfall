@@ -1,0 +1,4 @@
+name: "Shield Bash"
+cast-delay: 0.25
+duration: 2.0
+cooldown: 10

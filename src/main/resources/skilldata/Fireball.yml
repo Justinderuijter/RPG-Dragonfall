@@ -1,0 +1,6 @@
+name: "Fireball"
+required-tag: "firestaff"
+damage: 10.0
+fire-duration: 3.0
+max-stacks: 2
+cooldown: 3.0
