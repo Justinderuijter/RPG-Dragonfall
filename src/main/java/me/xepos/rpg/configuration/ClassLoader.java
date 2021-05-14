@@ -3,7 +3,6 @@ package me.xepos.rpg.configuration;
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.enums.ModifierType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -32,7 +31,7 @@ import java.util.UUID;
 public class ClassLoader {
     private final XRPG plugin;
     private static final File rpgFolder = Bukkit.getServer().getPluginManager().getPlugin("ClassesOfDragonfall").getDataFolder();
-    private static final File classFolder = new File(rpgFolder, "Classes");
+    private static final File classFolder = new File(rpgFolder, "classes");
 
     public ClassLoader(XRPG plugin) {
         this.plugin = plugin;
@@ -49,9 +48,9 @@ public class ClassLoader {
         try {
             if (isDirEmpty(classFolder)) {
                 ArrayList<String> files = new ArrayList<String>() {{
-                    add("sentinel");
-                    add("explorer");
-                    add("scholar");
+                    add("sentinel.yml");
+                    add("explorer.yml");
+                    add("scholar.yml");
                     //add("assassin");
                     //add("bard");
                     //add("brawler");
@@ -63,8 +62,8 @@ public class ClassLoader {
                     //add("wizard");
                 }};
                 for (String fileName : files) {
-                    Bukkit.getLogger().info(fileName + ".yml");
-                    saveResource(fileName + ".yml", false);
+                    Bukkit.getLogger().info(fileName);
+                    saveResource(fileName, false);
                 }
             }
         } catch (IOException exception) {
@@ -94,7 +93,7 @@ public class ClassLoader {
             xrpgPlayer.resetClassData(classId, plugin.getFileConfiguration(classId).getString("display.name", "???"));
 
             Bukkit.getLogger().info("Classloader: " + 2);
-            ConfigurationSection skillSection = classConfig.getConfigurationSection("skills");
+            ConfigurationSection skillSection = classConfig.getConfigurationSection("skilldata");
             if (skillSection == null) {
                 Bukkit.getLogger().info("Could not find Skills section in " + classId);
             } else {

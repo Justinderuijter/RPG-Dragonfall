@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class JSONDatabaseManager implements IDatabaseManager {
     private final static XRPG plugin = XRPG.getPlugin(XRPG.class);
-    private final static String playerFolderName = "PlayerData";
+    private final static String playerFolderName = "playerdata";
 
     private static File playerDataFolder;
     public final Gson gson = new GsonBuilder().setPrettyPrinting().create();

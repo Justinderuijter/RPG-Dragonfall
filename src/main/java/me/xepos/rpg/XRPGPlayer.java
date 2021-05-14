@@ -41,6 +41,7 @@ public class XRPGPlayer {
     }
 
     //Constructor for loading profiles
+    @Deprecated
     public XRPGPlayer(UUID playerId, String classId) {
         this.player = null;
         this.playerId = playerId;
@@ -48,7 +49,7 @@ public class XRPGPlayer {
         this.lastClassChangeTime = 0;
     }
 
-
+    @Deprecated
     public XRPGPlayer(Player player, String classId) {
         this.player = player;
         this.playerId = player.getUniqueId();

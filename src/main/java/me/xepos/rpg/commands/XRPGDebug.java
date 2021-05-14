@@ -13,7 +13,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.instrument.Instrumentation;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -60,7 +59,7 @@ public class XRPGDebug implements CommandExecutor {
                                 player.sendMessage(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getClassId());
                             }
                             return true;
-                        case "skills":
+                        case "skilldata":
                             HashMap<String, EventHandler> handlers = plugin.getXRPGPlayer(player).getHandlerList();
                             for (String handlerName : handlers.keySet()) {
                                 for (XRPGSkill skill : handlers.get(handlerName).getSkills().values()) {
