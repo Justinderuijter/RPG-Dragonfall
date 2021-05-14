@@ -47,7 +47,8 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
                 XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, playerData);
 
-                classLoader.load(playerData.getClassId(), xrpgPlayer);
+                classLoader.loadClass(playerData, xrpgPlayer);
+
                 plugin.addRPGPlayer(playerId, xrpgPlayer);
 
 
@@ -69,7 +70,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
         } else {
             String defaultClassId = plugin.getDefaultClassId();
             XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, defaultClassId);
-            classLoader.load(defaultClassId, xrpgPlayer);
+            classLoader.loadClass(new PlayerData(defaultClassId, 2, 0), xrpgPlayer);
             plugin.addRPGPlayer(playerId, xrpgPlayer);
         }
     }
@@ -85,7 +86,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
             myWriter.write(dataToSave);
             myWriter.close();
             System.out.println("Successfully wrote to the file.");*/
-            if (!dataFile.exists()){
+            if (!dataFile.exists()) {
                 dataFile.createNewFile();
             }
 
@@ -107,7 +108,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
                 //4. turn the new data to json and save it.
                 dataToSave = gson.toJson(savedData);
 
-            }else{
+            } else {
                 //Just save the extracted data if nothing exists.
                 dataToSave = gson.toJson(extractedData);
             }

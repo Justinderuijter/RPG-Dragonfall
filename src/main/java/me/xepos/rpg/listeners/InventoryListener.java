@@ -3,6 +3,9 @@ package me.xepos.rpg.listeners;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.ClassLoader;
+import me.xepos.rpg.database.IDatabaseManager;
+import me.xepos.rpg.database.tasks.SavePlayerDataTask;
+import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.events.XRPGClassChangedEvent;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
@@ -23,10 +26,12 @@ public class InventoryListener implements Listener {
 
     private final XRPG plugin;
     private final ClassLoader classLoader;
+    private final IDatabaseManager databaseManager;
 
-    public InventoryListener(XRPG plugin, ClassLoader classLoader) {
+    public InventoryListener(XRPG plugin, ClassLoader classLoader, IDatabaseManager databaseManager) {
         this.plugin = plugin;
         this.classLoader = classLoader;
+        this.databaseManager = databaseManager;
     }
 
     @EventHandler
@@ -64,8 +69,14 @@ public class InventoryListener implements Listener {
                 Bukkit.getServer().getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
+                    PlayerData data = xrpgPlayer.extractData();
+
+                    //Need to save before changing class to prevent data loss
+                    new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
+
                     Bukkit.broadcastMessage(xrpgPlayer.getPlayer().getName() + " changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName + "!");
-                    classLoader.load(classId, xrpgPlayer);
+                    data.setClassId(classId);
+                    classLoader.loadClass(data, xrpgPlayer);
                     Utils.removeAllModifiers(player);
                 }
             }
