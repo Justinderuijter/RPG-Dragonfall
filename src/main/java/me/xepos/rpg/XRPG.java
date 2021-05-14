@@ -207,4 +207,8 @@ public final class XRPG extends JavaPlugin {
     public boolean useMana() {
         return this.getConfig().getBoolean("mana.enabled", false);
     }
+
+    public FileConfiguration getSkillData(String skillId){
+        return skillData.get(skillId);
+    }
 }

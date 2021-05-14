@@ -108,7 +108,7 @@ public class ClassLoader {
                             Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
 
                             //The instance of the skill automatically assigns itself to the XRPGPlayer
-                            constructor.newInstance(xrpgPlayer, skillDataSection, plugin);
+                            constructor.newInstance(xrpgPlayer, plugin.getSkillData(skillId), plugin);
 
                         } catch (Exception e) {
                             e.printStackTrace();
