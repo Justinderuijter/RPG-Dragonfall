@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,7 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-public class LotusStrike extends XRPGSkill {
+public class LotusStrike extends XRPGActiveSkill {
     public LotusStrike(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 

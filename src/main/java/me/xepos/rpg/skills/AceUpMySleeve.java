@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
@@ -11,7 +12,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class AceUpMySleeve extends XRPGSkill {
+public class AceUpMySleeve extends XRPGPassiveSkill {
 
     public AceUpMySleeve(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);

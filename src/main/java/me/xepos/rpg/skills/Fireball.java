@@ -4,6 +4,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.skills.base.FireballStackData;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
@@ -15,7 +16,7 @@ import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class Fireball extends XRPGSkill {
+public class Fireball extends XRPGActiveSkill {
     private final FireballStackData fireballStackData;
 
     public Fireball(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {

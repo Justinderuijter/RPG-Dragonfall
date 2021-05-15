@@ -2,12 +2,13 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 
-public class DisengagingShot extends XRPGSkill {
+public class DisengagingShot extends XRPGActiveSkill {
     public DisengagingShot(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
     }

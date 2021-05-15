@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -13,7 +14,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.Locale;
 
-public class Fortified extends XRPGSkill {
+public class Fortified extends XRPGPassiveSkill {
     public Fortified(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 

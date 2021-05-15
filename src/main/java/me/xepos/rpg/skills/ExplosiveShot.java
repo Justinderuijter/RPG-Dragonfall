@@ -3,14 +3,14 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ExplosiveProjectileData;
-import me.xepos.rpg.skills.base.XRPGBowSkill;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
-public class ExplosiveShot extends XRPGBowSkill {
+public class ExplosiveShot extends XRPGActiveSkill {
     public ExplosiveShot(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 

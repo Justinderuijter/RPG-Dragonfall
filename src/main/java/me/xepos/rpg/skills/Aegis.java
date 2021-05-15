@@ -3,6 +3,7 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
+import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tasks.RemoveDTModifierTask;
 import me.xepos.rpg.utils.Utils;
@@ -18,7 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Aegis extends XRPGSkill {
+public class Aegis extends XRPGPassiveSkill {
 
     public Aegis(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);

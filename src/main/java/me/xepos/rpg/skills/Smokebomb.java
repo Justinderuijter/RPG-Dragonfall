@@ -3,6 +3,7 @@ package me.xepos.rpg.skills;
 import com.mojang.datafixers.util.Pair;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tasks.EndInvisibilityTask;
 import me.xepos.rpg.utils.Utils;
@@ -25,7 +26,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Smokebomb extends XRPGSkill {
+public class Smokebomb extends XRPGActiveSkill {
 
     private int smokebombDuration = 10;
 

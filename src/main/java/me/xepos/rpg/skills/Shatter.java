@@ -4,6 +4,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.skills.base.FireballStackData;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tasks.RemoveDTModifierTask;
 import me.xepos.rpg.utils.Utils;
@@ -22,7 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Shatter extends XRPGSkill {
+public class Shatter extends XRPGActiveSkill {
     private FireballStackData fireballStackData;
 
     public Shatter(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, FireballStackData fireballStackData) {

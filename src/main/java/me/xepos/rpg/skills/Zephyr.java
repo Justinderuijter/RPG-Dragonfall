@@ -3,6 +3,7 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.FireballStackData;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
@@ -17,7 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 
-public class Zephyr extends XRPGSkill {
+public class Zephyr extends XRPGActiveSkill {
     private FireballStackData fireballStackData;
 
     public Zephyr(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, FireballStackData fireballStackData) {

@@ -4,6 +4,7 @@ import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.ModifierType;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tasks.ApplyStunTask;
 import me.xepos.rpg.utils.Utils;
@@ -18,7 +19,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.UUID;
 
-public class ShieldBash extends XRPGSkill {
+public class ShieldBash extends XRPGActiveSkill {
 
     public ShieldBash(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);

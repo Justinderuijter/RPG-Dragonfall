@@ -5,6 +5,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.enums.ModifierType;
+import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tasks.RavagerRageTask;
 import me.xepos.rpg.utils.Utils;
@@ -30,7 +31,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.List;
 import java.util.UUID;
 
-public class Rage extends XRPGSkill {
+public class Rage extends XRPGPassiveSkill {
     private byte currentRage = 0;
     private byte lastRage = 0;
     private final byte maxRage = 100;
