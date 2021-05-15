@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -39,18 +40,27 @@ public class SnipeShot extends XRPGBowSkill {
     }
 
     private void doSnipeShot(EntityShootBowEvent e, Arrow arrow) {
-        final int pierce = getSkillVariables().getInt("pierce", 1);
+        final int pierce = getSkillVariables().getInt("pierce", 0);
         final float force = e.getForce();
-        arrow.setGravity(false);
-        arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
-        arrow.setPierceLevel(Math.round(force) + pierce);
-        arrow.setDamage(arrow.getDamage() * getDamageMultiplier() * force);
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                arrow.remove();
-            }
-        }.runTaskLater(getPlugin(), (int) (force * 300));
+        if (force >= 0.95){
+            arrow.setGravity(false);
+            arrow.setPierceLevel(pierce);
+            arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
+
+            ProjectileData data = new ProjectileData(arrow, 20);
+            data.setHeadshotDamage(getSkillVariables().getDouble("headshot-multiplier"));
+
+            getPlugin().projectiles.put(arrow.getUniqueId(), data);
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    arrow.remove();
+                }
+            }.runTaskLater(getPlugin(), (int) (force * 300));
+        }
+
+
     }
 }

@@ -7,11 +7,9 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.enums.ModifierType;
-import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -211,7 +209,7 @@ public class PlayerListener implements Listener {
 
     private void doBowCycle(ItemStack item, XRPGPlayer xrpgPlayer) {
         if (item != null && item.getType() == Material.BOW) {
-            ((ShootBowEventHandler) xrpgPlayer.getEventHandler("SHOOT_BOW")).next();
+            xrpgPlayer.getEventHandler("SHOOT_BOW").next();
         }
     }
 

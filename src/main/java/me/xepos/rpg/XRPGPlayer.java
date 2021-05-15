@@ -1,15 +1,10 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.PlayerData;
-import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.handlers.EventHandler;
-import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.IFollowerContainer;
 import me.xepos.rpg.skills.base.XRPGSkill;
-import me.xepos.rpg.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -77,7 +72,7 @@ public class XRPGPlayer {
         put("DAMAGE_TAKEN_ENVIRONMENTAL", new EventHandler());
 
         //Bow Handlers
-        put("SHOOT_BOW", new ShootBowEventHandler());
+        put("SHOOT_BOW", new EventHandler());
 
         //Movement Handlers
         put("SPRINT", new EventHandler());

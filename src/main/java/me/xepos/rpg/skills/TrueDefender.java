@@ -18,6 +18,8 @@ public class TrueDefender extends XRPGSkill {
 
     public TrueDefender(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
+
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this.getClass().getSimpleName(), this);
     }
 
     @Override

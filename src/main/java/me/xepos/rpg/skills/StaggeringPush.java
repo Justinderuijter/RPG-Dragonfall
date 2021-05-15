@@ -23,7 +23,6 @@ public class StaggeringPush extends XRPGSkill {
         if (!(event instanceof EntityDamageByEntityEvent)) return;
         EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
         Player player = (Player) e.getDamager();
-        if (!player.isSprinting()) return;
         if (!isSkillReady()) {
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;

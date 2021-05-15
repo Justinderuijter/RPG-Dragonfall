@@ -33,15 +33,19 @@ public class AceUpMySleeve extends XRPGSkill {
             //TODO: Add effects, awaiting information
             switch(enchant.toUpperCase()){
                 case "POWER":
+                    arrow.setDamage(arrow.getDamage() * 1.5);
                     break;
                 case "FIRE":
                 case "FLAME":
+                    arrow.setFireTicks(arrow.getFireTicks() + 100);
                     break;
                 case "PUNCH":
                 case "KNOCKBACK":
+                    arrow.setKnockbackStrength(arrow.getKnockbackStrength() + 1);
                     break;
                 case "PIERCE":
                 case "PIERCING":
+                    arrow.setPierceLevel(arrow.getPierceLevel() + 1);
                     break;
                 default:
                     break;
