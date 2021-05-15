@@ -19,6 +19,8 @@ public class XRPGPlayer {
     private long lastClassChangeTime;
     private String classId;
     private int freeChangeTickets = 2;
+    private boolean spellCastModeEnabled = false;
+    private Set<String> spellKeybinds = new HashSet<>();
 
     //Status Effects
     public transient ConcurrentHashMap<String, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
@@ -228,6 +230,14 @@ public class XRPGPlayer {
         this.lastClassChangeTime = lastClassChangeTime;
     }
 
+    public boolean isSpellCastModeEnabled() {
+        return spellCastModeEnabled;
+    }
+
+    public void setSpellCastModeEnabled(boolean spellCastModeEnabled) {
+        this.spellCastModeEnabled = spellCastModeEnabled;
+    }
+
     //////////////////////////////////
     //                              //
     //  Handlers getters & setters  //
@@ -262,5 +272,13 @@ public class XRPGPlayer {
         playerData.addClassData(this.classId, new ClassData(this.getPlayer().getHealth(), skills));
 
         return playerData;
+    }
+
+    public Set<String> getSpellKeybinds() {
+        return spellKeybinds;
+    }
+
+    public void setSpellKeybinds(Set<String> spellKeybinds) {
+        this.spellKeybinds = spellKeybinds;
     }
 }

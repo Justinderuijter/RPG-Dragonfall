@@ -200,6 +200,15 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onSwapHeldItem(PlayerItemHeldEvent e){
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
+        if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()){
+            xrpgPlayer.getEventHandler("SWAP_HELD_ITEM").invoke(e);
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     public void onToggleSprint(PlayerJumpEvent e){
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         if (xrpgPlayer != null){
