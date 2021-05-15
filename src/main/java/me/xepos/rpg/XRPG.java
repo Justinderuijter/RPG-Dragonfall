@@ -5,6 +5,7 @@ import me.xepos.rpg.commands.XRPGDebug;
 import me.xepos.rpg.commands.XRPGReload;
 import me.xepos.rpg.configuration.ClassLoader;
 import me.xepos.rpg.configuration.CraftLoader;
+import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.datatypes.BaseProjectileData;
@@ -49,6 +50,9 @@ public final class XRPG extends JavaPlugin {
     private String defaultClassId = null;
     private static HashMap<String, FileConfiguration> classData;
 
+    //Skills
+    private static HashMap<String, FileConfiguration> skillData;
+
     //Players
     private static final ConcurrentHashMap<UUID, XRPGPlayer> RPGPlayers = new ConcurrentHashMap<>();
 
@@ -60,6 +64,7 @@ public final class XRPG extends JavaPlugin {
         //Load classes
         this.saveDefaultConfig();
 
+        this.skillData = new SkillLoader(this).initializeSkills();
         this.classLoader = new ClassLoader(this);
         this.classLoader.checkClassFolder();
         this.classData = this.classLoader.initializeClasses();
@@ -128,7 +133,7 @@ public final class XRPG extends JavaPlugin {
 
     private void initEventListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(this, databaseManager), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(this, classLoader), this);
+        getServer().getPluginManager().registerEvents(new InventoryListener(this, classLoader, databaseManager), this);
         getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityListener(this), this);
     }
@@ -201,5 +206,9 @@ public final class XRPG extends JavaPlugin {
 
     public boolean useMana() {
         return this.getConfig().getBoolean("mana.enabled", false);
+    }
+
+    public FileConfiguration getSkillData(String skillId){
+        return skillData.get(skillId);
     }
 }

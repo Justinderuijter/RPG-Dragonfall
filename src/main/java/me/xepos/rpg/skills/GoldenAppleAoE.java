@@ -20,13 +20,13 @@ public class GoldenAppleAoE extends XRPGSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         this.GAppleAoE = GAppleAoE;
-        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this);
+        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     public GoldenAppleAoE(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this);
+        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class GoldenAppleAoE extends XRPGSkill {
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("CONSUME_ITEM").getSkills()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("CONSUME_ITEM").getSkills().values()) {
             if (skill instanceof EnchantedGoldenAppleAoE) {
                 this.GAppleAoE = (EnchantedGoldenAppleAoE) skill;
                 return;

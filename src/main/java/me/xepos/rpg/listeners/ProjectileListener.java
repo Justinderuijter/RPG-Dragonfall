@@ -6,6 +6,7 @@ import me.xepos.rpg.datatypes.ExplosiveProjectileData;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -68,11 +69,38 @@ public class ProjectileListener implements Listener {
                 }
 
                 //section exclusively for arrows.
-                if (projectileData.getDamageMultiplier() < 1.0) {
-                    if (e.getHitEntity() instanceof LivingEntity) {
-                        LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
+                if (e.getHitEntity() instanceof LivingEntity) {
+                    LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
+                    if (projectileData.getDamageMultiplier() < 1.0) {
+
 
                         livingEntity.setHealth(livingEntity.getHealth() * projectileData.getDamageMultiplier());
+
+                    }
+
+                    if (projectileData.getDamage() != 0){
+                        Utils.decreaseHealth(livingEntity, projectileData.getDamage());
+                    }
+
+                    if (projectileData.getHeadshotDamage() != 1.0) {
+                        if (projectile.getLocation().distance(livingEntity.getEyeLocation()) <= 0.25){
+                            Arrow arrow = (Arrow) projectile;
+                            double damage = arrow.getDamage() * projectileData.getHeadshotDamage();
+                            double damageDifference = damage - arrow.getDamage();
+                            arrow.setDamage(damage);
+
+                            ((Player) arrow.getShooter()).sendMessage(ChatColor.DARK_GREEN + "You headshot " + e.getHitEntity().getName() + " and dealt " + damageDifference + " bonus damage!");
+                        }
+                    }
+
+                    if (projectileData.shouldDisengage()){
+                        Player shooter = (Player) projectile.getShooter();
+                        if (shooter.getLocation().distanceSquared(livingEntity.getLocation()) <= projectileData.getMaxDisengageDistance() * projectileData.getMaxDisengageDistance()){
+
+                            Vector unitVector = shooter.getLocation().toVector().subtract(livingEntity.getLocation().toVector()).normalize();
+
+                            shooter.setVelocity(unitVector.multiply(1.5));
+                        }
                     }
                 }
 

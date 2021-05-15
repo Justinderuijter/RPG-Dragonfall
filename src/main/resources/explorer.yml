@@ -13,5 +13,4 @@ allow-bow: true
 allow-shield: true
 
 skills:
-  Nimble:
-    speed-multiplier: 1.5
+  - "Nimble"

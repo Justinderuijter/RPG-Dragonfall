@@ -122,7 +122,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
                     String classId = getClassId(playerId);
                     plugin.getClassData().keySet().forEach(x -> Bukkit.getLogger().severe(x));
                     XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, classId);
-                    classLoader.load(classId, xrpgPlayer);
+                    //classLoader.loadClass(classId, xrpgPlayer);
                     xrpgPlayer.setFreeChangeTickets(results.getInt("tickets"));
                     return xrpgPlayer;
                 }

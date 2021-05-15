@@ -1,0 +1,7 @@
+name: "Lotus Strike"
+required-items:
+  - AIR
+duration: 6
+enchant-to-crit-ratio: 3.125
+enchant-to-fire-ticks: 15
+enchant-to-lotus-haste-ratio: 2.0

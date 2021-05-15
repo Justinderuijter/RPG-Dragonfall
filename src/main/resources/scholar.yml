@@ -13,6 +13,4 @@ allow-bow: true
 allow-shield: true
 
 skills:
-  Blessed:
-    multiplier: 1.25
-    mana-increase: 5
+  - "Blessed"

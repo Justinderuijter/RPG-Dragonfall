@@ -23,7 +23,7 @@ public class LotusStrike extends XRPGSkill {
     public LotusStrike(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     private final double potionDuration = getSkillVariables().getDouble("duration", 6);

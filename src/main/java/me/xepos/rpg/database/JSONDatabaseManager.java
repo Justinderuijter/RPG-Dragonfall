@@ -1,11 +1,11 @@
 package me.xepos.rpg.database;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.ClassLoader;
+import me.xepos.rpg.datatypes.PlayerData;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class JSONDatabaseManager implements IDatabaseManager {
     private final static XRPG plugin = XRPG.getPlugin(XRPG.class);
-    private final static String playerFolderName = "PlayerData";
+    private final static String playerFolderName = "playerdata";
 
     private static File playerDataFolder;
     public final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -42,13 +42,23 @@ public class JSONDatabaseManager implements IDatabaseManager {
                 //Reading Json file and turning it into a JsonObject
                 //so we can get specific elements
                 String data = FileUtils.readFileToString(playerFile, "UTF-8");
-                JsonObject jsonData = gson.fromJson(data, JsonObject.class);
+
+                PlayerData playerData = gson.fromJson(data, PlayerData.class);
+
+                XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, playerData);
+
+                classLoader.loadClass(playerData, xrpgPlayer);
+
+                plugin.addRPGPlayer(playerId, xrpgPlayer);
+
+
+/*                JsonObject jsonData = gson.fromJson(data, JsonObject.class);
                 //Extract the class from JsonObject
                 String classId = jsonData.get("classId").getAsString();
 
                 XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, classId);
                 classLoader.load(classId, xrpgPlayer);
-                plugin.addRPGPlayer(playerId, xrpgPlayer);
+                plugin.addRPGPlayer(playerId, xrpgPlayer);*/
 
             } catch (IOException ex) {
                 System.out.println("Couldn't load player data for " + playerId.toString() + ".json");
@@ -60,7 +70,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
         } else {
             String defaultClassId = plugin.getDefaultClassId();
             XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, defaultClassId);
-            classLoader.load(defaultClassId, xrpgPlayer);
+            classLoader.loadClass(new PlayerData(defaultClassId, 2, 0), xrpgPlayer);
             plugin.addRPGPlayer(playerId, xrpgPlayer);
         }
     }
@@ -68,14 +78,44 @@ public class JSONDatabaseManager implements IDatabaseManager {
     @Override
     @SuppressWarnings("all")
     public void savePlayerData(XRPGPlayer xrpgPlayer) {
-        String playerData = gson.toJson(xrpgPlayer);
-        File test = new File(playerDataFolder, xrpgPlayer.getPlayerId().toString() + ".json");
+        PlayerData extractedData = xrpgPlayer.extractData();
+        File dataFile = new File(playerDataFolder, xrpgPlayer.getPlayerId().toString() + ".json");
         try {
-            test.createNewFile();
-            FileWriter myWriter = new FileWriter(test);
-            myWriter.write(playerData);
+/*            dataFile.createNewFile();
+            FileWriter myWriter = new FileWriter(dataFile);
+            myWriter.write(dataToSave);
             myWriter.close();
-            System.out.println("Successfully wrote to the file.");
+            System.out.println("Successfully wrote to the file.");*/
+            if (!dataFile.exists()) {
+                dataFile.createNewFile();
+            }
+
+            String data = FileUtils.readFileToString(dataFile, "UTF-8");
+            FileWriter saveWriter = new FileWriter(dataFile);
+            String dataToSave;
+
+            if (StringUtils.isNotBlank(data)) {
+                PlayerData savedData = gson.fromJson(data, PlayerData.class);
+
+                //This looks confusing so to clear it up:
+                //1. We take the saved data
+                //2. We get the current class' class data from the extracted data
+                //3. We replace the value in the savedData if it exists, otherwise override it.
+                final String classId = extractedData.getClassId();
+                savedData.setClassId(classId);
+                savedData.addClassData(classId, extractedData.getClassData(classId));
+
+                //4. turn the new data to json and save it.
+                dataToSave = gson.toJson(savedData);
+
+            } else {
+                //Just save the extracted data if nothing exists.
+                dataToSave = gson.toJson(extractedData);
+            }
+
+            saveWriter.write(dataToSave);
+            saveWriter.close();
+
         } catch (IOException e) {
             System.out.println("An error occurred while trying to save player data.");
             e.printStackTrace();

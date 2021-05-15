@@ -19,12 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Aegis extends XRPGSkill {
-    private boolean isActive = false;
 
     public Aegis(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -44,6 +43,10 @@ public class Aegis extends XRPGSkill {
         Player player = (Player) e.getEntity();
         if (player.getInventory().getItemInOffHand().getType() == Material.SHIELD) {
 
+            if(!isSkillReady()){
+                return;
+            }
+
             final double duration = getSkillVariables().getDouble("duration", 4.0);
             final double xRange = getSkillVariables().getDouble("x-range", 8);
             final double yRange = getSkillVariables().getDouble("y-range", 5);
@@ -59,7 +62,7 @@ public class Aegis extends XRPGSkill {
                     Utils.addDTModifier(xrpgTarget, getName(), getDamageMultiplier());
                     target.sendMessage(player.getDisplayName() + " Granted you " + getSkillName() + "!");
 
-                    new RemoveDTModifierTask(player, xrpgTarget, this).runTaskLater(getPlugin(), (long) duration * 20);
+                    new RemoveDTModifierTask(player, xrpgTarget, this).runTaskLaterAsynchronously(getPlugin(), (long) duration * 20);
                 }
             }
             if (nearbyPlayers.size() > 0) {

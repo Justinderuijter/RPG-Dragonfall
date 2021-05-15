@@ -59,10 +59,10 @@ public class XRPGDebug implements CommandExecutor {
                                 player.sendMessage(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getClassId());
                             }
                             return true;
-                        case "skills":
+                        case "skilldata":
                             HashMap<String, EventHandler> handlers = plugin.getXRPGPlayer(player).getHandlerList();
                             for (String handlerName : handlers.keySet()) {
-                                for (XRPGSkill skill : handlers.get(handlerName).getSkills()) {
+                                for (XRPGSkill skill : handlers.get(handlerName).getSkills().values()) {
                                     player.sendMessage(skill.getName());
                                 }
                             }

@@ -32,9 +32,9 @@ public class Nimble extends XRPGSkill {
         setRemainingCooldown(-1);
 
         //Initializing triggers for this skill
-        xrpgPlayer.getEventHandler("JUMP").addSkill(this);
-        xrpgPlayer.getEventHandler("SPRINT").addSkill(this);
-        xrpgPlayer.getEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").addSkill(this);
+        xrpgPlayer.getEventHandler("JUMP").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getEventHandler("SPRINT").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

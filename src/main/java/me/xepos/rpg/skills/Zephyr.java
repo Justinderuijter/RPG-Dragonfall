@@ -24,13 +24,13 @@ public class Zephyr extends XRPGSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         this.fireballStackData = fireballStackData;
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     public Zephyr(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class Zephyr extends XRPGSkill {
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("RIGHT_CLICK").getSkills()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("RIGHT_CLICK").getSkills().values()) {
             if (skill instanceof Fireball) {
                 this.fireballStackData = ((Fireball) skill).getFireballStackData();
                 return;

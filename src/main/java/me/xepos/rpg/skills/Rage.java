@@ -48,7 +48,7 @@ public class Rage extends XRPGSkill {
         AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, mod.getName(), mod, Attribute.GENERIC_ATTACK_SPEED);
 
         setRemainingCooldown(-1);
-        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

@@ -14,7 +14,7 @@ public class Reflect extends XRPGSkill {
     public Reflect(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

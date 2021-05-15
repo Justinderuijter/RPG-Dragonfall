@@ -15,7 +15,7 @@ public class StaggeringPush extends XRPGSkill {
     public StaggeringPush(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -23,7 +23,6 @@ public class StaggeringPush extends XRPGSkill {
         if (!(event instanceof EntityDamageByEntityEvent)) return;
         EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
         Player player = (Player) e.getDamager();
-        if (!player.isSprinting()) return;
         if (!isSkillReady()) {
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;

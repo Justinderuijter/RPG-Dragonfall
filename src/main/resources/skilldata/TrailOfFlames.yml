@@ -1,0 +1,6 @@
+name: "Trail of Flames"
+damage: 4.0
+interval: 0.5
+max-ticks: 10
+ignore-villagers: true
+cooldown: 12.0

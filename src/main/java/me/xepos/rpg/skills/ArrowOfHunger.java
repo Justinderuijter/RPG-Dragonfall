@@ -2,7 +2,6 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,7 +18,7 @@ public class ArrowOfHunger extends XRPGBowSkill {
     public ArrowOfHunger(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this);
+        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -27,7 +26,6 @@ public class ArrowOfHunger extends XRPGBowSkill {
         if (!(event instanceof EntityShootBowEvent)) return;
         EntityShootBowEvent e = (EntityShootBowEvent) event;
         if (!(e.getProjectile() instanceof Arrow)) return;
-        if (((ShootBowEventHandler) getXRPGPlayer().getEventHandler("SHOOT_BOW")).getCurrentSkill() != this) return;
 
         if (!isSkillReady()) {
             e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));

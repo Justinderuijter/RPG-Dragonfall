@@ -1,18 +1,13 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.datatypes.AttributeModifierData;
-import me.xepos.rpg.enums.ModifierType;
+import me.xepos.rpg.datatypes.ClassData;
+import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.handlers.EventHandler;
-import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.IFollowerContainer;
 import me.xepos.rpg.skills.base.XRPGSkill;
-import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class XRPGPlayer {
@@ -32,7 +27,16 @@ public class XRPGPlayer {
     private transient boolean isStunned = false;
     private transient long lastStunTime = 0;
 
+    public XRPGPlayer(UUID playerId, PlayerData playerData){
+        this.player = null;
+        this.playerId = playerId;
+        this.classId = playerData.getClassId();
+        this.lastClassChangeTime = playerData.getLastClassChange();
+        this.freeChangeTickets = playerData.getFreeChangeTickets();
+    }
+
     //Constructor for loading profiles
+    @Deprecated
     public XRPGPlayer(UUID playerId, String classId) {
         this.player = null;
         this.playerId = playerId;
@@ -40,7 +44,7 @@ public class XRPGPlayer {
         this.lastClassChangeTime = 0;
     }
 
-
+    @Deprecated
     public XRPGPlayer(Player player, String classId) {
         this.player = player;
         this.playerId = player.getUniqueId();
@@ -68,7 +72,7 @@ public class XRPGPlayer {
         put("DAMAGE_TAKEN_ENVIRONMENTAL", new EventHandler());
 
         //Bow Handlers
-        put("SHOOT_BOW", new ShootBowEventHandler());
+        put("SHOOT_BOW", new EventHandler());
 
         //Movement Handlers
         put("SPRINT", new EventHandler());
@@ -151,11 +155,6 @@ public class XRPGPlayer {
     public void resetClassData(String classId, String classDisplayName) {
         if (classId == null || classId.equals("")) return;
 
-        AttributeModifierManager manager = AttributeModifierManager.getInstance();
-        for (String id:manager.getModifiers(ModifierType.POSITIVE).keySet()) {
-            Utils.removeUniqueModifier(getPlayer(), manager.get(ModifierType.POSITIVE, id));
-        }
-
         this.classId = classId;
         this.classDisplay = classDisplayName;
 
@@ -225,6 +224,10 @@ public class XRPGPlayer {
         return lastClassChangeTime;
     }
 
+    public void setLastClassChangeTime(long lastClassChangeTime) {
+        this.lastClassChangeTime = lastClassChangeTime;
+    }
+
     //////////////////////////////////
     //                              //
     //  Handlers getters & setters  //
@@ -241,5 +244,23 @@ public class XRPGPlayer {
 
     public void addEventHandler(String handlerName, EventHandler handler) {
         this.handlerList.put(handlerName.toUpperCase(), handler);
+    }
+
+    //////////////////////////////////
+    //                              //
+    //             Data             //
+    //                              //
+    //////////////////////////////////
+
+    public PlayerData extractData(){
+        Set<String> skills = new HashSet<>();
+        for (EventHandler handler:handlerList.values()) {
+            skills.addAll(handler.getSkills().keySet());
+        }
+
+        PlayerData playerData = new PlayerData(this.classId, this.freeChangeTickets, this.lastClassChangeTime);
+        playerData.addClassData(this.classId, new ClassData(this.getPlayer().getHealth(), skills));
+
+        return playerData;
     }
 }
