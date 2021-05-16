@@ -218,6 +218,14 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent e){
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
+        if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()){
+            e.setCancelled(true);
+        }
+    }
+
     private void doBowCycle(ItemStack item, XRPGPlayer xrpgPlayer) {
         if (item != null && item.getType() == Material.BOW) {
             //xrpgPlayer.getEventHandler("SHOOT_BOW").next();
