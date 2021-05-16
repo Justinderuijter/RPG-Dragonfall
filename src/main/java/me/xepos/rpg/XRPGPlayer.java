@@ -2,6 +2,7 @@ package me.xepos.rpg;
 
 import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.PlayerData;
+import me.xepos.rpg.handlers.ActiveEventHandler;
 import me.xepos.rpg.handlers.EventHandler;
 import me.xepos.rpg.skills.base.IFollowerContainer;
 import me.xepos.rpg.skills.base.XRPGSkill;
@@ -20,7 +21,7 @@ public class XRPGPlayer {
     private String classId;
     private int freeChangeTickets = 2;
     private boolean spellCastModeEnabled = false;
-    private Set<String> spellKeybinds = new HashSet<>();
+    private List<String> spellKeybinds = new ArrayList<>();
 
     //Status Effects
     public transient ConcurrentHashMap<String, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
@@ -57,6 +58,7 @@ public class XRPGPlayer {
     //For convenience
     private transient List<IFollowerContainer> followerSkills = new ArrayList<>();
 
+    private transient ActiveEventHandler activeHandler = new ActiveEventHandler(this);
     private final transient HashMap<String, EventHandler> handlerList = new HashMap<String, EventHandler>() {{
         //Interact Handlers
         put("RIGHT_CLICK", new EventHandler());
@@ -81,6 +83,7 @@ public class XRPGPlayer {
         put("JUMP", new EventHandler());
 
         //Other Handlers
+        put("SWAP_HELD_ITEM", new EventHandler());
         put("HEALTH_REGEN", new EventHandler());
         put("CONSUME_ITEM", new EventHandler());
 
@@ -238,22 +241,30 @@ public class XRPGPlayer {
         this.spellCastModeEnabled = spellCastModeEnabled;
     }
 
+    public String getSkillForSlot(int slotId){
+        return spellKeybinds.get(slotId);
+    }
+
     //////////////////////////////////
     //                              //
     //  Handlers getters & setters  //
     //                              //
     //////////////////////////////////
 
-    public EventHandler getEventHandler(String handlerName) {
+    public EventHandler getPassiveEventHandler(String handlerName) {
         return handlerList.get(handlerName.toUpperCase());
     }
 
-    public HashMap<String, EventHandler> getHandlerList() {
+    public HashMap<String, EventHandler> getPassiveHandlerList() {
         return handlerList;
     }
 
-    public void addEventHandler(String handlerName, EventHandler handler) {
+    public void addPassiveEventHandler(String handlerName, EventHandler handler) {
         this.handlerList.put(handlerName.toUpperCase(), handler);
+    }
+
+    public ActiveEventHandler getActiveHandler(){
+        return activeHandler;
     }
 
     //////////////////////////////////
@@ -274,11 +285,11 @@ public class XRPGPlayer {
         return playerData;
     }
 
-    public Set<String> getSpellKeybinds() {
+    public List<String> getSpellKeybinds() {
         return spellKeybinds;
     }
 
-    public void setSpellKeybinds(Set<String> spellKeybinds) {
+    public void setSpellKeybinds(List<String> spellKeybinds) {
         this.spellKeybinds = spellKeybinds;
     }
 }

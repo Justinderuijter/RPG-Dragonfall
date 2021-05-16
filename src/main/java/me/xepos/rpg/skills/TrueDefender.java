@@ -3,7 +3,6 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
-import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,6 +12,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class TrueDefender extends XRPGActiveSkill {
     private boolean isActive = false;
@@ -20,7 +20,7 @@ public class TrueDefender extends XRPGActiveSkill {
     public TrueDefender(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this.getClass().getSimpleName(), this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -38,9 +38,9 @@ public class TrueDefender extends XRPGActiveSkill {
                 ((EntityDamageEvent) event).setCancelled(true);
 
             }
-        } else if (event instanceof PlayerInteractEvent){
+        } else if (event instanceof PlayerItemHeldEvent){
 
-            PlayerInteractEvent e = (PlayerInteractEvent) event;
+            PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
             if (!isSkillReady()){
                 e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 return;

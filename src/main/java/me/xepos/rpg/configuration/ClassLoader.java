@@ -50,6 +50,7 @@ public class ClassLoader {
                     add("sentinel.yml");
                     add("explorer.yml");
                     add("scholar.yml");
+                    add("debugClass1.yml");
                     //add("assassin");
                     //add("bard");
                     //add("brawler");
@@ -111,8 +112,8 @@ public class ClassLoader {
             }
 
             Bukkit.getLogger().info("Classloader: " + 5);
-            for (String handler : xrpgPlayer.getHandlerList().keySet()) {
-                xrpgPlayer.getEventHandler(handler).initialize();
+            for (String handler : xrpgPlayer.getPassiveHandlerList().keySet()) {
+                xrpgPlayer.getPassiveEventHandler(handler).initialize();
             }
             Bukkit.getLogger().info("Classloader: " + 6);
         });

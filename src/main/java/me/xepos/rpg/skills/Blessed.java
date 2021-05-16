@@ -2,9 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
-import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
@@ -13,7 +11,7 @@ public class Blessed extends XRPGPassiveSkill {
     public Blessed(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("HEALTH_REGEN").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("HEALTH_REGEN").addSkill(this.getClass().getSimpleName() ,this);
         xrpgPlayer.setMaximumMana(xrpgPlayer.getMaximumMana() + getSkillVariables().getInt("mana-increase", 5));
     }
 

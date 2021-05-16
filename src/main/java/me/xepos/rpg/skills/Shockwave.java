@@ -3,7 +3,6 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
-import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -12,19 +11,20 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.util.BlockIterator;
 
 public class Shockwave extends XRPGActiveSkill {
     public Shockwave(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName(), this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
     public void activate(Event event) {
-        if (event instanceof PlayerInteractEvent){
-            PlayerInteractEvent e = (PlayerInteractEvent) event;
+        if (event instanceof PlayerItemHeldEvent){
+            PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
 
             Player player = e.getPlayer();
 

@@ -6,7 +6,6 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
-import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tasks.RavagerRageTask;
 import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
@@ -49,7 +48,7 @@ public class Rage extends XRPGPassiveSkill {
         AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, mod.getName(), mod, Attribute.GENERIC_ATTACK_SPEED);
 
         setRemainingCooldown(-1);
-        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

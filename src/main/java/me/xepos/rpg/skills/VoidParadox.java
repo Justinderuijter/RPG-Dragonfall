@@ -3,7 +3,6 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
-import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tasks.ShowPlayerTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
@@ -14,6 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.util.RayTraceResult;
 
 public class VoidParadox extends XRPGActiveSkill {
@@ -21,19 +21,16 @@ public class VoidParadox extends XRPGActiveSkill {
     public VoidParadox(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
     public void activate(Event event) {
-        if (!hasCastItem()) return;
-        if (!(event instanceof PlayerInteractEvent)) return;
-        PlayerInteractEvent e = (PlayerInteractEvent) event;
-        if (e.getItem() == null || e.getItem().getType() != Material.ENCHANTED_BOOK) return;
+        if (!(event instanceof PlayerItemHeldEvent)) return;
+        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
 
-        if (Utils.isItemNameMatching(e.getItem(), "Book of Darkness")) {
-            doVoidParadox(e.getPlayer());
-        }
+        doVoidParadox(e.getPlayer());
+
     }
 
     @Override

@@ -17,6 +17,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -30,28 +31,26 @@ public class Shatter extends XRPGActiveSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         this.fireballStackData = fireballStackData;
-        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
     public Shatter(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
     public void activate(Event event) {
-        if (!hasCastItem()) return;
-        if (!(event instanceof PlayerInteractEvent)) return;
-        PlayerInteractEvent e = (PlayerInteractEvent) event;
-        if (e.getItem() == null || e.getItem().getType() != Material.STICK) return;
+        if (!(event instanceof PlayerItemHeldEvent)) return;
+        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
 
         doShatter(e);
     }
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("RIGHT_CLICK").getSkills().values()) {
+        for (XRPGSkill skill : getXRPGPlayer().getPassiveEventHandler("RIGHT_CLICK").getSkills().values()) {
             if (skill instanceof Fireball) {
                 this.fireballStackData = ((Fireball) skill).getFireballStackData();
                 return;
@@ -59,7 +58,7 @@ public class Shatter extends XRPGActiveSkill {
         }
     }
 
-    private void doShatter(PlayerInteractEvent e) {
+    private void doShatter(PlayerItemHeldEvent e) {
         if (!isSkillReady()) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
@@ -80,7 +79,7 @@ public class Shatter extends XRPGActiveSkill {
         setRemainingCooldown(getCooldown() - fireBallStacks);
     }
 
-    public void shatterLogic(PlayerInteractEvent e, LivingEntity livingEntity) {
+    public void shatterLogic(PlayerItemHeldEvent e, LivingEntity livingEntity) {
 
         final double duration = getSkillVariables().getDouble("duration", 4);
         PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, (int) (duration * 20), 1, false, false, false);

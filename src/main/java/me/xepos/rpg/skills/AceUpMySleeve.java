@@ -3,7 +3,6 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
-import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
@@ -17,7 +16,7 @@ public class AceUpMySleeve extends XRPGPassiveSkill {
     public AceUpMySleeve(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("SHOOT_BOW").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -31,7 +30,6 @@ public class AceUpMySleeve extends XRPGPassiveSkill {
             List<String> enchants = getSkillVariables().getStringList("enchantments");
             String enchant = enchants.get(ThreadLocalRandom.current().nextInt(enchants.size()));
 
-            //TODO: Add effects, awaiting information
             switch(enchant.toUpperCase()){
                 case "POWER":
                     arrow.setDamage(arrow.getDamage() * 1.5);

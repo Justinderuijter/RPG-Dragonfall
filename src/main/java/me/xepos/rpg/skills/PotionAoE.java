@@ -3,7 +3,7 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
-import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -15,12 +15,12 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PotionAoE extends XRPGActiveSkill {
+public class PotionAoE extends XRPGPassiveSkill {
 
     public PotionAoE(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("CONSUME_ITEM").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

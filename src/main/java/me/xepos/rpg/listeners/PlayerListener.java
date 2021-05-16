@@ -45,7 +45,7 @@ public class PlayerListener implements Listener {
                     if (xrpgPlayer.isStunned())
                         e.setCancelled(true);
                     else
-                        xrpgPlayer.getEventHandler("DAMAGE_DEALT").invoke(e);
+                        xrpgPlayer.getPassiveEventHandler("DAMAGE_DEALT").invoke(e);
                 }
 
                 if (e.getEntity() instanceof Player) {
@@ -54,7 +54,7 @@ public class PlayerListener implements Listener {
 
                     e.setDamage(e.getDamage() * xrpgPlayer.getDamageTakenMultiplier());
 
-                    xrpgPlayer.getEventHandler("DAMAGE_TAKEN").invoke(e);
+                    xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").invoke(e);
 
                 }
 
@@ -62,7 +62,7 @@ public class PlayerListener implements Listener {
                 Player player = (Player) event.getEntity();
                 XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
 
-                xrpgPlayer.getEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").invoke(event);
+                xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").invoke(event);
             }
         }
     }
@@ -107,7 +107,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerConsumeItem(PlayerItemConsumeEvent e) {
         Player player = e.getPlayer();
-        plugin.getXRPGPlayer(player).getEventHandler("CONSUME_ITEM");
+        plugin.getXRPGPlayer(player).getPassiveEventHandler("CONSUME_ITEM");
     }
 
     @EventHandler
@@ -129,9 +129,9 @@ public class PlayerListener implements Listener {
             }
 
             if (e.getPlayer().isSneaking()) {
-                xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").invoke(e);
+                xrpgPlayer.getPassiveEventHandler("SNEAK_RIGHT_CLICK").invoke(e);
             } else {
-                xrpgPlayer.getEventHandler("RIGHT_CLICK").invoke(e);
+                xrpgPlayer.getPassiveEventHandler("RIGHT_CLICK").invoke(e);
             }
 
         } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
@@ -139,9 +139,9 @@ public class PlayerListener implements Listener {
             doBowCycle(e.getItem(), xrpgPlayer);
 
             if (e.getPlayer().isSneaking()) {
-                xrpgPlayer.getEventHandler("SNEAK_LEFT_CLICK").invoke(e);
+                xrpgPlayer.getPassiveEventHandler("SNEAK_LEFT_CLICK").invoke(e);
             } else {
-                xrpgPlayer.getEventHandler("LEFT_CLICK").invoke(e);
+                xrpgPlayer.getPassiveEventHandler("LEFT_CLICK").invoke(e);
             }
         }
 
@@ -151,17 +151,18 @@ public class PlayerListener implements Listener {
     public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         if (e.getPlayer().isSneaking()) {
-            xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK_ENTITY").invoke(e);
+            xrpgPlayer.getPassiveEventHandler("SNEAK_RIGHT_CLICK_ENTITY").invoke(e);
         } else {
-            xrpgPlayer.getEventHandler("RIGHT_CLICK_ENTITY").invoke(e);
+            xrpgPlayer.getPassiveEventHandler("RIGHT_CLICK_ENTITY").invoke(e);
         }
     }
 
+    @EventHandler
     public void onHealthRegen(EntityRegainHealthEvent e){
         if (!(e.getEntity() instanceof Player)) return;
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getEntity().getUniqueId());
         if (xrpgPlayer != null){
-            xrpgPlayer.getEventHandler("HEALTH_REGEN").invoke(e);
+            xrpgPlayer.getPassiveEventHandler("HEALTH_REGEN").invoke(e);
         }
     }
 
@@ -187,7 +188,7 @@ public class PlayerListener implements Listener {
                 e.setCancelled(true);
                 return;
             }
-            xrpgPlayer.getEventHandler("SHOOT_BOW").invoke(e);
+            xrpgPlayer.getPassiveEventHandler("SHOOT_BOW").invoke(e);
         }
     }
 
@@ -195,30 +196,31 @@ public class PlayerListener implements Listener {
     public void onToggleSprint(PlayerToggleSprintEvent e){
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         if (xrpgPlayer != null){
-            xrpgPlayer.getEventHandler("SPRINT").invoke(e);
+            xrpgPlayer.getPassiveEventHandler("SPRINT").invoke(e);
         }
     }
 
     @EventHandler
     public void onSwapHeldItem(PlayerItemHeldEvent e){
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
+        e.getPlayer().sendMessage("Triggered: " + e.getNewSlot());
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()){
-            xrpgPlayer.getEventHandler("SWAP_HELD_ITEM").invoke(e);
+            xrpgPlayer.getActiveHandler().invoke(e);
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onToggleSprint(PlayerJumpEvent e){
+    public void onPlayerJump(PlayerJumpEvent e){
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         if (xrpgPlayer != null){
-            xrpgPlayer.getEventHandler("JUMP").invoke(e);
+            xrpgPlayer.getPassiveEventHandler("JUMP").invoke(e);
         }
     }
 
     private void doBowCycle(ItemStack item, XRPGPlayer xrpgPlayer) {
         if (item != null && item.getType() == Material.BOW) {
-            xrpgPlayer.getEventHandler("SHOOT_BOW").next();
+            //xrpgPlayer.getEventHandler("SHOOT_BOW").next();
         }
     }
 

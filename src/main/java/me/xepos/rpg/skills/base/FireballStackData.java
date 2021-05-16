@@ -20,8 +20,8 @@ public class FireballStackData extends XRPGPassiveSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         setRemainingCooldown(-1);
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
-        xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("SNEAK_RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

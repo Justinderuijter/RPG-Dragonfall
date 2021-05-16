@@ -1,6 +1,7 @@
 package me.xepos.rpg;
 
 import me.xepos.rpg.commands.ChangeClassCommand;
+import me.xepos.rpg.commands.ToggleSpellCommand;
 import me.xepos.rpg.commands.XRPGDebug;
 import me.xepos.rpg.commands.XRPGReload;
 import me.xepos.rpg.configuration.ClassLoader;
@@ -91,6 +92,7 @@ public final class XRPG extends JavaPlugin {
         this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this, classData));
         this.getCommand("xrpgreload").setExecutor(new XRPGReload());
         this.getCommand("changeclass").setExecutor(new ChangeClassCommand(this, inventoryGUI));
+        this.getCommand("spellmode").setExecutor(new ToggleSpellCommand(this));
         System.out.println("RPG classes loaded!");
 
         for (Player player : Bukkit.getOnlinePlayers()) {

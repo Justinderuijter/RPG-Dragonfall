@@ -15,6 +15,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class Fireball extends XRPGActiveSkill {
     private final FireballStackData fireballStackData;
@@ -23,14 +24,13 @@ public class Fireball extends XRPGActiveSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         fireballStackData = new FireballStackData(xrpgPlayer, skillVariables, plugin);
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
     public void activate(Event event) {
-        if (!hasCastItem()) return;
-        if (!(event instanceof PlayerInteractEvent)) return;
-        PlayerInteractEvent e = (PlayerInteractEvent) event;
+        if (!(event instanceof PlayerItemHeldEvent)) return;
+        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
 
         doFireball(e);
     }
@@ -40,7 +40,7 @@ public class Fireball extends XRPGActiveSkill {
 
     }
 
-    private void doFireball(PlayerInteractEvent e) {
+    private void doFireball(PlayerItemHeldEvent e) {
         //Cancel if skill is still on cooldown and send a message.
         if (!isSkillReady()) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));

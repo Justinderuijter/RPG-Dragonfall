@@ -11,6 +11,8 @@ import org.bukkit.event.Event;
 public class DisengagingShot extends XRPGActiveSkill {
     public DisengagingShot(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
+
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

@@ -13,6 +13,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 public class RapidFire extends XRPGActiveSkill {
     public RapidFire(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
+
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

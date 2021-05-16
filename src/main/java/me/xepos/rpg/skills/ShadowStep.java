@@ -3,7 +3,6 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
-import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -13,6 +12,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
@@ -30,14 +30,14 @@ public class ShadowStep extends XRPGActiveSkill {
     public ShadowStep(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
 
     @Override
     public void activate(Event event) {
-        if (event instanceof PlayerInteractEvent) {
-            doSub((PlayerInteractEvent) event);
+        if (event instanceof PlayerItemHeldEvent) {
+            doSub((PlayerItemHeldEvent) event);
         }
     }
 
@@ -72,7 +72,7 @@ public class ShadowStep extends XRPGActiveSkill {
         }
     }
 
-    private void doSub(PlayerInteractEvent e) {
+    private void doSub(PlayerItemHeldEvent e) {
         if (!hasCastItem()) return;
         Player player = e.getPlayer();
         if (substitute == null) {
