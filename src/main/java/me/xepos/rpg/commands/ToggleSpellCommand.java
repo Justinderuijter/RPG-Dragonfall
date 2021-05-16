@@ -18,6 +18,8 @@ public class ToggleSpellCommand implements TabExecutor {
     private final List<String> completions = new ArrayList<String>(){{
         add("on");
         add("off");
+        add("enable");
+        add("disable");
         add("toggle");
         add("status");
     }};
@@ -41,9 +43,11 @@ public class ToggleSpellCommand implements TabExecutor {
 
             switch (strings[0].toLowerCase()) {
                 case "on":
+                case "enable":
                     xrpgPlayer.setSpellCastModeEnabled(true);
                     return true;
                 case "off":
+                case "disable":
                     xrpgPlayer.setSpellCastModeEnabled(false);
                     return true;
                 case "toggle":

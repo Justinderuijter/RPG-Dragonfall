@@ -76,6 +76,7 @@ public class XRPGDebug implements CommandExecutor {
                                 player.sendMessage(counter + ": " + name);
                                 counter++;
                             }
+                            return true;
                         case "classes":
                             for (String classId : classData.keySet()) {
                                 player.sendMessage(classId);
