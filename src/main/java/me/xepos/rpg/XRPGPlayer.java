@@ -163,6 +163,11 @@ public class XRPGPlayer {
         this.classId = classId;
         this.classDisplay = classDisplayName;
 
+        //Clearing keybinds
+        spellKeybinds.clear();
+
+        //Clearing skills
+        activeHandler.getSkills().clear();
         for (EventHandler handler : handlerList.values()) {
             handler.clear();
         }

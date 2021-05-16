@@ -40,7 +40,7 @@ public class Souldraw extends XRPGActiveSkill {
             double range = getSkillVariables().getDouble("range", 16);
 
             RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
-            if (result.getHitEntity() != null) {
+            if (result != null && result.getHitEntity() != null) {
                 double healRatio = getSkillVariables().getDouble("heal-per-damage", 0.5);
 
                 LivingEntity target = (LivingEntity) result.getHitEntity();

@@ -37,9 +37,9 @@ public class ActiveEventHandler implements IEventHandler{
     }
 
     public void invoke(PlayerItemHeldEvent e) {
-        if(xrpgPlayer.getSpellKeybinds().size() >= e.getNewSlot()) {
-            xrpgPlayer.getPlayer().sendMessage(xrpgPlayer.getSkillForSlot(e.getNewSlot()) + "should activate");
-            skills.get(xrpgPlayer.getSkillForSlot(e.getNewSlot())).activate(e);
+        final int slot = e.getNewSlot();
+        if(xrpgPlayer.getSpellKeybinds().size() > slot && slot < 7) {
+            skills.get(xrpgPlayer.getSkillForSlot(slot)).activate(e);
         }
     }
 

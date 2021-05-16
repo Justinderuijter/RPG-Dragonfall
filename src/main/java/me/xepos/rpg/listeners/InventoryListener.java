@@ -36,9 +36,17 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onItemClick(InventoryClickEvent e) {
+        Player player = (Player) e.getWhoClicked();
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
+
         if (e.getView().getTitle().equalsIgnoreCase("Pick A Class")) {
             if (e.getCurrentItem() == null)
                 return;
+
+            if (xrpgPlayer == null){
+                e.setCancelled(true);
+                return;
+            }
 
             ItemMeta meta = e.getCurrentItem().getItemMeta();
             if (meta != null) {
@@ -49,9 +57,6 @@ public class InventoryListener implements Listener {
                     e.setCancelled(true);
                     return;
                 }
-
-                Player player = (Player) e.getWhoClicked();
-                XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
 
                 if (xrpgPlayer.getFreeChangeTickets() <= 0) {
                     player.sendMessage(ChatColor.RED + "You don't have enough tickets!");
@@ -83,7 +88,9 @@ public class InventoryListener implements Listener {
 
             e.setCancelled(true);
         } else /*if(e.getInventory() instanceof PlayerInventory)*/ {
-            if (e.getSlot() == 40 && e.getCursor().getType() == Material.SHIELD) {
+            if (xrpgPlayer == null) return;
+
+            if (e.getSlot() == 40 && e.getCursor().getType() == Material.SHIELD && !xrpgPlayer.isShieldAllowed()) {
                 e.getWhoClicked().sendMessage("Can't use shield");
                 e.setCancelled(true);
             }
@@ -104,7 +111,13 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onItemSwap(final PlayerSwapHandItemsEvent e) {
-        if (!plugin.getXRPGPlayer(e.getPlayer()).isShieldAllowed() && e.getOffHandItem().getType() == Material.SHIELD) {
+        final XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
+
+        if (xrpgPlayer == null) return;
+
+        if (!xrpgPlayer.isShieldAllowed() && e.getOffHandItem().getType() == Material.SHIELD) {
+            e.setCancelled(true);
+        } else if(xrpgPlayer.isSpellCastModeEnabled()){
             e.setCancelled(true);
         }
     }

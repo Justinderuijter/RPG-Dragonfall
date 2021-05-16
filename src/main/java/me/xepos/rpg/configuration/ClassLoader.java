@@ -87,13 +87,11 @@ public class ClassLoader {
                 if (classConfig == null) return; //Default returned null too
             }
 
-            Bukkit.getLogger().info("Classloader: " + 1);
             //Change class clears all handlers, after that we set skills
             xrpgPlayer.setShieldAllowed(classConfig.getBoolean("allow-shield", true));
 
             xrpgPlayer.resetClassData(classId, plugin.getFileConfiguration(classId).getString("display.name", "???"));
 
-            Bukkit.getLogger().info("Classloader: " + 2);
             List<String> skills = classConfig.getStringList("skills");
 
             Set<String> addedSkills = new HashSet<>();
@@ -111,17 +109,14 @@ public class ClassLoader {
                 }
             }
 
-            Bukkit.getLogger().info("Classloader: " + 5);
             for (String handler : xrpgPlayer.getPassiveHandlerList().keySet()) {
                 xrpgPlayer.getPassiveEventHandler(handler).initialize();
             }
-            Bukkit.getLogger().info("Classloader: " + 6);
         });
     }
 
     private boolean addSkill(String skillId, XRPGPlayer xrpgPlayer){
         try {
-            Bukkit.getLogger().info("Classloader: " + 4);
             Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
             Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
 
@@ -138,7 +133,6 @@ public class ClassLoader {
     public void loadPlayerSkills(ClassData data, XRPGPlayer xrpgPlayer){
         for (String skillId:data.getSkills()) {
             try {
-                Bukkit.getLogger().info("Classloader: " + 4);
                 Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
                 Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
 

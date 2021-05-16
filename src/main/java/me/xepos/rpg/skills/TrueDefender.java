@@ -21,6 +21,8 @@ public class TrueDefender extends XRPGActiveSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -34,6 +36,7 @@ public class TrueDefender extends XRPGActiveSkill {
 
                 damager.setNoDamageTicks(0);
                 damager.damage(e.getDamage(), player);
+                e.setCancelled(true);
             } else if (event instanceof EntityDamageEvent) {
                 ((EntityDamageEvent) event).setCancelled(true);
 
