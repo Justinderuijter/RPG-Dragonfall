@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -32,10 +33,20 @@ public class TrueDefender extends XRPGActiveSkill {
                 EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 
                 Player player = (Player) e.getEntity();
-                LivingEntity damager = (LivingEntity) e.getDamager();
+                LivingEntity damager = null;
+                if (e.getDamager() instanceof Projectile){
+                    Projectile projectile = (Projectile) e.getDamager();
+                    if (projectile.getShooter() instanceof LivingEntity) {
+                        damager = (LivingEntity) projectile.getShooter();
+                    }
+                }else {
+                    damager = (LivingEntity) e.getDamager();
+                }
 
-                damager.setNoDamageTicks(0);
-                damager.damage(e.getDamage(), player);
+                if (damager != null) {
+                    damager.setNoDamageTicks(0);
+                    damager.damage(e.getDamage(), player);
+                }
                 e.setCancelled(true);
             } else if (event instanceof EntityDamageEvent) {
                 ((EntityDamageEvent) event).setCancelled(true);
