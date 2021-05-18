@@ -39,6 +39,8 @@ public class StaggeringPush extends XRPGActiveSkill {
 
             target.setVelocity(unitVector.multiply(1.5));
             target.damage(getDamage(), player);
+
+            setRemainingCooldown(getCooldown());
         }
     }
 

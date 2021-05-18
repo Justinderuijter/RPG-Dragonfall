@@ -83,6 +83,10 @@ public class XRPGDebug implements CommandExecutor {
                             }
 
                             return true;
+
+                        case "clear":
+                            plugin.getXRPGPlayer(player).getSpellKeybinds().clear();
+                            return true;
                         default:
                             return false;
                     }

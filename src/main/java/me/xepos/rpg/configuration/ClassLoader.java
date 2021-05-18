@@ -51,6 +51,7 @@ public class ClassLoader {
                     add("explorer.yml");
                     add("scholar.yml");
                     add("debugClass1.yml");
+                    add("debugClass2.yml");
                     //add("assassin");
                     //add("bard");
                     //add("brawler");

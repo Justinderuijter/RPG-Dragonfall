@@ -33,7 +33,7 @@ public class LeapOfFaith extends XRPGActiveSkill {
 
         RayTraceResult result = Utils.rayTrace(e.getPlayer(), 16, FluidCollisionMode.NEVER);
 
-        if (result.getHitEntity() != null){
+        if (result != null && result.getHitEntity() != null){
             LivingEntity entity = (LivingEntity) result.getHitEntity();
             Location loc = entity.getLocation();
             Location targetLoc = e.getPlayer().getLocation();

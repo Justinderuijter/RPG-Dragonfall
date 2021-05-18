@@ -1,0 +1,21 @@
+display:
+  name: "Skill Debugger"
+  icon: BARRIER
+  description:
+    - "A tanky melee class focused on survivability"
+    - "Call upon Aegis' to protect you and your allies"
+    - "Draw the attention of nearby mobs with your attacks"
+    - "medium damage, low mobility, high defense"
+
+default: false
+enabled: true
+allow-bow: true
+allow-shield: true
+
+skills:
+  - "Backstab"
+  - "LeapOfFaith"
+  - "Shockwave"
+  - "StaggeringPush"
+  - "TrueDefender"
+  - "Whirlwind"

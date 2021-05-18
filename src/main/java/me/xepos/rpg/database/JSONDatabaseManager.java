@@ -69,8 +69,9 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
         } else {
             String defaultClassId = plugin.getDefaultClassId();
-            XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, defaultClassId);
-            classLoader.loadClass(new PlayerData(defaultClassId, 2, 0), xrpgPlayer);
+            PlayerData data = new PlayerData(defaultClassId, 2, 0);
+            XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, data);
+            classLoader.loadClass(data, xrpgPlayer);
             plugin.addRPGPlayer(playerId, xrpgPlayer);
         }
     }

@@ -5,6 +5,7 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -33,16 +34,20 @@ public class Shockwave extends XRPGActiveSkill {
                 return;
             }
 
-            BlockIterator iter = new BlockIterator(player.getWorld(), player.getLocation().toVector(), player.getEyeLocation().toVector(), -2, 16);
+            BlockIterator iter = new BlockIterator(player.getWorld(), player.getLocation().toVector(), player.getLocation().getDirection().setY(0), -1, 16);
             Block lastBlock;
             while (iter.hasNext()) {
                 lastBlock = iter.next();
                 if (lastBlock.getType() == Material.AIR || lastBlock.isLiquid()) {
-                    continue;
+                    Block newBlock = lastBlock.getLocation().clone().subtract(0,1,0).getBlock();
+                    if(newBlock.getType() != Material.AIR && !newBlock.isLiquid()){
+                        lastBlock = newBlock;
+                    }else{
+                        break;
+                    }
                 }
-                lastBlock.getWorld().playEffect(lastBlock.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
+                lastBlock.getWorld().playEffect(lastBlock.getLocation(), Effect.MOBSPAWNER_FLAMES, 2);
             }
-
             setRemainingCooldown(getCooldown());
         }
     }

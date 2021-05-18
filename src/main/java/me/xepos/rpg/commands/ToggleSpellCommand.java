@@ -1,5 +1,6 @@
 package me.xepos.rpg.commands;
 
+import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import org.bukkit.command.Command;
@@ -13,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ToggleSpellCommand implements TabExecutor {
     private final XRPG plugin;
@@ -34,13 +34,13 @@ public class ToggleSpellCommand implements TabExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (command.getName().equalsIgnoreCase("spellmode") || command.getName().equalsIgnoreCase("sm")) {
             if (!(commandSender instanceof Player)) {
-                commandSender.sendMessage("This command can only be execute by players!");
+                commandSender.sendMessage("This command can only be executed by players!");
                 return true;
             }
-            if (strings.length > 1) return false;
+            if (strings.length != 1) return false;
 
-            UUID senderUUID = ((Player) commandSender).getUniqueId();
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(senderUUID);
+            Player player = (Player) commandSender;
+            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
             if (xrpgPlayer == null) {
                 return true;
             }
@@ -52,10 +52,12 @@ public class ToggleSpellCommand implements TabExecutor {
                     PlayerInventory inventory = xrpgPlayer.getPlayer().getInventory();
                     swapItems(inventory, 7);
                     inventory.setHeldItemSlot(7);
+                    PacketUtils.testingPacket(xrpgPlayer);
                     return true;
                 case "off":
                 case "disable":
                     xrpgPlayer.setSpellCastModeEnabled(false);
+                    player.updateInventory();
                     return true;
                 case "toggle":
                     xrpgPlayer.setSpellCastModeEnabled(!xrpgPlayer.isSpellCastModeEnabled());
@@ -73,9 +75,9 @@ public class ToggleSpellCommand implements TabExecutor {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         List<String> result = new ArrayList<>();
         if (strings.length == 1){
-            for (String input:strings) {
-                if (input.toLowerCase().startsWith(strings[0].toLowerCase())){
-                    result.add(input);
+            for (String tab:completions) {
+                if (tab.toLowerCase().startsWith(strings[0].toLowerCase())){
+                    result.add(tab);
                 }
             }
             return result;

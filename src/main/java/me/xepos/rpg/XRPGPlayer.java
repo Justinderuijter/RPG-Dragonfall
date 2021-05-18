@@ -36,6 +36,10 @@ public class XRPGPlayer {
         this.classId = playerData.getClassId();
         this.lastClassChangeTime = playerData.getLastClassChange();
         this.freeChangeTickets = playerData.getFreeChangeTickets();
+        this.spellKeybinds.clear();
+        //Need to check for null as this will be new for new players
+        if (playerData.getClassData(classId) != null)
+            this.spellKeybinds.addAll(playerData.getClassData(playerData.getClassId()).getKeyBindOrder());
     }
 
     //Constructor for loading profiles
@@ -65,10 +69,6 @@ public class XRPGPlayer {
         put("LEFT_CLICK", new EventHandler());
         put("SNEAK_RIGHT_CLICK", new EventHandler());
         put("SNEAK_LEFT_CLICK", new EventHandler());
-
-        //Interact Handlers (Entity)
-        put("RIGHT_CLICK_ENTITY", new EventHandler());
-        put("SNEAK_RIGHT_CLICK_ENTITY", new EventHandler());
 
         //Damage Handlers
         put("DAMAGE_DEALT", new EventHandler());
@@ -283,9 +283,12 @@ public class XRPGPlayer {
         for (EventHandler handler:handlerList.values()) {
             skills.addAll(handler.getSkills().keySet());
         }
+        skills.addAll(activeHandler.getSkills().keySet());
+
+        Set<String> keybindOrder = new HashSet<>(spellKeybinds);
 
         PlayerData playerData = new PlayerData(this.classId, this.freeChangeTickets, this.lastClassChangeTime);
-        playerData.addClassData(this.classId, new ClassData(this.getPlayer().getHealth(), skills));
+        playerData.addClassData(this.classId, new ClassData(this.getPlayer().getHealth(), skills, keybindOrder));
 
         return playerData;
     }

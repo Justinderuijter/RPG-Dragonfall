@@ -23,3 +23,8 @@ commands:
     usage: /<command> <on|off|toggle|status>
     aliases:
       - sm
+  spellbook:
+    description: open your spellbook
+    usage: /<command>
+    aliases:
+      - sb

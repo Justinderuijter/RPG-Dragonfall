@@ -7,7 +7,9 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.enums.ModifierType;
+import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -117,6 +119,17 @@ public class PlayerListener implements Listener {
         Player player = e.getPlayer();
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
 
+        if (xrpgPlayer == null) return;
+
+
+        if(xrpgPlayer.isSpellCastModeEnabled()){
+            Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.testingPacket(xrpgPlayer), 1);
+            if (player.getInventory().getHeldItemSlot() < xrpgPlayer.getSpellKeybinds().size()) {
+                e.setCancelled(true);
+                return;
+            }
+        }
+
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
             ItemStack item = e.getItem();
@@ -149,16 +162,6 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
-        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
-        if (e.getPlayer().isSneaking()) {
-            xrpgPlayer.getPassiveEventHandler("SNEAK_RIGHT_CLICK_ENTITY").invoke(e);
-        } else {
-            xrpgPlayer.getPassiveEventHandler("RIGHT_CLICK_ENTITY").invoke(e);
-        }
-    }
-
-    @EventHandler
     public void onHealthRegen(EntityRegainHealthEvent e){
         if (!(e.getEntity() instanceof Player)) return;
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getEntity().getUniqueId());
@@ -171,11 +174,11 @@ public class PlayerListener implements Listener {
     public void onProjectileLaunch(ProjectileLaunchEvent e) {
         if (e.getEntity().getShooter() instanceof Player) {
             Player player = (Player) e.getEntity().getShooter();
-            PlayerInventory inventory = player.getInventory();
+/*            PlayerInventory inventory = player.getInventory();
             if (inventory.getItemInMainHand().getItemMeta() != null && inventory.getItemInMainHand().getItemMeta().getPersistentDataContainer().has(plugin.getTagKey(), PersistentDataType.STRING)
                     || (inventory.getItemInOffHand().getItemMeta() != null && inventory.getItemInOffHand().getItemMeta().getPersistentDataContainer().has(plugin.getTagKey(), PersistentDataType.STRING))) {
                 e.setCancelled(true);
-            }
+            }*/
         }
     }
 
@@ -206,8 +209,10 @@ public class PlayerListener implements Listener {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         e.getPlayer().sendMessage("Triggered: " + e.getNewSlot());
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()){
-            xrpgPlayer.getActiveHandler().invoke(e);
-            e.setCancelled(true);
+            if (e.getNewSlot() < xrpgPlayer.getSpellKeybinds().size()) {
+                xrpgPlayer.getActiveHandler().invoke(e);
+                e.setCancelled(true);
+            }
         }
     }
 

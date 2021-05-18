@@ -43,7 +43,6 @@ public class Smokebomb extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!hasCastItem()) return;
         if (event instanceof PlayerInteractEvent) {
             PlayerInteractEvent e = (PlayerInteractEvent) event;
             if (e.getHand() == EquipmentSlot.OFF_HAND) {

@@ -63,7 +63,7 @@ public class CraftLoader {
             //Modifying item meta
             ItemMeta iconMeta = item.getItemMeta();
             iconMeta.setDisplayName(name);
-            iconMeta.getPersistentDataContainer().set(plugin.getTagKey(), PersistentDataType.STRING, tag);
+            //iconMeta.getPersistentDataContainer().set(plugin.getTagKey(), PersistentDataType.STRING, tag);
             item.setItemMeta(iconMeta);
 
             //Making recipe object and its id

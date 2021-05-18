@@ -39,7 +39,6 @@ public class LotusStrike extends XRPGPassiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!hasCastItem()) return;
         if (!(event instanceof EntityDamageByEntityEvent)) return;
         EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 

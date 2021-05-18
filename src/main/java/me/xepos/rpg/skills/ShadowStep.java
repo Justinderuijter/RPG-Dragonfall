@@ -73,7 +73,6 @@ public class ShadowStep extends XRPGActiveSkill {
     }
 
     private void doSub(PlayerItemHeldEvent e) {
-        if (!hasCastItem()) return;
         Player player = e.getPlayer();
         if (substitute == null) {
             if (!isSkillReady()) {
