@@ -108,29 +108,4 @@ public abstract class XRPGSkill {
         return skillVariables;
     }
 
-    protected boolean hasCastItem() {
-        String tag = skillVariables.getString("required-tag");
-        ItemStack item = xrpgPlayer.getPlayer().getInventory().getItemInMainHand();
-        if (tag != null) {
-            ItemMeta meta = item.getItemMeta();
-            if (meta == null) return false;
-
-            String itemTag = meta.getPersistentDataContainer().get(plugin.getTagKey(), PersistentDataType.STRING);
-
-            return itemTag != null && itemTag.equalsIgnoreCase(tag);
-
-        } else {
-            List<String> allowedItems = skillVariables.getStringList("required-items");
-            for (String itemName : allowedItems) {
-                //So axe doesn't trigger pickaxe etc
-                if (itemName.equalsIgnoreCase("axe")) {
-                    itemName = "_" + itemName;
-                }
-                if (item.getType().name().endsWith(itemName.toUpperCase())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
 }

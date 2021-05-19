@@ -2,24 +2,29 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 
-public class TrueDefender extends XRPGSkill {
+public class TrueDefender extends XRPGActiveSkill {
     private boolean isActive = false;
 
     public TrueDefender(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this.getClass().getSimpleName(), this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -29,17 +34,26 @@ public class TrueDefender extends XRPGSkill {
                 EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 
                 Player player = (Player) e.getEntity();
-                LivingEntity damager = (LivingEntity) e.getDamager();
+                LivingEntity damager = null;
+                if (e.getDamager() instanceof Projectile) {
+                    Projectile projectile = (Projectile) e.getDamager();
+                    if (projectile.getShooter() instanceof LivingEntity) {
+                        damager = (LivingEntity) projectile.getShooter();
+                    }
+                } else {
+                    damager = (LivingEntity) e.getDamager();
+                }
 
-                damager.setNoDamageTicks(0);
-                damager.damage(e.getDamage(), player);
-            } else if (event instanceof EntityDamageEvent) {
-                ((EntityDamageEvent) event).setCancelled(true);
-
+                if (damager != null) {
+                    damager.setNoDamageTicks(0);
+                    damager.damage(e.getDamage(), player);
+                }
             }
-        } else if (event instanceof PlayerInteractEvent){
+            ((Cancellable)event).setCancelled(true);
 
-            PlayerInteractEvent e = (PlayerInteractEvent) event;
+        } else if (event instanceof PlayerItemHeldEvent){
+
+            PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
             if (!isSkillReady()){
                 e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 return;

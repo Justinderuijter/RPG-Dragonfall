@@ -10,10 +10,12 @@ import java.util.Set;
 public class ClassData {
     private double health = 20.0;
     private Set<String> skills;
+    private Set<String> keyBindOrder;
 
-    public ClassData(double health, Set<String> skillIds){
+    public ClassData(double health, Set<String> skillIds, Set<String> keyBindOrder){
         this.health = health;
         this.skills = skillIds;
+        this.keyBindOrder = keyBindOrder;
     }
 
     public double getHealth() {
@@ -23,4 +25,6 @@ public class ClassData {
     public Set<String> getSkills() {
         return skills;
     }
+
+    public Set<String> getKeyBindOrder() {return keyBindOrder;}
 }

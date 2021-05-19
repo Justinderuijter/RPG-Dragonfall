@@ -5,7 +5,7 @@ import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.ModifierType;
-import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -18,7 +18,7 @@ import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
-public class Nimble extends XRPGSkill {
+public class Nimble extends XRPGPassiveSkill {
     public Nimble(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
@@ -32,9 +32,9 @@ public class Nimble extends XRPGSkill {
         setRemainingCooldown(-1);
 
         //Initializing triggers for this skill
-        xrpgPlayer.getEventHandler("JUMP").addSkill(this.getClass().getSimpleName() ,this);
-        xrpgPlayer.getEventHandler("SPRINT").addSkill(this.getClass().getSimpleName() ,this);
-        xrpgPlayer.getEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("JUMP").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("SPRINT").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

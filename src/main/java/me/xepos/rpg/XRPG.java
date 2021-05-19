@@ -1,8 +1,6 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.commands.ChangeClassCommand;
-import me.xepos.rpg.commands.XRPGDebug;
-import me.xepos.rpg.commands.XRPGReload;
+import me.xepos.rpg.commands.*;
 import me.xepos.rpg.configuration.ClassLoader;
 import me.xepos.rpg.configuration.CraftLoader;
 import me.xepos.rpg.configuration.SkillLoader;
@@ -36,7 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class XRPG extends JavaPlugin {
 
     private Inventory inventoryGUI;
-    private NamespacedKey tagKey;
     private ClassLoader classLoader;
 
     //Ability targetting managers
@@ -59,6 +56,9 @@ public final class XRPG extends JavaPlugin {
     //Custom projectiles
     public final ConcurrentHashMap<UUID, BaseProjectileData> projectiles = new ConcurrentHashMap<>();
 
+    //Keys
+    private static final HashMap<String, NamespacedKey> keyRegistry = new HashMap<>();
+
     @Override // Plugin startup logic
     public void onEnable() {
         //Load classes
@@ -69,7 +69,12 @@ public final class XRPG extends JavaPlugin {
         this.classLoader.checkClassFolder();
         this.classData = this.classLoader.initializeClasses();
 
-        this.tagKey = new NamespacedKey(this, "tag");
+        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId"};
+
+        for (String name:keyNames) {
+            this.keyRegistry.put(name, new NamespacedKey(this, name));
+        }
+
 
         //Load database
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager(classLoader);
@@ -91,6 +96,8 @@ public final class XRPG extends JavaPlugin {
         this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this, classData));
         this.getCommand("xrpgreload").setExecutor(new XRPGReload());
         this.getCommand("changeclass").setExecutor(new ChangeClassCommand(this, inventoryGUI));
+        this.getCommand("spellmode").setExecutor(new ToggleSpellCommand(this));
+        this.getCommand("spellbook").setExecutor(new SpellbookCommand(this));
         System.out.println("RPG classes loaded!");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -200,8 +207,8 @@ public final class XRPG extends JavaPlugin {
         return classData;
     }
 
-    public NamespacedKey getTagKey() {
-        return tagKey;
+    public NamespacedKey getKey(String keyName){
+        return keyRegistry.get(keyName);
     }
 
     public boolean useMana() {

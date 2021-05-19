@@ -2,7 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.BleedTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
@@ -13,6 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
@@ -21,19 +22,18 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShadowSneak extends XRPGSkill {
+public class ShadowSneak extends XRPGActiveSkill {
 
     public ShadowSneak(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
     public void activate(Event event) {
-        if (!hasCastItem()) return;
-        if (!(event instanceof PlayerInteractEvent)) return;
-        PlayerInteractEvent e = (PlayerInteractEvent) event;
+        if (!(event instanceof PlayerItemHeldEvent)) return;
+        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
         doShadowSneak(e.getPlayer());
 
     }

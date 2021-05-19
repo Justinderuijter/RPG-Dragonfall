@@ -3,7 +3,7 @@ package me.xepos.rpg.skills;
 import com.mojang.datafixers.util.Pair;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.EndInvisibilityTask;
 import me.xepos.rpg.utils.Utils;
 import net.minecraft.server.v1_16_R3.EnumItemSlot;
@@ -25,14 +25,14 @@ import org.bukkit.inventory.EquipmentSlot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Smokebomb extends XRPGSkill {
+public class Smokebomb extends XRPGActiveSkill {
 
     private int smokebombDuration = 10;
 
     public Smokebomb(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
 
@@ -43,7 +43,6 @@ public class Smokebomb extends XRPGSkill {
 
     @Override
     public void activate(Event event) {
-        if (!hasCastItem()) return;
         if (event instanceof PlayerInteractEvent) {
             PlayerInteractEvent e = (PlayerInteractEvent) event;
             if (e.getHand() == EquipmentSlot.OFF_HAND) {

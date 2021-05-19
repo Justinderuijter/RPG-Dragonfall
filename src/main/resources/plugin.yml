@@ -18,3 +18,13 @@ commands:
     usage: /<command> <class>
     aliases:
       - cs
+  spellmode:
+    description: switch to or from spell casting mode
+    usage: /<command> <on|off|toggle|status>
+    aliases:
+      - sm
+  spellbook:
+    description: open your spellbook
+    usage: /<command>
+    aliases:
+      - sb

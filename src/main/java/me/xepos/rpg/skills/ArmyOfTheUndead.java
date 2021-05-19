@@ -6,7 +6,7 @@ import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.entities.type.FollowerZombie;
 import me.xepos.rpg.entities.type.FollowerZombieVillager;
 import me.xepos.rpg.skills.base.IFollowerContainer;
-import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.utils.Utils;
 import net.minecraft.server.v1_16_R3.EntityLiving;
 import net.minecraft.server.v1_16_R3.EntityTypes;
@@ -26,13 +26,13 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArmyOfTheUndead extends XRPGSkill implements IFollowerContainer {
+public class ArmyOfTheUndead extends XRPGPassiveSkill implements IFollowerContainer {
     private final List<Follower> followers = new ArrayList<>();
 
     public ArmyOfTheUndead(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override

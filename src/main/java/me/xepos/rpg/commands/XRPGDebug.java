@@ -60,11 +60,21 @@ public class XRPGDebug implements CommandExecutor {
                             }
                             return true;
                         case "skilldata":
-                            HashMap<String, EventHandler> handlers = plugin.getXRPGPlayer(player).getHandlerList();
+                            HashMap<String, EventHandler> handlers = plugin.getXRPGPlayer(player).getPassiveHandlerList();
+                            for (XRPGSkill skill:plugin.getXRPGPlayer(player).getActiveHandler().getSkills().values()) {
+                                player.sendMessage(skill.getName());
+                            }
                             for (String handlerName : handlers.keySet()) {
                                 for (XRPGSkill skill : handlers.get(handlerName).getSkills().values()) {
                                     player.sendMessage(skill.getName());
                                 }
+                            }
+                            return true;
+                        case "keybinds":
+                            int counter = 0;
+                            for (String name:plugin.getXRPGPlayer(player).getSpellKeybinds()) {
+                                player.sendMessage(counter + ": " + name);
+                                counter++;
                             }
                             return true;
                         case "classes":
@@ -72,6 +82,10 @@ public class XRPGDebug implements CommandExecutor {
                                 player.sendMessage(classId);
                             }
 
+                            return true;
+
+                        case "clear":
+                            plugin.getXRPGPlayer(player).getSpellKeybinds().clear();
                             return true;
                         default:
                             return false;

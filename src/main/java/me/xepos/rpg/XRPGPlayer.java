@@ -2,6 +2,7 @@ package me.xepos.rpg;
 
 import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.PlayerData;
+import me.xepos.rpg.handlers.ActiveEventHandler;
 import me.xepos.rpg.handlers.EventHandler;
 import me.xepos.rpg.skills.base.IFollowerContainer;
 import me.xepos.rpg.skills.base.XRPGSkill;
@@ -20,7 +21,7 @@ public class XRPGPlayer {
     private String classId;
     private int freeChangeTickets = 2;
     private boolean spellCastModeEnabled = false;
-    private Set<String> spellKeybinds = new HashSet<>();
+    private List<String> spellKeybinds = new ArrayList<>();
 
     //Status Effects
     public transient ConcurrentHashMap<String, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
@@ -35,6 +36,10 @@ public class XRPGPlayer {
         this.classId = playerData.getClassId();
         this.lastClassChangeTime = playerData.getLastClassChange();
         this.freeChangeTickets = playerData.getFreeChangeTickets();
+        this.spellKeybinds.clear();
+        //Need to check for null as this will be new for new players
+        if (playerData.getClassData(classId) != null)
+            this.spellKeybinds.addAll(playerData.getClassData(playerData.getClassId()).getKeyBindOrder());
     }
 
     //Constructor for loading profiles
@@ -57,16 +62,13 @@ public class XRPGPlayer {
     //For convenience
     private transient List<IFollowerContainer> followerSkills = new ArrayList<>();
 
+    private transient ActiveEventHandler activeHandler = new ActiveEventHandler(this);
     private final transient HashMap<String, EventHandler> handlerList = new HashMap<String, EventHandler>() {{
         //Interact Handlers
         put("RIGHT_CLICK", new EventHandler());
         put("LEFT_CLICK", new EventHandler());
         put("SNEAK_RIGHT_CLICK", new EventHandler());
         put("SNEAK_LEFT_CLICK", new EventHandler());
-
-        //Interact Handlers (Entity)
-        put("RIGHT_CLICK_ENTITY", new EventHandler());
-        put("SNEAK_RIGHT_CLICK_ENTITY", new EventHandler());
 
         //Damage Handlers
         put("DAMAGE_DEALT", new EventHandler());
@@ -81,6 +83,7 @@ public class XRPGPlayer {
         put("JUMP", new EventHandler());
 
         //Other Handlers
+        put("SWAP_HELD_ITEM", new EventHandler());
         put("HEALTH_REGEN", new EventHandler());
         put("CONSUME_ITEM", new EventHandler());
 
@@ -160,6 +163,11 @@ public class XRPGPlayer {
         this.classId = classId;
         this.classDisplay = classDisplayName;
 
+        //Clearing keybinds
+        spellKeybinds.clear();
+
+        //Clearing skills
+        activeHandler.getSkills().clear();
         for (EventHandler handler : handlerList.values()) {
             handler.clear();
         }
@@ -238,22 +246,30 @@ public class XRPGPlayer {
         this.spellCastModeEnabled = spellCastModeEnabled;
     }
 
+    public String getSkillForSlot(int slotId){
+        return spellKeybinds.get(slotId);
+    }
+
     //////////////////////////////////
     //                              //
     //  Handlers getters & setters  //
     //                              //
     //////////////////////////////////
 
-    public EventHandler getEventHandler(String handlerName) {
+    public EventHandler getPassiveEventHandler(String handlerName) {
         return handlerList.get(handlerName.toUpperCase());
     }
 
-    public HashMap<String, EventHandler> getHandlerList() {
+    public HashMap<String, EventHandler> getPassiveHandlerList() {
         return handlerList;
     }
 
-    public void addEventHandler(String handlerName, EventHandler handler) {
+    public void addPassiveEventHandler(String handlerName, EventHandler handler) {
         this.handlerList.put(handlerName.toUpperCase(), handler);
+    }
+
+    public ActiveEventHandler getActiveHandler(){
+        return activeHandler;
     }
 
     //////////////////////////////////
@@ -267,18 +283,21 @@ public class XRPGPlayer {
         for (EventHandler handler:handlerList.values()) {
             skills.addAll(handler.getSkills().keySet());
         }
+        skills.addAll(activeHandler.getSkills().keySet());
+
+        Set<String> keybindOrder = new HashSet<>(spellKeybinds);
 
         PlayerData playerData = new PlayerData(this.classId, this.freeChangeTickets, this.lastClassChangeTime);
-        playerData.addClassData(this.classId, new ClassData(this.getPlayer().getHealth(), skills));
+        playerData.addClassData(this.classId, new ClassData(this.getPlayer().getHealth(), skills, keybindOrder));
 
         return playerData;
     }
 
-    public Set<String> getSpellKeybinds() {
+    public List<String> getSpellKeybinds() {
         return spellKeybinds;
     }
 
-    public void setSpellKeybinds(Set<String> spellKeybinds) {
+    public void setSpellKeybinds(List<String> spellKeybinds) {
         this.spellKeybinds = spellKeybinds;
     }
 }

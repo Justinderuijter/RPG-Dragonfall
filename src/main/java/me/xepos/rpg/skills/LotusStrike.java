@@ -2,7 +2,8 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
+import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -19,11 +20,11 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-public class LotusStrike extends XRPGSkill {
+public class LotusStrike extends XRPGPassiveSkill {
     public LotusStrike(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     private final double potionDuration = getSkillVariables().getDouble("duration", 6);
@@ -38,7 +39,6 @@ public class LotusStrike extends XRPGSkill {
 
     @Override
     public void activate(Event event) {
-        if (!hasCastItem()) return;
         if (!(event instanceof EntityDamageByEntityEvent)) return;
         EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 
