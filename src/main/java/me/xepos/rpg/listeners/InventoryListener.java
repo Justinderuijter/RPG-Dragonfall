@@ -18,16 +18,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseArmorEvent;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.graalvm.util.CollectionsUtil;
+
+import java.util.Set;
 
 public class InventoryListener implements Listener {
 
@@ -149,6 +149,16 @@ public class InventoryListener implements Listener {
     public void onItemDrag(final InventoryDragEvent e) {
         if (e.getView().getTitle().equalsIgnoreCase("Pick A Class")) {
             e.setCancelled(true);
+        }else if (e.getView().getTitle().equals("Spellbook")){
+
+            Set<Integer> bottom = e.getRawSlots();
+            bottom.removeIf(x -> x < e.getView().getTopInventory().getSize());
+
+            if (e.getRawSlots().stream().anyMatch(bottom::contains)){
+                e.setCancelled(true);
+            }
+
+
         } else {
             if (e.getInventorySlots().contains(40)) {
                 e.setCancelled(true);
@@ -204,4 +214,5 @@ public class InventoryListener implements Listener {
 
         }
     }
+
 }

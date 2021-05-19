@@ -9,7 +9,6 @@ public class ProjectileData extends BaseProjectileData {
     private int fireTicks;
     private double headshotDamage = 1.0;
     private boolean doDisengage = false;
-    private double maxDisengageDistance = 0;
 
     public ProjectileData(Projectile projectile, int secondsToLive){
         super(projectile, secondsToLive);
@@ -67,12 +66,8 @@ public class ProjectileData extends BaseProjectileData {
         return doDisengage;
     }
 
-    public void setDisengage(boolean doDisengage, double maxDistaance) {
+    public void setDisengage(boolean doDisengage) {
         this.doDisengage = doDisengage;
-        this.maxDisengageDistance = maxDistaance;
     }
 
-    public double getMaxDisengageDistance(){
-        return maxDisengageDistance;
-    }
 }

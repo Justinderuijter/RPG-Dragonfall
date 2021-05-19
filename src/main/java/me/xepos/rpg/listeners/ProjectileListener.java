@@ -78,12 +78,12 @@ public class ProjectileListener implements Listener {
 
                     }
 
-                    if (projectileData.getDamage() != 0){
+                    if (projectileData.getDamage() != 0) {
                         Utils.decreaseHealth(livingEntity, projectileData.getDamage());
                     }
 
                     if (projectileData.getHeadshotDamage() != 1.0) {
-                        if (projectile.getLocation().distance(livingEntity.getEyeLocation()) <= 0.25){
+                        if (projectile.getLocation().distance(livingEntity.getEyeLocation()) <= 0.25) {
                             Arrow arrow = (Arrow) projectile;
                             double damage = arrow.getDamage() * projectileData.getHeadshotDamage();
                             double damageDifference = damage - arrow.getDamage();
@@ -93,14 +93,11 @@ public class ProjectileListener implements Listener {
                         }
                     }
 
-                    if (projectileData.shouldDisengage()){
+                    if (projectileData.shouldDisengage()) {
                         Player shooter = (Player) projectile.getShooter();
-                        if (shooter.getLocation().distanceSquared(livingEntity.getLocation()) <= projectileData.getMaxDisengageDistance() * projectileData.getMaxDisengageDistance()){
+                        Vector unitVector = shooter.getLocation().toVector().subtract(livingEntity.getLocation().toVector()).normalize();
 
-                            Vector unitVector = shooter.getLocation().toVector().subtract(livingEntity.getLocation().toVector()).normalize();
-
-                            shooter.setVelocity(unitVector.multiply(1.5));
-                        }
+                        shooter.setVelocity(unitVector.multiply(1.5));
                     }
                 }
 
