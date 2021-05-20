@@ -6,7 +6,6 @@ import me.xepos.rpg.datatypes.ExplosiveProjectileData;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
@@ -73,13 +72,11 @@ public class ProjectileListener implements Listener {
                 if (e.getHitEntity() instanceof LivingEntity) {
                     LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
                     if (projectileData.getDamageMultiplier() < 1.0) {
-                        Bukkit.getLogger().info("dmg multiplier triggered!");
 
                         livingEntity.setHealth(livingEntity.getHealth() * projectileData.getDamageMultiplier());
                     }
 
                     if (projectileData.getDamage() != 0) {
-                        Bukkit.getLogger().info("dmg triggered!");
                         Utils.decreaseHealth(livingEntity, projectileData.getDamage());
                     }
 

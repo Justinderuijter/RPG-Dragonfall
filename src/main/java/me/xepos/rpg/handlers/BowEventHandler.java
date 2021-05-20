@@ -15,8 +15,6 @@ public class BowEventHandler extends PassiveEventHandler{
         for (String skillId:getSkills().keySet()) {
             getSkills().get(skillId).activate(e);
         }
-
-        getXRPGPlayer().getPlayer().sendMessage(activeBowSkill);
         if (activeBowSkill != null) {
             getXRPGPlayer().getActiveHandler().getSkills().get(activeBowSkill).activate(e);
             activeBowSkill = null;

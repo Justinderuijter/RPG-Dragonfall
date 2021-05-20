@@ -3,15 +3,20 @@ package me.xepos.rpg.handlers;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
-import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActiveEventHandler extends EventHandler{
     private BowEventHandler bowEventHandler = null;
 
     public ActiveEventHandler(XRPGPlayer xrpgPlayer){
         super(xrpgPlayer);
+
+        bowEventHandler = (BowEventHandler) getXRPGPlayer().getPassiveEventHandler("SHOOT_BOW");
     }
 
     @Override
@@ -22,16 +27,21 @@ public class ActiveEventHandler extends EventHandler{
     public void invoke(Event e) {
         if (!(e instanceof PlayerItemHeldEvent)) return;
         if (bowEventHandler == null){
-            getXRPGPlayer().getPlayer().sendMessage("BowHandler linked!");
-            bowEventHandler = (BowEventHandler) getXRPGPlayer().getPassiveEventHandler("SHOOT_BOW");
+            List<String> error = new ArrayList<String>(){{
+                add(ChatColor.RED + "Something went wrong while executing this skill.");
+                add(ChatColor.RED + "Please report this bug to your server administrator");
+            }};
+            for (String string:error) {
+                getXRPGPlayer().getPlayer().sendMessage(string);
+            }
+
         }
 
         final int slot = ((PlayerItemHeldEvent)e).getNewSlot();
         if(getXRPGPlayer().getSpellKeybinds().size() > slot && slot < 7) {
 
             if (getSkills().get(getXRPGPlayer().getSkillForSlot(slot)) instanceof XRPGBowSkill){
-                Bukkit.getLogger().info("Triggered: " + getXRPGPlayer().getSkillForSlot(slot));
-
+                getXRPGPlayer().getPlayer().sendMessage(ChatColor.DARK_GREEN + "You loaded a special arrow into your bow");
                 bowEventHandler.setActiveBowSkill(getXRPGPlayer().getSkillForSlot(slot));
             }else{
                 getSkills().get(getXRPGPlayer().getSkillForSlot(slot)).activate(e);
