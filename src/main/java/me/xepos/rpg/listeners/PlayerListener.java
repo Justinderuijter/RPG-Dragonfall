@@ -212,7 +212,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onSwapHeldItem(PlayerItemHeldEvent e){
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
-        e.getPlayer().sendMessage("Triggered: " + e.getNewSlot());
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()){
             if (e.getNewSlot() < xrpgPlayer.getSpellKeybinds().size()) {
                 xrpgPlayer.getActiveHandler().invoke(e);
