@@ -2,7 +2,6 @@ package me.xepos.rpg;
 
 import me.xepos.rpg.commands.*;
 import me.xepos.rpg.configuration.ClassLoader;
-import me.xepos.rpg.configuration.CraftLoader;
 import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
@@ -88,7 +87,8 @@ public final class XRPG extends JavaPlugin {
         if (!this.isEnabled())
             return;
 
-        new CraftLoader(this).initCustomRecipes();
+        //CraftLoader disabled as it won't be used (for now)
+        //new CraftLoader(this).initCustomRecipes();
 
         initClassChangeGUI();
         //registering listeners/commands
