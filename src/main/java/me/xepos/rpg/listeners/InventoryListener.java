@@ -1,6 +1,5 @@
 package me.xepos.rpg.listeners;
 
-import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.ClassLoader;
@@ -8,6 +7,7 @@ import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.events.XRPGClassChangedEvent;
+import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -18,14 +18,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseArmorEvent;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.graalvm.util.CollectionsUtil;
 
 import java.util.Set;
 
@@ -47,8 +49,9 @@ public class InventoryListener implements Listener {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
 
         if (xrpgPlayer.isSpellCastModeEnabled()) {
+            e.getWhoClicked().sendMessage("Slot number: " + e.getSlot());
             Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.testingPacket(xrpgPlayer), 1);
-            if (e.getSlot() < xrpgPlayer.getSpellKeybinds().size()) {
+            if (e.getSlot() < xrpgPlayer.getSpellKeybinds().size() && e.getClickedInventory() instanceof PlayerInventory) {
                 e.setCancelled(true);
                 return;
             }

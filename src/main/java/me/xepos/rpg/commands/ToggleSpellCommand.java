@@ -1,8 +1,8 @@
 package me.xepos.rpg.commands;
 
-import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.utils.PacketUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -48,16 +48,11 @@ public class ToggleSpellCommand implements TabExecutor {
             switch (strings[0].toLowerCase()) {
                 case "on":
                 case "enable":
-                    xrpgPlayer.setSpellCastModeEnabled(true);
-                    PlayerInventory inventory = xrpgPlayer.getPlayer().getInventory();
-                    swapItems(inventory, 7);
-                    inventory.setHeldItemSlot(7);
-                    PacketUtils.testingPacket(xrpgPlayer);
+                    enableSpellCastMode(xrpgPlayer);
                     return true;
                 case "off":
                 case "disable":
-                    xrpgPlayer.setSpellCastModeEnabled(false);
-                    player.updateInventory();
+                    disableSpellcastMode(xrpgPlayer);
                     return true;
                 case "toggle":
                     xrpgPlayer.setSpellCastModeEnabled(!xrpgPlayer.isSpellCastModeEnabled());
@@ -93,5 +88,22 @@ public class ToggleSpellCommand implements TabExecutor {
 
         playerInventory.setItem(targetSlot, heldItem);
         playerInventory.setItem(heldItemSlot, targetItem);
+    }
+
+    private void enableSpellCastMode(XRPGPlayer xrpgPlayer){
+        xrpgPlayer.setSpellCastModeEnabled(true);
+        PlayerInventory inventory = xrpgPlayer.getPlayer().getInventory();
+        swapItems(inventory, 7);
+
+        int keybindSize = xrpgPlayer.getSpellKeybinds().size();
+        if(inventory.getHeldItemSlot() < keybindSize)
+            inventory.setHeldItemSlot(keybindSize + 1);
+
+        PacketUtils.testingPacket(xrpgPlayer);
+    }
+
+    private void disableSpellcastMode(XRPGPlayer xrpgPlayer){
+        xrpgPlayer.setSpellCastModeEnabled(false);
+        xrpgPlayer.getPlayer().updateInventory();
     }
 }
