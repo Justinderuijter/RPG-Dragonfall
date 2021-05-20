@@ -45,6 +45,9 @@ public class XRPGPlayer {
 
         if (handlerList.isEmpty())
             initializePassiveHandlers();
+
+        if (activeHandler == null)
+            activeHandler= new ActiveEventHandler(this);
     }
 
     //Constructor for loading profiles
@@ -57,6 +60,9 @@ public class XRPGPlayer {
 
         if (handlerList.isEmpty())
             initializePassiveHandlers();
+
+        if (activeHandler == null)
+            activeHandler= new ActiveEventHandler(this);
     }
 
     @Deprecated
@@ -68,6 +74,9 @@ public class XRPGPlayer {
 
         if (handlerList.isEmpty())
             initializePassiveHandlers();
+
+        if (activeHandler == null)
+            activeHandler= new ActiveEventHandler(this);
     }
 
     private void initializePassiveHandlers(){
@@ -98,7 +107,7 @@ public class XRPGPlayer {
     //For convenience
     private transient List<IFollowerContainer> followerSkills = new ArrayList<>();
 
-    private transient ActiveEventHandler activeHandler = new ActiveEventHandler(this);
+    private transient ActiveEventHandler activeHandler;
     private final transient HashMap<String, PassiveEventHandler> handlerList = new HashMap<>();
 
 
