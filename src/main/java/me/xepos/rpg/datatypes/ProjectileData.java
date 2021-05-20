@@ -5,7 +5,7 @@ import org.bukkit.potion.PotionEffect;
 
 public class ProjectileData extends BaseProjectileData {
     private double damage;
-    private double damageMultiplier;
+    private double damageMultiplier = 1.0;
     private int fireTicks;
     private double headshotDamage = 1.0;
     private boolean doDisengage = false;

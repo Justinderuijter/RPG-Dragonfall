@@ -47,7 +47,7 @@ public class SnipeShot extends XRPGPassiveSkill {
             arrow.setPierceLevel(arrow.getPierceLevel() + pierce);
             arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
 
-            ProjectileData data = new ProjectileData(arrow, 20);
+            ProjectileData data = new ProjectileData(arrow, 0, 20);
             data.setHeadshotDamage(getSkillVariables().getDouble("headshot-multiplier"));
 
             getPlugin().projectiles.put(arrow.getUniqueId(), data);

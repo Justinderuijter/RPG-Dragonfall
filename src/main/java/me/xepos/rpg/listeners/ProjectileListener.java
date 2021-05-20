@@ -73,21 +73,18 @@ public class ProjectileListener implements Listener {
                 if (e.getHitEntity() instanceof LivingEntity) {
                     LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
                     if (projectileData.getDamageMultiplier() < 1.0) {
-
+                        Bukkit.getLogger().info("dmg multiplier triggered!");
 
                         livingEntity.setHealth(livingEntity.getHealth() * projectileData.getDamageMultiplier());
-
                     }
 
                     if (projectileData.getDamage() != 0) {
+                        Bukkit.getLogger().info("dmg triggered!");
                         Utils.decreaseHealth(livingEntity, projectileData.getDamage());
                     }
 
                     if (projectileData.getHeadshotDamage() != 1.0) {
-                        Bukkit.getLogger().info("Projectile Y: " + projectile.getLocation().getY());
-                        Bukkit.getLogger().info("Target Y: " + e.getHitEntity().getLocation().getY());
                         if (projectile.getLocation().getY() - e.getHitEntity().getLocation().getY() > 1.4D) {
-                            Bukkit.getLogger().info("Headshot!");
                             Arrow arrow = (Arrow) projectile;
                             double damage = arrow.getDamage() * projectileData.getHeadshotDamage();
                             double damageDifference = damage - arrow.getDamage();

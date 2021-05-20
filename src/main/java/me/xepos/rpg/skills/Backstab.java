@@ -23,7 +23,7 @@ public class Backstab extends XRPGPassiveSkill {
     public void activate(Event event) {
         if (event instanceof PlayerToggleSneakEvent){
             PlayerToggleSneakEvent e = (PlayerToggleSneakEvent) event;
-            if (e.getPlayer().isSneaking()){
+            if (!e.getPlayer().isSneaking()){
                 if (!isSkillReady()){
                     e.getPlayer().sendMessage(getCooldownMessage());
                     return;
