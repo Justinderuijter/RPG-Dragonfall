@@ -13,6 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.util.Vector;
 
@@ -33,6 +34,7 @@ public class Nimble extends XRPGPassiveSkill {
 
         //Initializing triggers for this skill
         xrpgPlayer.getPassiveEventHandler("JUMP").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("SNEAK").addSkill(this.getClass().getSimpleName() ,this);
         xrpgPlayer.getPassiveEventHandler("SPRINT").addSkill(this.getClass().getSimpleName() ,this);
         xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").addSkill(this.getClass().getSimpleName() ,this);
     }
@@ -65,6 +67,19 @@ public class Nimble extends XRPGPassiveSkill {
                 e.setCancelled(true);
             } else {
                 e.setDamage(damage);
+            }
+        } else if(event instanceof PlayerToggleSneakEvent){
+            PlayerToggleSneakEvent e = (PlayerToggleSneakEvent) event;
+            AttributeModifierManager manager = AttributeModifierManager.getInstance();
+
+            if (!e.getPlayer().isSneaking()){
+                //Enter sneak
+                Utils.removeUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, "NIMBLE_SPRINT"));
+            }else{
+                //Leaving sneak
+                if (e.getPlayer().isSprinting()){
+                    Utils.addUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, "NIMBLE_SPRINT"));
+                }
             }
         }
     }
