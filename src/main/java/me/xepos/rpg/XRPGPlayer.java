@@ -87,6 +87,7 @@ public class XRPGPlayer {
         //Movement Handlers
         handlerList.put("SPRINT", new PassiveEventHandler());
         handlerList.put("JUMP", new PassiveEventHandler());
+        handlerList.put("SNEAK", new PassiveEventHandler());
 
         //Other Handlers
         handlerList.put("SWAP_HELD_ITEM", new PassiveEventHandler());

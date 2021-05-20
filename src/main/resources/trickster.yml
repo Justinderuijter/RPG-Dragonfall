@@ -1,0 +1,18 @@
+display:
+  name: "Trickster"
+  icon: BOW
+  description:
+    - "Big annoying class ok"
+
+default: false
+enabled: true
+allow-bow: true
+allow-shield: true
+
+skills:
+  - "Nimble"
+  - "AceUpMySleeve"
+  - "NightVision"
+  - "EnderArrow"
+  - "Backstab"
+  - "ExposeWeakness"

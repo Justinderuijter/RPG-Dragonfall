@@ -202,6 +202,14 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onToggleSneak(PlayerToggleSneakEvent e){
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
+        if (xrpgPlayer != null){
+            xrpgPlayer.getPassiveEventHandler("SNEAK").invoke(e);
+        }
+    }
+
+    @EventHandler
     public void onSwapHeldItem(PlayerItemHeldEvent e){
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         e.getPlayer().sendMessage("Triggered: " + e.getNewSlot());

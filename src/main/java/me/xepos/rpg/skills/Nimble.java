@@ -52,12 +52,20 @@ public class Nimble extends XRPGPassiveSkill {
         }else if(event instanceof PlayerJumpEvent){
             PlayerJumpEvent e = (PlayerJumpEvent) event;
 
-            e.getPlayer().setVelocity(e.getPlayer().getVelocity().multiply(new Vector(1.3, 2, 1.3)));
+            double vertical = getSkillVariables().getDouble("vertical-velocity-multiplier", 2.1);
+            double horizontal = getSkillVariables().getDouble("horizontal-velocity-multiplier", 1.5);
+
+            e.getPlayer().setVelocity(e.getPlayer().getVelocity().multiply(new Vector(horizontal, vertical, horizontal)));
         }else if(event instanceof EntityDamageEvent && !(event instanceof EntityDamageByEntityEvent)){
             //Reduce damage by half if it's fall damage
             EntityDamageEvent e = (EntityDamageEvent) event;
             if (e.getCause() != EntityDamageEvent.DamageCause.FALL) return;
-            e.setDamage(e.getDamage() / 2);
+            double damage = e.getDamage() / (100 / getSkillVariables().getDouble("fall-damage-reduction", 50.0));
+            if (damage < 1) {
+                e.setCancelled(true);
+            } else {
+                e.setDamage(damage);
+            }
         }
     }
 
