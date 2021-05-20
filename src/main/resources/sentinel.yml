@@ -7,7 +7,7 @@ display:
     - "Draw the attention of nearby mobs with your attacks"
     - "medium damage, low mobility, high defense"
 
-default: false
+default: true
 enabled: true
 allow-bow: false
 allow-shield: true

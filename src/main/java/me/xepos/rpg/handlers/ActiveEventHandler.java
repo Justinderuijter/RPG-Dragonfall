@@ -1,45 +1,41 @@
 package me.xepos.rpg.handlers;
 
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.XRPGActiveSkill;
+import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
-import java.util.HashMap;
-
-public class ActiveEventHandler implements IEventHandler{
-    private HashMap<String, XRPGSkill> skills = new HashMap<>();
-    private final XRPGPlayer xrpgPlayer;
+public class ActiveEventHandler extends EventHandler{
+    private BowEventHandler bowEventHandler = null;
 
     public ActiveEventHandler(XRPGPlayer xrpgPlayer){
-        this.xrpgPlayer = xrpgPlayer;
-    }
-
-    public HashMap<String, XRPGSkill> getSkills() {
-        return skills;
-    }
-
-    public void setSkills(HashMap<String, XRPGSkill> skills) {
-        this.skills = skills;
-    }
-
-    public void addSkill(String skillId, XRPGActiveSkill skill) {
-        if (!skills.containsKey(skillId)) {
-            skills.put(skillId, skill);
-            xrpgPlayer.getSpellKeybinds().add(skillId);
-        }
+        super(xrpgPlayer);
     }
 
     @Override
     public void removeSkill(String skillId) {
-        skills.remove(skillId);
+        getSkills().remove(skillId);
     }
 
-    public void invoke(PlayerItemHeldEvent e) {
-        final int slot = e.getNewSlot();
-        if(xrpgPlayer.getSpellKeybinds().size() > slot && slot < 7) {
-            skills.get(xrpgPlayer.getSkillForSlot(slot)).activate(e);
+    public void invoke(Event e) {
+        if (!(e instanceof PlayerItemHeldEvent)) return;
+        if (bowEventHandler == null){
+            getXRPGPlayer().getPlayer().sendMessage("BowHandler linked!");
+            bowEventHandler = (BowEventHandler) getXRPGPlayer().getPassiveEventHandler("SHOOT_BOW");
+        }
+
+        final int slot = ((PlayerItemHeldEvent)e).getNewSlot();
+        if(getXRPGPlayer().getSpellKeybinds().size() > slot && slot < 7) {
+
+            if (getSkills().get(getXRPGPlayer().getSkillForSlot(slot)) instanceof XRPGBowSkill){
+                Bukkit.getLogger().info("Triggered: " + getXRPGPlayer().getSkillForSlot(slot));
+
+                bowEventHandler.setActiveBowSkill(getXRPGPlayer().getSkillForSlot(slot));
+            }else{
+                getSkills().get(getXRPGPlayer().getSkillForSlot(slot)).activate(e);
+            }
         }
     }
 
@@ -49,11 +45,11 @@ public class ActiveEventHandler implements IEventHandler{
     }
 
     public boolean containsSkill(XRPGSkill skill) {
-        return skills.values().stream().anyMatch(skill.getClass()::isInstance);
+        return getSkills().values().stream().anyMatch(skill.getClass()::isInstance);
     }
 
     @Override
     public void clear() {
-        skills.clear();
+        getSkills().clear();
     }
 }

@@ -2,7 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.XRPGActiveSkill;
+import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
@@ -11,7 +11,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class ArrowOfHunger extends XRPGActiveSkill {
+public class ArrowOfHunger extends XRPGBowSkill {
 
     private final PotionEffect hungerEffect = new PotionEffect(PotionEffectType.HUNGER, (int) (getSkillVariables().getDouble("duration", 20) * 20L), getSkillVariables().getInt("amplifier", 3), false, false, true);
 

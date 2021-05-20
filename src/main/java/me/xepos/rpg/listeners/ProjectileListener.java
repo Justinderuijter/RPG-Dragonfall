@@ -6,6 +6,7 @@ import me.xepos.rpg.datatypes.ExplosiveProjectileData;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
@@ -83,7 +84,10 @@ public class ProjectileListener implements Listener {
                     }
 
                     if (projectileData.getHeadshotDamage() != 1.0) {
-                        if (projectile.getLocation().distance(livingEntity.getEyeLocation()) <= 0.25) {
+                        Bukkit.getLogger().info("Projectile Y: " + projectile.getLocation().getY());
+                        Bukkit.getLogger().info("Target Y: " + e.getHitEntity().getLocation().getY());
+                        if (projectile.getLocation().getY() - e.getHitEntity().getLocation().getY() > 1.4D) {
+                            Bukkit.getLogger().info("Headshot!");
                             Arrow arrow = (Arrow) projectile;
                             double damage = arrow.getDamage() * projectileData.getHeadshotDamage();
                             double damageDifference = damage - arrow.getDamage();

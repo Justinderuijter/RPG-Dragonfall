@@ -3,7 +3,7 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
-import me.xepos.rpg.skills.base.XRPGActiveSkill;
+import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.AbstractArrow;
@@ -12,11 +12,12 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class SnipeShot extends XRPGActiveSkill {
+public class SnipeShot extends XRPGPassiveSkill {
     public SnipeShot(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
+        setRemainingCooldown(-1);
+        xrpgPlayer.getPassiveEventHandler("SHOOT_BOW").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -30,7 +31,6 @@ public class SnipeShot extends XRPGActiveSkill {
             return;
         }
         doSnipeShot(e, (Arrow) e.getProjectile());
-        setRemainingCooldown(getCooldown());
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SnipeShot extends XRPGActiveSkill {
 
         if (force >= 0.95){
             arrow.setGravity(false);
-            arrow.setPierceLevel(pierce);
+            arrow.setPierceLevel(arrow.getPierceLevel() + pierce);
             arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
 
             ProjectileData data = new ProjectileData(arrow, 20);

@@ -50,6 +50,7 @@ public class ClassLoader {
                     add("sentinel.yml");
                     add("explorer.yml");
                     add("scholar.yml");
+                    add("scout.yml");
                     add("debugClass1.yml");
                     add("debugClass2.yml");
                     //add("assassin");

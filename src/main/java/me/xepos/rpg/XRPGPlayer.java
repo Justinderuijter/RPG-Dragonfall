@@ -3,7 +3,8 @@ package me.xepos.rpg;
 import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.handlers.ActiveEventHandler;
-import me.xepos.rpg.handlers.EventHandler;
+import me.xepos.rpg.handlers.BowEventHandler;
+import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.IFollowerContainer;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.entity.Player;
@@ -22,6 +23,7 @@ public class XRPGPlayer {
     private int freeChangeTickets = 2;
     private boolean spellCastModeEnabled = false;
     private List<String> spellKeybinds = new ArrayList<>();
+    private String activeBowSkillId = null;
 
     //Status Effects
     public transient ConcurrentHashMap<String, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
@@ -40,6 +42,9 @@ public class XRPGPlayer {
         //Need to check for null as this will be new for new players
         if (playerData.getClassData(classId) != null)
             this.spellKeybinds.addAll(playerData.getClassData(playerData.getClassId()).getKeyBindOrder());
+
+        if (handlerList.isEmpty())
+            initializePassiveHandlers();
     }
 
     //Constructor for loading profiles
@@ -49,6 +54,9 @@ public class XRPGPlayer {
         this.playerId = playerId;
         this.classId = classId;
         this.lastClassChangeTime = 0;
+
+        if (handlerList.isEmpty())
+            initializePassiveHandlers();
     }
 
     @Deprecated
@@ -57,37 +65,40 @@ public class XRPGPlayer {
         this.playerId = player.getUniqueId();
         this.classId = classId;
         this.lastClassChangeTime = 0;
+
+        if (handlerList.isEmpty())
+            initializePassiveHandlers();
+    }
+
+    private void initializePassiveHandlers(){
+        handlerList.put("RIGHT_CLICK", new PassiveEventHandler());
+        handlerList.put("LEFT_CLICK", new PassiveEventHandler());
+        handlerList.put("SNEAK_RIGHT_CLICK", new PassiveEventHandler());
+        handlerList.put("SNEAK_LEFT_CLICK", new PassiveEventHandler());
+
+        //Damage Handlers
+        handlerList.put("DAMAGE_DEALT", new PassiveEventHandler());
+        handlerList.put("DAMAGE_TAKEN", new PassiveEventHandler());
+        handlerList.put("DAMAGE_TAKEN_ENVIRONMENTAL", new PassiveEventHandler());
+
+        //Bow Handlers
+        handlerList.put("SHOOT_BOW", new BowEventHandler(this));
+
+        //Movement Handlers
+        handlerList.put("SPRINT", new PassiveEventHandler());
+        handlerList.put("JUMP", new PassiveEventHandler());
+
+        //Other Handlers
+        handlerList.put("SWAP_HELD_ITEM", new PassiveEventHandler());
+        handlerList.put("HEALTH_REGEN", new PassiveEventHandler());
+        handlerList.put("CONSUME_ITEM", new PassiveEventHandler());
     }
 
     //For convenience
     private transient List<IFollowerContainer> followerSkills = new ArrayList<>();
 
     private transient ActiveEventHandler activeHandler = new ActiveEventHandler(this);
-    private final transient HashMap<String, EventHandler> handlerList = new HashMap<String, EventHandler>() {{
-        //Interact Handlers
-        put("RIGHT_CLICK", new EventHandler());
-        put("LEFT_CLICK", new EventHandler());
-        put("SNEAK_RIGHT_CLICK", new EventHandler());
-        put("SNEAK_LEFT_CLICK", new EventHandler());
-
-        //Damage Handlers
-        put("DAMAGE_DEALT", new EventHandler());
-        put("DAMAGE_TAKEN", new EventHandler());
-        put("DAMAGE_TAKEN_ENVIRONMENTAL", new EventHandler());
-
-        //Bow Handlers
-        put("SHOOT_BOW", new EventHandler());
-
-        //Movement Handlers
-        put("SPRINT", new EventHandler());
-        put("JUMP", new EventHandler());
-
-        //Other Handlers
-        put("SWAP_HELD_ITEM", new EventHandler());
-        put("HEALTH_REGEN", new EventHandler());
-        put("CONSUME_ITEM", new EventHandler());
-
-    }};
+    private final transient HashMap<String, PassiveEventHandler> handlerList = new HashMap<>();
 
 
     public int getFreeChangeTickets() {
@@ -168,7 +179,7 @@ public class XRPGPlayer {
 
         //Clearing skills
         activeHandler.getSkills().clear();
-        for (EventHandler handler : handlerList.values()) {
+        for (PassiveEventHandler handler : handlerList.values()) {
             handler.clear();
         }
     }
@@ -250,21 +261,29 @@ public class XRPGPlayer {
         return spellKeybinds.get(slotId);
     }
 
+    public String getActiveBowSkillId() {
+        return activeBowSkillId;
+    }
+
+    public void setActiveBowSkillId(String activeBowSkillId) {
+        this.activeBowSkillId = activeBowSkillId;
+    }
+
     //////////////////////////////////
     //                              //
     //  Handlers getters & setters  //
     //                              //
     //////////////////////////////////
 
-    public EventHandler getPassiveEventHandler(String handlerName) {
+    public PassiveEventHandler getPassiveEventHandler(String handlerName) {
         return handlerList.get(handlerName.toUpperCase());
     }
 
-    public HashMap<String, EventHandler> getPassiveHandlerList() {
+    public HashMap<String, PassiveEventHandler> getPassiveHandlerList() {
         return handlerList;
     }
 
-    public void addPassiveEventHandler(String handlerName, EventHandler handler) {
+    public void addPassiveEventHandler(String handlerName, PassiveEventHandler handler) {
         this.handlerList.put(handlerName.toUpperCase(), handler);
     }
 
@@ -280,7 +299,7 @@ public class XRPGPlayer {
 
     public PlayerData extractData(){
         Set<String> skills = new HashSet<>();
-        for (EventHandler handler:handlerList.values()) {
+        for (PassiveEventHandler handler:handlerList.values()) {
             skills.addAll(handler.getSkills().keySet());
         }
         skills.addAll(activeHandler.getSkills().keySet());

@@ -4,7 +4,7 @@ import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.ModifierType;
-import me.xepos.rpg.handlers.EventHandler;
+import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -60,7 +60,7 @@ public class XRPGDebug implements CommandExecutor {
                             }
                             return true;
                         case "skilldata":
-                            HashMap<String, EventHandler> handlers = plugin.getXRPGPlayer(player).getPassiveHandlerList();
+                            HashMap<String, PassiveEventHandler> handlers = plugin.getXRPGPlayer(player).getPassiveHandlerList();
                             for (XRPGSkill skill:plugin.getXRPGPlayer(player).getActiveHandler().getSkills().values()) {
                                 player.sendMessage(skill.getName());
                             }
@@ -87,6 +87,10 @@ public class XRPGDebug implements CommandExecutor {
                         case "clear":
                             plugin.getXRPGPlayer(player).getSpellKeybinds().clear();
                             return true;
+                        case "skill":
+                            for (String skillId:plugin.getAllSkills()) {
+                                player.sendMessage(skillId);
+                            }
                         default:
                             return false;
                     }

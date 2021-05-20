@@ -1,13 +1,24 @@
 package me.xepos.rpg.handlers;
 
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
+import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 
 import java.util.HashMap;
 
-public class EventHandler implements IEventHandler{
+public abstract class EventHandler {
+    private final XRPGPlayer xrpgPlayer;
+
+    public EventHandler(XRPGPlayer xrpgPlayer){
+        this.xrpgPlayer = xrpgPlayer;
+    }
+
+    public EventHandler(){
+        this.xrpgPlayer = null;
+    }
+
     private HashMap<String, XRPGSkill> skills = new HashMap<>();
 
     public HashMap<String, XRPGSkill> getSkills() {
@@ -19,27 +30,20 @@ public class EventHandler implements IEventHandler{
     }
 
     public void addSkill(String skillId, XRPGSkill skill) {
-        if (!skills.containsKey(skillId))
+        if (!skills.containsKey(skillId)) {
             skills.put(skillId, skill);
+            if((skill instanceof XRPGActiveSkill || skill instanceof XRPGBowSkill) && xrpgPlayer != null)
+                xrpgPlayer.getSpellKeybinds().add(skillId);
+        }
     }
 
-    @Override
     public void removeSkill(String skillId) {
         skills.remove(skillId);
     }
 
-    public void invoke(Event e) {
-        for (XRPGSkill skill : skills.values()) {
-            skill.activate(e);
-        }
+    public abstract void invoke(Event e);
 
-    }
-
-    public void initialize() {
-        for (XRPGSkill skill : skills.values()) {
-            skill.initialize();
-        }
-    }
+    public abstract void initialize();
 
     public boolean containsSkill(XRPGSkill skill) {
         return skills.values().stream().anyMatch(skill.getClass()::isInstance);
@@ -47,5 +51,9 @@ public class EventHandler implements IEventHandler{
 
     public void clear() {
         skills.clear();
+    }
+
+    protected XRPGPlayer getXRPGPlayer(){
+        return xrpgPlayer;
     }
 }

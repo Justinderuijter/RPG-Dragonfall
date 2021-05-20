@@ -1,0 +1,18 @@
+display:
+  name: "Scout"
+  icon: BOW
+  description:
+    - "haha arrow go brrrrr"
+
+default: false
+enabled: true
+allow-bow: true
+allow-shield: true
+
+skills:
+  - "Nimble"
+  - "SnipeShot"
+  - "RapidFire"
+  - "Focus"
+  - "TrueInfinity"
+  - "DisengagingShot"

@@ -1,4 +1,4 @@
 name: "Snipe Shot"
-damage-multiplier: 1.5
+headshot-multiplier: 1.5
 pierce: 1
 cooldown: 6.0

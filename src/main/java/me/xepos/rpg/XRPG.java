@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -217,5 +218,9 @@ public final class XRPG extends JavaPlugin {
 
     public FileConfiguration getSkillData(String skillId){
         return skillData.get(skillId);
+    }
+
+    public Set<String> getAllSkills(){
+        return skillData.keySet();
     }
 }
