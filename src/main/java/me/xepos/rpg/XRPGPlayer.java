@@ -23,7 +23,8 @@ public class XRPGPlayer {
     private int freeChangeTickets = 2;
     private boolean spellCastModeEnabled = false;
     private List<String> spellKeybinds = new ArrayList<>();
-    private String activeBowSkillId = null;
+    private int level;
+    private double currentExp;
 
     //Status Effects
     public transient ConcurrentHashMap<String, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
@@ -32,7 +33,7 @@ public class XRPGPlayer {
     private transient boolean isStunned = false;
     private transient long lastStunTime = 0;
 
-    public XRPGPlayer(UUID playerId, PlayerData playerData){
+    public XRPGPlayer(UUID playerId, PlayerData playerData) {
         this.player = null;
         this.playerId = playerId;
         this.classId = playerData.getClassId();
@@ -47,7 +48,7 @@ public class XRPGPlayer {
             initializePassiveHandlers();
 
         if (activeHandler == null)
-            activeHandler= new ActiveEventHandler(this);
+            activeHandler = new ActiveEventHandler(this);
     }
 
     //Constructor for loading profiles
@@ -62,7 +63,7 @@ public class XRPGPlayer {
             initializePassiveHandlers();
 
         if (activeHandler == null)
-            activeHandler= new ActiveEventHandler(this);
+            activeHandler = new ActiveEventHandler(this);
     }
 
     @Deprecated
@@ -76,10 +77,10 @@ public class XRPGPlayer {
             initializePassiveHandlers();
 
         if (activeHandler == null)
-            activeHandler= new ActiveEventHandler(this);
+            activeHandler = new ActiveEventHandler(this);
     }
 
-    private void initializePassiveHandlers(){
+    private void initializePassiveHandlers() {
         handlerList.put("RIGHT_CLICK", new PassiveEventHandler());
         handlerList.put("LEFT_CLICK", new PassiveEventHandler());
         handlerList.put("SNEAK_RIGHT_CLICK", new PassiveEventHandler());
@@ -239,13 +240,13 @@ public class XRPGPlayer {
         this.maximumMana = maximumMana;
     }
 
-    public double getDamageTakenMultiplier(){
+    public double getDamageTakenMultiplier() {
         return damageTakenMultiplier;
     }
 
-    public void recalculateDamageTakenMultiplier(){
+    public void recalculateDamageTakenMultiplier() {
         double base = 1.0;
-        for (String id:dmgTakenMultipliers.keySet()) {
+        for (String id : dmgTakenMultipliers.keySet()) {
             base *= dmgTakenMultipliers.get(id);
         }
         this.damageTakenMultiplier = base;
@@ -267,16 +268,55 @@ public class XRPGPlayer {
         this.spellCastModeEnabled = spellCastModeEnabled;
     }
 
-    public String getSkillForSlot(int slotId){
-        return spellKeybinds.get(slotId);
+    public int getLevel() {
+        return level;
     }
 
-    public String getActiveBowSkillId() {
-        return activeBowSkillId;
+    public void setLevel(int level) {
+        if (level == this.level || level < 1) return;
+
+        if (level < this.level) {
+            this.currentExp = 0;
+        }
+
+        this.level = level;
     }
 
-    public void setActiveBowSkillId(String activeBowSkillId) {
-        this.activeBowSkillId = activeBowSkillId;
+    public double getCurrentExp() {
+        return currentExp;
+    }
+
+    public void setCurrentExp(double currentExp) {
+        this.currentExp = currentExp;
+
+        tryLevelUp();
+    }
+
+    public void addLevels(int amount) {
+        if (amount < 1) return;
+        this.level += amount;
+    }
+
+    public void addExp(double amount) {
+        this.currentExp += amount;
+
+        tryLevelUp();
+    }
+
+
+    private void tryLevelUp() {
+        final double requiredExp = getRequiredExp();
+
+        if (this.currentExp >= requiredExp){
+            this.level++;
+            this.currentExp -= requiredExp;
+
+            tryLevelUp();
+        }
+    }
+
+    private double getRequiredExp() {
+        return (4 * (Math.pow(level, 3))) / 5 + 100;
     }
 
     //////////////////////////////////
@@ -297,7 +337,7 @@ public class XRPGPlayer {
         this.handlerList.put(handlerName.toUpperCase(), handler);
     }
 
-    public ActiveEventHandler getActiveHandler(){
+    public ActiveEventHandler getActiveHandler() {
         return activeHandler;
     }
 
@@ -307,9 +347,9 @@ public class XRPGPlayer {
     //                              //
     //////////////////////////////////
 
-    public PlayerData extractData(){
+    public PlayerData extractData() {
         Set<String> skills = new HashSet<>();
-        for (PassiveEventHandler handler:handlerList.values()) {
+        for (PassiveEventHandler handler : handlerList.values()) {
             skills.addAll(handler.getSkills().keySet());
         }
         skills.addAll(activeHandler.getSkills().keySet());

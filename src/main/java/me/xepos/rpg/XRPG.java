@@ -10,10 +10,7 @@ import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.parties.PartyManagerFactory;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.dependencies.protection.ProtectionSetFactory;
-import me.xepos.rpg.listeners.FollowerListener;
-import me.xepos.rpg.listeners.InventoryListener;
-import me.xepos.rpg.listeners.PlayerListener;
-import me.xepos.rpg.listeners.ProjectileListener;
+import me.xepos.rpg.listeners.*;
 import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.tasks.ManaTask;
 import me.xepos.rpg.utils.Utils;
@@ -27,6 +24,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -66,6 +64,8 @@ public final class XRPG extends JavaPlugin {
 
     @Override // Plugin startup logic
     public void onEnable() {
+
+        Plugin mcMMO = Bukkit.getPluginManager().getPlugin("mcMMO");
         //Load classes
         this.saveDefaultConfig();
 
@@ -74,7 +74,7 @@ public final class XRPG extends JavaPlugin {
         this.classLoader.checkClassFolder();
         this.classData = this.classLoader.initializeClasses();
 
-        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook"};
+        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook", "noexp"};
 
         for (String name:keyNames) {
             this.keyRegistry.put(name, new NamespacedKey(this, name));
@@ -98,6 +98,12 @@ public final class XRPG extends JavaPlugin {
         initClassChangeGUI();
         //registering listeners/commands
         initEventListeners();
+        if (mcMMO != null){
+            getServer().getPluginManager().registerEvents(new McMMOListener(this), this);
+        }else{
+            getServer().getPluginManager().registerEvents(new EXPListener(this), this);
+        }
+
 
         this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this, classData));
         this.getCommand("xrpgreload").setExecutor(new XRPGReload());

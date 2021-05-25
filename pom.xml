@@ -62,6 +62,10 @@
 
     <repositories>
         <repository>
+            <id>mcmmo-repo</id>
+            <url>https://nexus.neetgames.com/repository/maven-public/</url>
+        </repository>
+        <repository>
             <id>papermc-repo</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
@@ -109,6 +113,11 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>20.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gmail.nossr50.mcMMO</groupId>
+            <artifactId>mcMMO</artifactId>
+            <version>2.1.197-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.github.magnusulf</groupId>
