@@ -6,6 +6,7 @@ softdepend:
   - Factions
   - Parties
   - WorldGuard
+  - mcMMO
 commands:
   xrpgdebug:
     description: debug command
