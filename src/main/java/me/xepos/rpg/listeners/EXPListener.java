@@ -1,0 +1,39 @@
+package me.xepos.rpg.listeners;
+
+import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.events.XRPGGainEXPEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Villager;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
+
+public class EXPListener implements Listener {
+    private final XRPG plugin;
+
+    public EXPListener(XRPG plugin){
+        this.plugin = plugin;
+    }
+
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent e){
+        if (e.getEntity().getKiller() == null) return;
+        //if (e.getEntity() instanceof Villager || e.getEntity().getPersistentDataContainer().has()) return;
+        XRPGPlayer gainer = plugin.getXRPGPlayer(e.getEntity().getKiller());
+
+        if (gainer != null) {
+            double health = e.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+
+            XRPGGainEXPEvent event = new XRPGGainEXPEvent(gainer, health / 2);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()){
+                //add exp here
+            }
+        }
+    }
+}

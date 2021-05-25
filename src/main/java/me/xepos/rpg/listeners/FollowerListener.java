@@ -11,11 +11,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-public class EntityListener implements Listener {
+public class FollowerListener implements Listener {
 
     private final XRPG plugin;
 
-    public EntityListener(XRPG plugin) {
+    public FollowerListener(XRPG plugin) {
         this.plugin = plugin;
     }
 

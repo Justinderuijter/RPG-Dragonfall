@@ -10,7 +10,7 @@ import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.parties.PartyManagerFactory;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.dependencies.protection.ProtectionSetFactory;
-import me.xepos.rpg.listeners.EntityListener;
+import me.xepos.rpg.listeners.FollowerListener;
 import me.xepos.rpg.listeners.InventoryListener;
 import me.xepos.rpg.listeners.PlayerListener;
 import me.xepos.rpg.listeners.ProjectileListener;
@@ -148,7 +148,7 @@ public final class XRPG extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(this, databaseManager), this);
         getServer().getPluginManager().registerEvents(new InventoryListener(this, classLoader, databaseManager), this);
         getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
-        getServer().getPluginManager().registerEvents(new EntityListener(this), this);
+        getServer().getPluginManager().registerEvents(new FollowerListener(this), this);
     }
 
     private void loadConfigs() {
