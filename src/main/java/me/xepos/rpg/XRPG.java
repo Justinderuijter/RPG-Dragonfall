@@ -99,6 +99,7 @@ public final class XRPG extends JavaPlugin {
         //registering listeners/commands
         initEventListeners();
         if (mcMMO != null){
+            Bukkit.getLogger().info("Using mcMMO for EXP calculations.");
             getServer().getPluginManager().registerEvents(new McMMOListener(this), this);
         }else{
             getServer().getPluginManager().registerEvents(new EXPListener(this), this);
