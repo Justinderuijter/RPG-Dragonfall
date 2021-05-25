@@ -61,9 +61,7 @@ public class SpellbookCommand implements TabExecutor {
 
     private ItemStack createSpellBookItem(ConfigurationSection configurationSection){ ;
         final String iconName = configurationSection.getString("icon", "BARRIER").toUpperCase();
-        Bukkit.getLogger().warning(iconName);
         final String skillName = configurationSection.getString("name", "Nameless Skill");
-        Bukkit.getLogger().warning(skillName);
         return this.createSpellBookItem(Material.valueOf(iconName), skillName);
     }
 

@@ -18,14 +18,19 @@ import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.tasks.ManaTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,7 +74,7 @@ public final class XRPG extends JavaPlugin {
         this.classLoader.checkClassFolder();
         this.classData = this.classLoader.initializeClasses();
 
-        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId"};
+        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook"};
 
         for (String name:keyNames) {
             this.keyRegistry.put(name, new NamespacedKey(this, name));
@@ -198,6 +203,29 @@ public final class XRPG extends JavaPlugin {
         if (!this.classData.containsKey(classId)) {
             this.classData.put(classId, dataFile);
         }
+    }
+
+    public ItemStack getSpellbookItem(){
+        final String name = getConfig().getString("items.spellbook.name", "Spellbook");
+        final List<String> lore = getConfig().getStringList("items.spellbook.lore");
+
+/*
+        ItemStack spellbook = Utils.buildItemStack(Material.ENCHANTED_BOOK, name, lore);
+        if (spellbook.getItemMeta() != null){
+            spellbook.getItemMeta().getPersistentDataContainer().set(getKey("spellbook"), PersistentDataType.BYTE, (byte)1);
+        }
+*/
+        ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(name);
+            meta.setLore(lore);
+            meta.getPersistentDataContainer().set(getKey("spellbook"), PersistentDataType.BYTE, (byte)1);
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            item.setItemMeta(meta);
+        }
+
+        return item;
     }
 
     public FileConfiguration getFileConfiguration(String classId) {

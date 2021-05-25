@@ -99,7 +99,7 @@ public class ToggleSpellCommand implements TabExecutor {
         if(inventory.getHeldItemSlot() < keybindSize)
             inventory.setHeldItemSlot(keybindSize + 1);
 
-        PacketUtils.testingPacket(xrpgPlayer);
+        PacketUtils.sendSpellmodePacket(xrpgPlayer);
     }
 
     private void disableSpellcastMode(XRPGPlayer xrpgPlayer){

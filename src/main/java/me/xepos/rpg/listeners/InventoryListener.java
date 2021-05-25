@@ -49,7 +49,7 @@ public class InventoryListener implements Listener {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
 
         if (xrpgPlayer.isSpellCastModeEnabled()) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.testingPacket(xrpgPlayer), 1);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
             if (e.getSlot() < xrpgPlayer.getSpellKeybinds().size() && e.getClickedInventory() instanceof PlayerInventory) {
                 e.setCancelled(true);
                 return;
@@ -162,8 +162,15 @@ public class InventoryListener implements Listener {
 
 
         } else {
-            if (e.getInventorySlots().contains(40)) {
+            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getWhoClicked().getUniqueId());
+            if (xrpgPlayer == null) return;
+
+            if (e.getInventorySlots().contains(40) && !xrpgPlayer.isShieldAllowed() && e.getCursor() != null && e.getCursor().getType() == Material.SHIELD) {
                 e.setCancelled(true);
+            }
+
+            if(xrpgPlayer.isSpellCastModeEnabled()){
+                Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
             }
         }
 

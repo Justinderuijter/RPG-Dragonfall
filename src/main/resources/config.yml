@@ -28,6 +28,14 @@ Mana:
   recovery-delay: 5
   recovery-amount: 5
 
+items:
+  spellbook:
+    lore:
+      - "Hold this item and right click"
+      - "to enter spellmode."
+      - "Can also be used to exit spellmode."
+
+
 Garbage Collection:
   # Time that should pass between garbage collection.
   # Set to 0 to disable garbage collection.

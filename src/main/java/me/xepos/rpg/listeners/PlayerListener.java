@@ -8,6 +8,7 @@ import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.utils.PacketUtils;
+import me.xepos.rpg.utils.SpellmodeUtils;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,6 +23,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 
 public class PlayerListener implements Listener {
@@ -92,6 +94,10 @@ public class PlayerListener implements Listener {
         } else {
             player.kickPlayer("Something went wrong while loading XRPG data.");
         }
+
+        if (!player.hasPlayedBefore()){
+            player.getInventory().addItem(plugin.getSpellbookItem());
+        }
     }
 
     @EventHandler
@@ -120,7 +126,7 @@ public class PlayerListener implements Listener {
 
 
         if(xrpgPlayer.isSpellCastModeEnabled()){
-            Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.testingPacket(xrpgPlayer), 1);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
             if (player.getInventory().getHeldItemSlot() < xrpgPlayer.getSpellKeybinds().size()) {
                 e.setCancelled(true);
                 return;
@@ -131,13 +137,18 @@ public class PlayerListener implements Listener {
 
             ItemStack item = e.getItem();
             //Cancel using shield if not allowed
-            if (item != null && item.getType() == Material.SHIELD && !xrpgPlayer.isShieldAllowed()) {
-                player.sendMessage(ChatColor.RED + "You can't use shields!");
-                player.sendMessage(ChatColor.RED + "Attempting to use it slowed you down!");
-                player.sendMessage(ChatColor.RED + "Yet you don't seem to be blocking anything at all...");
-                e.setCancelled(true);
-                return;
+            if (item != null){
+                if (item.getType() == Material.SHIELD && !xrpgPlayer.isShieldAllowed()) {
+                    player.sendMessage(ChatColor.RED + "You can't use shields!");
+                    player.sendMessage(ChatColor.RED + "Attempting to use it slowed you down!");
+                    player.sendMessage(ChatColor.RED + "Yet you don't seem to be blocking anything at all...");
+                    e.setCancelled(true);
+                    return;
+                }else if(item.getItemMeta().getPersistentDataContainer().has(plugin.getKey("spellbook"), PersistentDataType.BYTE)){
+                    SpellmodeUtils.enterSpellmode(xrpgPlayer);
+                }
             }
+
 
             if (e.getPlayer().isSneaking()) {
                 xrpgPlayer.getPassiveEventHandler("SNEAK_RIGHT_CLICK").invoke(e);
@@ -146,8 +157,6 @@ public class PlayerListener implements Listener {
             }
 
         } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-
-            doBowCycle(e.getItem(), xrpgPlayer);
 
             if (e.getPlayer().isSneaking()) {
                 xrpgPlayer.getPassiveEventHandler("SNEAK_LEFT_CLICK").invoke(e);
@@ -212,12 +221,18 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onSwapHeldItem(PlayerItemHeldEvent e){
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
-        if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()){
-            if (e.getNewSlot() < xrpgPlayer.getSpellKeybinds().size()) {
-                xrpgPlayer.getActiveHandler().invoke(e);
-                e.setCancelled(true);
+
+        if (xrpgPlayer != null){
+            if (xrpgPlayer.isSpellCastModeEnabled()){
+                if (e.getNewSlot() < xrpgPlayer.getSpellKeybinds().size()) {
+                    xrpgPlayer.getActiveHandler().invoke(e);
+                    e.setCancelled(true);
+                }else if (e.getNewSlot() == 8){
+                    SpellmodeUtils.disableSpellmode(xrpgPlayer);
+                }
             }
         }
+
     }
 
     @EventHandler
@@ -233,12 +248,6 @@ public class PlayerListener implements Listener {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()){
             e.setCancelled(true);
-        }
-    }
-
-    private void doBowCycle(ItemStack item, XRPGPlayer xrpgPlayer) {
-        if (item != null && item.getType() == Material.BOW) {
-            //xrpgPlayer.getEventHandler("SHOOT_BOW").next();
         }
     }
 

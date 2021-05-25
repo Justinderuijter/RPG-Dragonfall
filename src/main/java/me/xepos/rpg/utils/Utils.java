@@ -176,10 +176,6 @@ public final class Utils {
             entity.setHealth(0);
     }
 
-    public static Long setSkillCooldown(int cooldownInSeconds) {
-        return System.currentTimeMillis() + (cooldownInSeconds * 1000L);
-    }
-
     public static boolean isSkillReady(Long lastUsage) {
         return lastUsage <= System.currentTimeMillis();
     }
@@ -367,5 +363,7 @@ public final class Utils {
         }
         return item;
     }
+
+
 
 }
