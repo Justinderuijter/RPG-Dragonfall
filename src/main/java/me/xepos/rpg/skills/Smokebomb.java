@@ -29,8 +29,8 @@ public class Smokebomb extends XRPGActiveSkill {
 
     private int smokebombDuration = 10;
 
-    public Smokebomb(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public Smokebomb(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }

@@ -12,8 +12,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Focus extends XRPGPassiveSkill {
 
-    public Focus(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public Focus(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         setRemainingCooldown(-1);
         xrpgPlayer.getPassiveEventHandler("SHOOT_BOW").addSkill(this.getClass().getSimpleName(),this);

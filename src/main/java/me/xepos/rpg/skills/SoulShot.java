@@ -11,8 +11,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class SoulShot extends XRPGActiveSkill {
-    public SoulShot(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public SoulShot(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }

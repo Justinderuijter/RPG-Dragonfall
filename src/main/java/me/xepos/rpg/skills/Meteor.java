@@ -3,31 +3,21 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ExplosiveProjectileData;
-import me.xepos.rpg.skills.base.FireballStackData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Fireball;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.util.Vector;
 
 public class Meteor extends XRPGActiveSkill {
-    private FireballStackData fireballStackData;
+    private me.xepos.rpg.skills.Fireball fireball;
 
-    public Meteor(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, FireballStackData fireballStackData) {
-        super(xrpgPlayer, skillVariables, plugin);
-
-        this.fireballStackData = fireballStackData;
-        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
-    }
-
-    public Meteor(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public Meteor(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getPassiveEventHandler("LEFT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
     }
@@ -42,9 +32,9 @@ public class Meteor extends XRPGActiveSkill {
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getPassiveEventHandler("RIGHT_CLICK").getSkills().values()) {
+        for (XRPGSkill skill : getXRPGPlayer().getActiveHandler().getSkills().values()) {
             if (skill instanceof me.xepos.rpg.skills.Fireball) {
-                this.fireballStackData = ((me.xepos.rpg.skills.Fireball) skill).getFireballStackData();
+                this.fireball = ((me.xepos.rpg.skills.Fireball) skill);
                 return;
             }
         }
@@ -64,8 +54,8 @@ public class Meteor extends XRPGActiveSkill {
         Location loc = Utils.getTargetBlock(e.getPlayer(), range).getLocation();
 
         int stacks = 0;
-        if (fireballStackData != null) {
-            stacks = fireballStackData.getFireBallStacks();
+        if (fireball != null) {
+            stacks = fireball.getFireBallStacks();
         }
         loc.setY(loc.getY() + 15 - stacks * 2);
         org.bukkit.entity.Fireball fireball = loc.getWorld().spawn(loc, Fireball.class);

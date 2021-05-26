@@ -7,16 +7,14 @@ import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class XRPGSkill {
 
-    private XRPGPlayer xrpgPlayer;
+    private int skillLevel;
+    private final XRPGPlayer xrpgPlayer;
     private final XRPG plugin;
     private final ProtectionSet protectionSet;
     private final IPartyManager partyManager;
@@ -25,7 +23,7 @@ public abstract class XRPGSkill {
     private final ConfigurationSection skillVariables;
     private long remainingCooldown;
 
-    public XRPGSkill(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+    public XRPGSkill(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
         this.xrpgPlayer = xrpgPlayer;
         this.plugin = plugin;
         this.skillVariables = skillVariables;
@@ -108,4 +106,11 @@ public abstract class XRPGSkill {
         return skillVariables;
     }
 
+    public int getSkillLevel() {
+        return skillLevel;
+    }
+
+    public void setSkillLevel(int skillLevel) {
+        this.skillLevel = skillLevel;
+    }
 }

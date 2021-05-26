@@ -13,8 +13,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class AceUpMySleeve extends XRPGPassiveSkill {
 
-    public AceUpMySleeve(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public AceUpMySleeve(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getPassiveEventHandler("SHOOT_BOW").addSkill(this.getClass().getSimpleName() ,this);
     }

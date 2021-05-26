@@ -38,8 +38,8 @@ public class Rage extends XRPGPassiveSkill {
     private boolean isLocked = false;
     BukkitTask rageTask = null;
 
-    public Rage(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public Rage(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         double attackSpeedMultiplier = skillVariables.getDouble("atk-spd-multiplier", 1.65) - 1;
         AttributeModifier mod = new AttributeModifier(UUID.fromString("1d7a09c9-b6e2-4dc7-ab6f-8831dffcb111"), "RAGE_ATK_SPD", attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);

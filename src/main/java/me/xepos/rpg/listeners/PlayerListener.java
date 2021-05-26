@@ -192,7 +192,7 @@ public class PlayerListener implements Listener {
     public void onEntityShootBow(EntityShootBowEvent e) {
         if (e.getEntity() instanceof Player) {
             XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getEntity().getUniqueId());
-            if (!plugin.getFileConfiguration(xrpgPlayer.getClassId()).getBoolean("allow-bow", true)) {
+            if (!plugin.getFileConfiguration(xrpgPlayer.getGuildId()).getBoolean("allow-bow", true)) {
                 xrpgPlayer.getPlayer().sendMessage(ChatColor.RED + "You're not lectured on archery!");
                 e.setConsumeItem(false);
                 e.setCancelled(true);
@@ -254,7 +254,7 @@ public class PlayerListener implements Listener {
     private void addClassModifiers(XRPGPlayer xrpgPlayer){
         AttributeModifierManager manager = AttributeModifierManager.getInstance();
         for (String id: manager.getModifiers(ModifierType.POSITIVE).keySet()) {
-            if (id.startsWith(xrpgPlayer.getClassId().toUpperCase())){
+            if (id.startsWith(xrpgPlayer.getGuildId().toUpperCase())){
                 Utils.addUniqueModifier(xrpgPlayer.getPlayer(), manager.get(ModifierType.POSITIVE, id));
                 xrpgPlayer.getPlayer().sendMessage("Added " + id);
             }

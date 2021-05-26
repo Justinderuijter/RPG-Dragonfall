@@ -16,15 +16,15 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public class BoneShield extends XRPGPassiveSkill {
     private ArmyOfTheUndead armyOfTheUndead;
 
-    public BoneShield(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, @Nullable ArmyOfTheUndead armyOfTheUndead) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public BoneShield(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel,  @Nullable ArmyOfTheUndead armyOfTheUndead) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         this.armyOfTheUndead = armyOfTheUndead;
         xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
     }
 
-    public BoneShield(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public BoneShield(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
     }

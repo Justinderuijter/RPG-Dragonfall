@@ -20,8 +20,8 @@ import org.bukkit.util.Vector;
 import java.util.UUID;
 
 public class Nimble extends XRPGPassiveSkill {
-    public Nimble(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public Nimble(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         //Initializing the modifier
         double multiplier = getSkillVariables().getDouble("speed-multiplier", 1.5) - 1;

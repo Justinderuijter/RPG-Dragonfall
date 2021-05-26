@@ -24,7 +24,6 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TreeLoader {
@@ -54,7 +53,7 @@ public class TreeLoader {
     }
 
     public void buildTree(Inventory inventory, XRPGPlayer xrpgPlayer, String id) {
-        Set<String> skillIds = xrpgPlayer.getAllLearnedSkills();
+        HashMap<String, Integer> skills = xrpgPlayer.getAllLearnedSkills();
 
         FileConfiguration fileConfiguration = plugin.getTreeData(id);
         List<String> layout = fileConfiguration.getStringList("interface.order");
@@ -68,7 +67,7 @@ public class TreeLoader {
                 ConfigurationSection skillData = plugin.getSkillData(skillId);
 
                 Material material = Material.RED_WOOL;
-                if (skillIds.contains(skillId)) {
+                if (skills.containsKey(skillId)) {
                     material = Material.GREEN_WOOL;
                 }
 

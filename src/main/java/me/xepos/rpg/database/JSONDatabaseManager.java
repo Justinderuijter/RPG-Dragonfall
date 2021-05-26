@@ -1,9 +1,10 @@
 package me.xepos.rpg.database;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.configuration.ClassLoader;
+import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.datatypes.PlayerData;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -20,10 +21,10 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
     private static File playerDataFolder;
     public final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private final ClassLoader classLoader;
+    private final SkillLoader skillLoader;
 
-    protected JSONDatabaseManager(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    protected JSONDatabaseManager(SkillLoader skillLoader) {
+        this.skillLoader = skillLoader;
         File baseFile = plugin.getDataFolder();
         if (!baseFile.exists()) {
             if (baseFile.mkdir()) {
@@ -47,18 +48,9 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
                 XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, playerData);
 
-                classLoader.loadClass(playerData, xrpgPlayer);
 
                 plugin.addRPGPlayer(playerId, xrpgPlayer);
 
-
-/*                JsonObject jsonData = gson.fromJson(data, JsonObject.class);
-                //Extract the class from JsonObject
-                String classId = jsonData.get("classId").getAsString();
-
-                XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, classId);
-                classLoader.load(classId, xrpgPlayer);
-                plugin.addRPGPlayer(playerId, xrpgPlayer);*/
 
             } catch (IOException ex) {
                 System.out.println("Couldn't load player data for " + playerId.toString() + ".json");
@@ -71,7 +63,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
             String defaultClassId = plugin.getDefaultClassId();
             PlayerData data = new PlayerData(defaultClassId, 2, 0);
             XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, data);
-            classLoader.loadClass(data, xrpgPlayer);
+            skillLoader.loadPlayerSkills(data, xrpgPlayer);
             plugin.addRPGPlayer(playerId, xrpgPlayer);
         }
     }
@@ -97,16 +89,6 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
             if (StringUtils.isNotBlank(data)) {
                 PlayerData savedData = gson.fromJson(data, PlayerData.class);
-
-                //This looks confusing so to clear it up:
-                //1. We take the saved data
-                //2. We get the current class' class data from the extracted data
-                //3. We replace the value in the savedData if it exists, otherwise override it.
-                final String classId = extractedData.getClassId();
-                savedData.setClassId(classId);
-                savedData.addClassData(classId, extractedData.getClassData(classId));
-
-                //4. turn the new data to json and save it.
                 dataToSave = gson.toJson(savedData);
 
             } else {

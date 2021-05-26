@@ -1,9 +1,8 @@
-package me.xepos.rpg.configuration;
+/*package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.enums.ModifierType;
 import org.bukkit.Bukkit;
@@ -303,4 +302,4 @@ public class ClassLoader {
             throw new IllegalArgumentException("ResourcePath cannot be null or empty");
         }
     }
-}
+}*/

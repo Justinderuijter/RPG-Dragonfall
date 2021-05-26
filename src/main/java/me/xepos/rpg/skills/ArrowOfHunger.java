@@ -15,8 +15,8 @@ public class ArrowOfHunger extends XRPGBowSkill {
 
     private final PotionEffect hungerEffect = new PotionEffect(PotionEffectType.HUNGER, (int) (getSkillVariables().getDouble("duration", 20) * 20L), getSkillVariables().getInt("amplifier", 3), false, false, true);
 
-    public ArrowOfHunger(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public ArrowOfHunger(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }

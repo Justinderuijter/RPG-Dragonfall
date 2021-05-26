@@ -56,7 +56,7 @@ public class XRPGDebug implements CommandExecutor {
                         case "players":
                             for (UUID id : plugin.getRPGPlayers().keySet()) {
                                 XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(id);
-                                player.sendMessage(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getClassId());
+                                player.sendMessage(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getGuildId());
                             }
                             return true;
                         case "skilldata":

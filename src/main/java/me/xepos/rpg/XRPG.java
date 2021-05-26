@@ -1,7 +1,6 @@
 package me.xepos.rpg;
 
 import me.xepos.rpg.commands.*;
-import me.xepos.rpg.configuration.ClassLoader;
 import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.configuration.TreeLoader;
 import me.xepos.rpg.database.DatabaseManagerFactory;
@@ -39,7 +38,7 @@ public final class XRPG extends JavaPlugin {
 
     private Inventory inventoryGUI;
     private Inventory treeMenu;
-    private ClassLoader classLoader;
+    private SkillLoader skillLoader;
     private TreeLoader treeLoader;
 
     //Ability targetting managers
@@ -76,10 +75,9 @@ public final class XRPG extends JavaPlugin {
         this.saveDefaultConfig();
 
         //Loaders
-        this.skillData = new SkillLoader(this).initializeSkills();
-        this.classLoader = new ClassLoader(this);
-        this.classLoader.checkClassFolder();
-        this.classData = this.classLoader.initializeClasses();
+        this.skillLoader = new SkillLoader(this);
+        this.skillData = this.skillLoader.initializeSkills();
+
         this.treeLoader = new TreeLoader(this);
         this.treeData = treeLoader.initialize();
 
@@ -92,7 +90,7 @@ public final class XRPG extends JavaPlugin {
 
 
         //Load database
-        this.databaseManager = DatabaseManagerFactory.getDatabaseManager(classLoader);
+        this.databaseManager = DatabaseManagerFactory.getDatabaseManager(skillLoader);
 
         //Load ability targetting managers
         this.partyManager = PartyManagerFactory.getPartyManager();
@@ -105,7 +103,6 @@ public final class XRPG extends JavaPlugin {
         //CraftLoader disabled as it won't be used (for now)
         //new CraftLoader(this).initCustomRecipes();
 
-        initClassChangeGUI();
         initTreeMenuGUI();
         //registering listeners/commands
         initEventListeners();
@@ -169,7 +166,7 @@ public final class XRPG extends JavaPlugin {
         }
     }
 
-    private void initClassChangeGUI() {
+/*    private void initClassChangeGUI() {
         inventoryGUI = Bukkit.createInventory(null, 18, "Pick A Class");
 
         for (ItemStack item : classLoader.initializeMenu()) {
@@ -178,11 +175,11 @@ public final class XRPG extends JavaPlugin {
                 inventoryGUI.setItem(slot, item);
             }
         }
-    }
+    }*/
 
     private void initEventListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(this, databaseManager), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(this, classLoader, treeLoader, databaseManager), this);
+        getServer().getPluginManager().registerEvents(new InventoryListener(this, treeLoader, databaseManager), this);
         getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
         getServer().getPluginManager().registerEvents(new FollowerListener(this), this);
     }

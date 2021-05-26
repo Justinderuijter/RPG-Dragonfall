@@ -1,6 +1,5 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.handlers.ActiveEventHandler;
 import me.xepos.rpg.handlers.BowEventHandler;
@@ -9,7 +8,10 @@ import me.xepos.rpg.skills.base.IFollowerContainer;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class XRPGPlayer {
@@ -19,7 +21,7 @@ public class XRPGPlayer {
     private int currentMana;
     private int maximumMana;
     private long lastClassChangeTime;
-    private String classId;
+    private String guildId;
     private int freeChangeTickets = 2;
     private boolean spellCastModeEnabled = false;
     private List<String> spellKeybinds = new ArrayList<>();
@@ -36,13 +38,13 @@ public class XRPGPlayer {
     public XRPGPlayer(UUID playerId, PlayerData playerData) {
         this.player = null;
         this.playerId = playerId;
-        this.classId = playerData.getClassId();
+        this.guildId = playerData.getClassId();
         this.lastClassChangeTime = playerData.getLastClassChange();
         this.freeChangeTickets = playerData.getFreeChangeTickets();
         this.spellKeybinds.clear();
         //Need to check for null as this will be new for new players
-        if (playerData.getClassData(classId) != null)
-            this.spellKeybinds.addAll(playerData.getClassData(playerData.getClassId()).getKeyBindOrder());
+        if (playerData.getKeybinds() != null)
+            this.spellKeybinds.addAll(playerData.getKeybinds());
 
         if (handlerList.isEmpty())
             initializePassiveHandlers();
@@ -53,10 +55,10 @@ public class XRPGPlayer {
 
     //Constructor for loading profiles
     @Deprecated
-    public XRPGPlayer(UUID playerId, String classId) {
+    public XRPGPlayer(UUID playerId, String guildId) {
         this.player = null;
         this.playerId = playerId;
-        this.classId = classId;
+        this.guildId = guildId;
         this.lastClassChangeTime = 0;
 
         if (handlerList.isEmpty())
@@ -67,10 +69,10 @@ public class XRPGPlayer {
     }
 
     @Deprecated
-    public XRPGPlayer(Player player, String classId) {
+    public XRPGPlayer(Player player, String guildId) {
         this.player = player;
         this.playerId = player.getUniqueId();
-        this.classId = classId;
+        this.guildId = guildId;
         this.lastClassChangeTime = 0;
 
         if (handlerList.isEmpty())
@@ -146,12 +148,12 @@ public class XRPGPlayer {
         return System.currentTimeMillis() > lastStunTime + 20 * 1000L;
     }
 
-    public String getClassId() {
-        return classId;
+    public String getGuildId() {
+        return guildId;
     }
 
-    public void setClassId(String classId) {
-        this.classId = classId;
+    public void setGuildId(String guildId) {
+        this.guildId = guildId;
     }
 
     public UUID getPlayerId() {
@@ -182,7 +184,7 @@ public class XRPGPlayer {
     public void resetClassData(String classId, String classDisplayName) {
         if (classId == null || classId.equals("")) return;
 
-        this.classId = classId;
+        this.guildId = classId;
         this.classDisplay = classDisplayName;
 
         //Clearing keybinds
@@ -357,25 +359,27 @@ public class XRPGPlayer {
     //                              //
     //////////////////////////////////
 
-    public Set<String> getAllLearnedSkills(){
-        Set<String> skills = new HashSet<>();
+    public HashMap<String, Integer> getAllLearnedSkills(){
+        HashMap<String, Integer> skills = new HashMap<>();
         for (PassiveEventHandler handler : handlerList.values()) {
-            skills.addAll(handler.getSkills().keySet());
+            for (String skillId:handler.getSkills().keySet()) {
+                final int level = handler.getSkills().get(skillId).getSkillLevel();
+                skills.put(skillId, level);
+            }
         }
-        skills.addAll(activeHandler.getSkills().keySet());
+
+        for (String skillId:activeHandler.getSkills().keySet()){
+            final int level = activeHandler.getSkills().get(skillId).getSkillLevel();
+            skills.put(skillId, level);
+        }
 
         return skills;
     }
 
     public PlayerData extractData() {
-        Set<String> skills = getAllLearnedSkills();
+        HashMap<String, Integer> skills = getAllLearnedSkills();
 
-        Set<String> keybindOrder = new HashSet<>(spellKeybinds);
-
-        PlayerData playerData = new PlayerData(this.classId, this.freeChangeTickets, this.lastClassChangeTime);
-        playerData.addClassData(this.classId, new ClassData(this.getPlayer().getHealth(), skills, keybindOrder));
-
-        return playerData;
+        return new PlayerData(this.guildId, this.freeChangeTickets, this.lastClassChangeTime, this.spellKeybinds, skills);
     }
 
     public List<String> getSpellKeybinds() {

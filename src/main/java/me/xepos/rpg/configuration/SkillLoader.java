@@ -1,12 +1,16 @@
 package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.PlayerData;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
@@ -122,6 +126,22 @@ public class SkillLoader {
             }
         } else {
             throw new IllegalArgumentException("ResourcePath cannot be null or empty");
+        }
+    }
+
+    public void loadPlayerSkills(PlayerData data, XRPGPlayer xrpgPlayer){
+        for (String skillId:data.getSkills().keySet()) {
+            try {
+                Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
+                Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
+
+                //The instance of the skill automatically assigns itself to the XRPGPlayer
+                constructor.newInstance(xrpgPlayer, plugin.getSkillData(skillId), plugin);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Bukkit.getLogger().warning("Something went wrong for " + skillId);
+            }
         }
     }
 }

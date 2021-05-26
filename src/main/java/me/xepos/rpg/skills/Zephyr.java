@@ -2,17 +2,14 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.FireballStackData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -20,17 +17,10 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class Zephyr extends XRPGActiveSkill {
-    private FireballStackData fireballStackData;
+    private Fireball fireball;
 
-    public Zephyr(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, FireballStackData fireballStackData) {
-        super(xrpgPlayer, skillVariables, plugin);
-
-        this.fireballStackData = fireballStackData;
-        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
-    }
-
-    public Zephyr(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public Zephyr(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
@@ -45,9 +35,9 @@ public class Zephyr extends XRPGActiveSkill {
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getPassiveEventHandler("RIGHT_CLICK").getSkills().values()) {
+        for (XRPGSkill skill : getXRPGPlayer().getActiveHandler().getSkills().values()) {
             if (skill instanceof Fireball) {
-                this.fireballStackData = ((Fireball) skill).getFireballStackData();
+                this.fireball = ((Fireball) skill);
                 return;
             }
         }
@@ -64,8 +54,8 @@ public class Zephyr extends XRPGActiveSkill {
         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_PUFFER_FISH_BLOW_UP, 0.5F, 1F);
 
         int fireBallStacks = 0;
-        if (fireballStackData != null) {
-            fireBallStacks = fireballStackData.getFireBallStacks();
+        if (fireball != null) {
+            fireBallStacks = fireball.getFireBallStacks();
         }
 
         final long duration = (long) getSkillVariables().getDouble("duration", 3.0);

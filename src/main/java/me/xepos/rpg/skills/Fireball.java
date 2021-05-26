@@ -3,9 +3,7 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
-import me.xepos.rpg.skills.base.FireballStackData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
-import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -14,16 +12,16 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class Fireball extends XRPGActiveSkill {
-    private final FireballStackData fireballStackData;
+    private byte fireBallStacks = 0;
+    private final byte maxFireballStacks = (byte) getSkillVariables().getInt("max-stacks", 2);
+    private long lastStackGained = System.currentTimeMillis();
 
-    public Fireball(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public Fireball(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
-        fireballStackData = new FireballStackData(xrpgPlayer, skillVariables, plugin);
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
@@ -47,6 +45,13 @@ public class Fireball extends XRPGActiveSkill {
             return;
         }
 
+        if (lastStackGained + getCooldown() * 2000L < System.currentTimeMillis() && fireBallStacks != 0) {
+            fireBallStacks = 0;
+            TextComponent text = new TextComponent("Fireball stacks lost!");
+            text.setColor(ChatColor.RED.asBungee());
+            e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, text);
+        }
+
         //Skill logic
         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
         org.bukkit.entity.Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
@@ -59,22 +64,22 @@ public class Fireball extends XRPGActiveSkill {
             getPlugin().projectiles.put(fireball.getUniqueId(), data);
         }
 
-        this.incrementFireBallStacks(this.fireballStackData.getMaxFireballStacks());
-        this.fireballStackData.setLastStackGained(System.currentTimeMillis());
+        this.incrementFireBallStacks(this.maxFireballStacks);
+        this.lastStackGained = System.currentTimeMillis();
         setRemainingCooldown(getCooldown());
 
-        TextComponent text = new TextComponent("You now have " + this.fireballStackData.getFireBallStacks() + " " + getSkillName() + " stacks");
+        TextComponent text = new TextComponent("You now have " + this.fireBallStacks + " " + getSkillName() + " stacks");
         text.setColor(ChatColor.DARK_GREEN.asBungee());
         e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, text);
     }
 
     private void incrementFireBallStacks(byte maxFireballStacks) {
-        if (this.fireballStackData.getFireBallStacks() < maxFireballStacks) {
-            this.fireballStackData.setFireBallStacks((byte) (this.fireballStackData.getFireBallStacks() + 1));
+        if (this.fireBallStacks < maxFireballStacks) {
+            this.fireBallStacks++;
         }
     }
 
-    public FireballStackData getFireballStackData() {
-        return fireballStackData;
+    public byte getFireBallStacks() {
+        return fireBallStacks;
     }
 }

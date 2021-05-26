@@ -2,7 +2,7 @@ package me.xepos.rpg.database;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.configuration.ClassLoader;
+import me.xepos.rpg.configuration.SkillLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -15,7 +15,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
     private final static XRPG plugin = XRPG.getPlugin(XRPG.class);
     private final static FileConfiguration config = plugin.getConfig();
     private Connection connection;
-    private final ClassLoader classLoader;
+    private final SkillLoader skillLoader;
 
     public boolean isConnected() {
         return (connection != null);
@@ -62,8 +62,8 @@ public class MySQLDatabaseManager implements IDatabaseManager {
         }
     }
 
-    protected MySQLDatabaseManager(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    protected MySQLDatabaseManager(SkillLoader skillLoader) {
+        this.skillLoader = skillLoader;
         try {
             connect();
         } catch (ClassNotFoundException | SQLException e) {
@@ -178,7 +178,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
     private void updatePlayer(XRPGPlayer xrpgPlayer){
         try{
             PreparedStatement ps = connection.prepareStatement("UPDATE xrpg_classes SET classId=?,tickets=? WHERE uuid=?");
-            ps.setString(1, xrpgPlayer.getClassId());
+            ps.setString(1, xrpgPlayer.getGuildId());
             ps.setString(2, String.valueOf(xrpgPlayer.getFreeChangeTickets()));
             ps.setString(3, xrpgPlayer.getPlayerId().toString());
 

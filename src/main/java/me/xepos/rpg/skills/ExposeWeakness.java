@@ -19,8 +19,8 @@ public class ExposeWeakness extends XRPGBowSkill {
     private boolean isActive = false;
     private final BowEventHandler bowHandler;
 
-    public ExposeWeakness(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
-        super(xrpgPlayer, skillVariables, plugin);
+    public ExposeWeakness(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         bowHandler = (BowEventHandler) getXRPGPlayer().getPassiveEventHandler("SHOOT_BOW");
         getXRPGPlayer().getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
