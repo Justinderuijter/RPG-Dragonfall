@@ -357,7 +357,9 @@ public final class Utils {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             meta.setDisplayName(displayName);
-            meta.setLore(lore);
+            if (lore == null || !lore.isEmpty()){
+                meta.setLore(lore);
+            }
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             item.setItemMeta(meta);
         }

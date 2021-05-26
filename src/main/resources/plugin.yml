@@ -29,3 +29,6 @@ commands:
     usage: /<command>
     aliases:
       - sb
+  tree:
+    description: open tree
+    usage: /<command>

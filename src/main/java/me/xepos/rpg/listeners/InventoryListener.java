@@ -3,6 +3,7 @@ package me.xepos.rpg.listeners;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.ClassLoader;
+import me.xepos.rpg.configuration.TreeLoader;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.datatypes.PlayerData;
@@ -14,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,11 +38,13 @@ public class InventoryListener implements Listener {
     private final XRPG plugin;
     private final ClassLoader classLoader;
     private final IDatabaseManager databaseManager;
+    private final TreeLoader treeLoader;
 
-    public InventoryListener(XRPG plugin, ClassLoader classLoader, IDatabaseManager databaseManager) {
+    public InventoryListener(XRPG plugin, ClassLoader classLoader, TreeLoader treeLoader, IDatabaseManager databaseManager) {
         this.plugin = plugin;
         this.classLoader = classLoader;
         this.databaseManager = databaseManager;
+        this.treeLoader = treeLoader;
     }
 
     @EventHandler
@@ -137,6 +141,26 @@ public class InventoryListener implements Listener {
 
             }
             e.setCancelled(true);
+        }else if(e.getView().getTitle().equals("Skill Trees")) {
+            e.setCancelled(true);
+            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("classId"), PersistentDataType.STRING)){
+                String classId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("classId"), PersistentDataType.STRING);
+                FileConfiguration fileConfiguration = plugin.getTreeData(classId);
+
+                Inventory newInventory = Bukkit.createInventory(null, 54, "Skill Tree: " + fileConfiguration.getString("name", "???"));
+                treeLoader.buildTree(newInventory, xrpgPlayer, classId);
+                player.openInventory(newInventory);
+            }
+            //Inventory inventory = Bukkit.createInventory(null, 54, "TreeTest");
+            //treeLoader.buildTree(inventory, xrpgPlayer, strings[0]);
+
+        }else if (e.getView().getTitle().contains("Skill Tree: ")){
+            e.setCancelled(true);
+
+            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("skillId"), PersistentDataType.STRING)){
+
+            }
+
         } else /*if(e.getInventory() instanceof PlayerInventory)*/ {
             if (xrpgPlayer == null) return;
 

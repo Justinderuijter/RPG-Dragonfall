@@ -3,6 +3,7 @@ package me.xepos.rpg;
 import me.xepos.rpg.commands.*;
 import me.xepos.rpg.configuration.ClassLoader;
 import me.xepos.rpg.configuration.SkillLoader;
+import me.xepos.rpg.configuration.TreeLoader;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.datatypes.BaseProjectileData;
@@ -37,7 +38,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class XRPG extends JavaPlugin {
 
     private Inventory inventoryGUI;
+    private Inventory treeMenu;
     private ClassLoader classLoader;
+    private TreeLoader treeLoader;
 
     //Ability targetting managers
     private IPartyManager partyManager;
@@ -52,6 +55,9 @@ public final class XRPG extends JavaPlugin {
 
     //Skills
     private static HashMap<String, FileConfiguration> skillData;
+
+    //Skill trees
+    private static HashMap<String, FileConfiguration> treeData;
 
     //Players
     private static final ConcurrentHashMap<UUID, XRPGPlayer> RPGPlayers = new ConcurrentHashMap<>();
@@ -69,12 +75,16 @@ public final class XRPG extends JavaPlugin {
         //Load classes
         this.saveDefaultConfig();
 
+        //Loaders
         this.skillData = new SkillLoader(this).initializeSkills();
         this.classLoader = new ClassLoader(this);
         this.classLoader.checkClassFolder();
         this.classData = this.classLoader.initializeClasses();
+        this.treeLoader = new TreeLoader(this);
+        this.treeData = treeLoader.initialize();
 
-        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook", "noexp"};
+
+        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook", "requires"};
 
         for (String name:keyNames) {
             this.keyRegistry.put(name, new NamespacedKey(this, name));
@@ -96,6 +106,7 @@ public final class XRPG extends JavaPlugin {
         //new CraftLoader(this).initCustomRecipes();
 
         initClassChangeGUI();
+        initTreeMenuGUI();
         //registering listeners/commands
         initEventListeners();
         if (mcMMO != null){
@@ -111,6 +122,7 @@ public final class XRPG extends JavaPlugin {
         this.getCommand("changeclass").setExecutor(new ChangeClassCommand(this, inventoryGUI));
         this.getCommand("spellmode").setExecutor(new ToggleSpellCommand(this));
         this.getCommand("spellbook").setExecutor(new SpellbookCommand(this));
+        this.getCommand("tree").setExecutor(new TreeCommand(this, treeLoader, treeMenu));
         System.out.println("RPG classes loaded!");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -140,6 +152,23 @@ public final class XRPG extends JavaPlugin {
         this.databaseManager.disconnect();
     }
 
+    private void initTreeMenuGUI(){
+        treeMenu = Bukkit.createInventory(null, 9, "Skill Trees");
+
+        for (String treeId:treeData.keySet()) {
+            FileConfiguration configuration = treeData.get(treeId);
+            String materialString = configuration.getString("icon", "BARRIER").toUpperCase();
+            Material material = Material.getMaterial(materialString);
+
+            ItemStack item = Utils.buildItemStack(material, configuration.getString("name", "???"), configuration.getStringList("description"));
+            ItemMeta meta = item.getItemMeta();
+            meta.getPersistentDataContainer().set(getKey("classId"), PersistentDataType.STRING, treeId);
+            item.setItemMeta(meta);
+
+            treeMenu.addItem(item);
+        }
+    }
+
     private void initClassChangeGUI() {
         inventoryGUI = Bukkit.createInventory(null, 18, "Pick A Class");
 
@@ -153,7 +182,7 @@ public final class XRPG extends JavaPlugin {
 
     private void initEventListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(this, databaseManager), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(this, classLoader, databaseManager), this);
+        getServer().getPluginManager().registerEvents(new InventoryListener(this, classLoader, treeLoader, databaseManager), this);
         getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
         getServer().getPluginManager().registerEvents(new FollowerListener(this), this);
     }
@@ -243,6 +272,8 @@ public final class XRPG extends JavaPlugin {
         return classData;
     }
 
+    public HashMap<String, FileConfiguration> getTreeData(){ return treeData; }
+
     public NamespacedKey getKey(String keyName){
         return keyRegistry.get(keyName);
     }
@@ -253,6 +284,10 @@ public final class XRPG extends JavaPlugin {
 
     public FileConfiguration getSkillData(String skillId){
         return skillData.get(skillId);
+    }
+
+    public FileConfiguration getTreeData(String treeId){
+        return treeData.get(treeId);
     }
 
     public Set<String> getAllSkills(){

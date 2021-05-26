@@ -268,6 +268,16 @@ public class XRPGPlayer {
         this.spellCastModeEnabled = spellCastModeEnabled;
     }
 
+    public String getSkillForSlot(int slotId){
+        return spellKeybinds.get(slotId);
+    }
+
+    //////////////////////////////////
+    //                              //
+    //            Levels            //
+    //                              //
+    //////////////////////////////////
+
     public int getLevel() {
         return level;
     }
@@ -347,12 +357,18 @@ public class XRPGPlayer {
     //                              //
     //////////////////////////////////
 
-    public PlayerData extractData() {
+    public Set<String> getAllLearnedSkills(){
         Set<String> skills = new HashSet<>();
         for (PassiveEventHandler handler : handlerList.values()) {
             skills.addAll(handler.getSkills().keySet());
         }
         skills.addAll(activeHandler.getSkills().keySet());
+
+        return skills;
+    }
+
+    public PlayerData extractData() {
+        Set<String> skills = getAllLearnedSkills();
 
         Set<String> keybindOrder = new HashSet<>(spellKeybinds);
 

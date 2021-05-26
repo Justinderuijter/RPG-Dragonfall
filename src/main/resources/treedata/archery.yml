@@ -1,0 +1,42 @@
+name: "Archery"
+icon: BOW
+
+skills:
+  Focus:
+    unlocked: true
+  SnipeShot:
+    requires: [ Focus ]
+  RapidFire:
+    requires: [ Focus ]
+  DisengagingShot:
+    requires: [ Focus ]
+  AceUpMySleeve:
+    requires: [ RapidFire, DisengagingShot ]
+  EnderArrow:
+    requires: [ DisengagingShot, AceUpMySleeve ]
+  TrueInfinity:
+    requires: [ AceUpMySleeve, EnderArrow ]
+
+interface:
+  order:
+    - "xxxxxxtxx"
+    - "xxxxxxxxx"
+    - "xexxxxaxx"
+    - "xxxxxxxxx"
+    - "xsxxrxxdx"
+    - "xxxxfxxxx"
+  legend:
+    f:
+      skill: Focus
+    s:
+      skill: SnipeShot
+    r:
+      skill: RapidFire
+    d:
+      skill: DisengagingShot
+    e:
+      skill: EnderArrow
+    a:
+      skill: AceUpMySleeve
+    t:
+      skill: TrueInfinity
