@@ -22,7 +22,8 @@ public class XRPGPlayer {
     private int maximumMana;
     private long lastClassChangeTime;
     private String guildId;
-    private int freeChangeTickets = 2;
+    private int skillUnlockPoints = 0;
+    private int skillUpgradePoints = 0;
     private boolean spellCastModeEnabled = false;
     private List<String> spellKeybinds = new ArrayList<>();
     private int level;
@@ -40,7 +41,7 @@ public class XRPGPlayer {
         this.playerId = playerId;
         this.guildId = playerData.getClassId();
         this.lastClassChangeTime = playerData.getLastClassChange();
-        this.freeChangeTickets = playerData.getFreeChangeTickets();
+        this.skillUnlockPoints = playerData.getFreeChangeTickets();
         this.spellKeybinds.clear();
         //Need to check for null as this will be new for new players
         if (playerData.getKeybinds() != null)
@@ -112,15 +113,6 @@ public class XRPGPlayer {
 
     private transient ActiveEventHandler activeHandler;
     private final transient HashMap<String, PassiveEventHandler> handlerList = new HashMap<>();
-
-
-    public int getFreeChangeTickets() {
-        return freeChangeTickets;
-    }
-
-    public void setFreeChangeTickets(int freeChangeTickets) {
-        this.freeChangeTickets = freeChangeTickets;
-    }
 
     public Player getPlayer() {
         return player;
@@ -331,6 +323,22 @@ public class XRPGPlayer {
         return (4 * (Math.pow(level, 3))) / 5 + 100;
     }
 
+    public int getSkillUnlockPoints() {
+        return skillUnlockPoints;
+    }
+
+    public void setSkillUnlockPoints(int skillUnlockPoints) {
+        this.skillUnlockPoints = skillUnlockPoints;
+    }
+
+    public int getSkillUpgradePoints() {
+        return skillUpgradePoints;
+    }
+
+    public void setSkillUpgradePoints(int skillUpgradePoints) {
+        this.skillUpgradePoints = skillUpgradePoints;
+    }
+
     //////////////////////////////////
     //                              //
     //  Handlers getters & setters  //
@@ -359,27 +367,31 @@ public class XRPGPlayer {
     //                              //
     //////////////////////////////////
 
-    public HashMap<String, Integer> getAllLearnedSkills(){
-        HashMap<String, Integer> skills = new HashMap<>();
+    public HashMap<String, XRPGSkill> getAllLearnedSkills(){
+        HashMap<String, XRPGSkill> skills = new HashMap<>();
         for (PassiveEventHandler handler : handlerList.values()) {
             for (String skillId:handler.getSkills().keySet()) {
-                final int level = handler.getSkills().get(skillId).getSkillLevel();
-                skills.put(skillId, level);
+                skills.put(skillId, handler.getSkills().get(skillId));
             }
         }
 
         for (String skillId:activeHandler.getSkills().keySet()){
-            final int level = activeHandler.getSkills().get(skillId).getSkillLevel();
-            skills.put(skillId, level);
+
+            skills.put(skillId, activeHandler.getSkills().get(skillId));
         }
 
         return skills;
     }
 
     public PlayerData extractData() {
-        HashMap<String, Integer> skills = getAllLearnedSkills();
+        HashMap<String, Integer> skills = new HashMap<>();
+        HashMap<String, XRPGSkill> learnedSkills = getAllLearnedSkills();
 
-        return new PlayerData(this.guildId, this.freeChangeTickets, this.lastClassChangeTime, this.spellKeybinds, skills);
+        for (String skillId:learnedSkills.keySet()) {
+            skills.put(skillId, learnedSkills.get(skillId).getSkillLevel());
+        }
+
+        return new PlayerData(this.guildId, this.skillUnlockPoints, this.lastClassChangeTime, this.spellKeybinds, skills);
     }
 
     public List<String> getSpellKeybinds() {
