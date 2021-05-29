@@ -1,17 +1,10 @@
 package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.XRPG;
-import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.utils.Utils;
+import me.xepos.rpg.tree.SkillTree;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -35,73 +28,25 @@ public class TreeLoader {
         this.treeFolder = new File(plugin.getDataFolder(), "trees");
     }
 
-    public HashMap<String, FileConfiguration> initialize() {
+    public HashMap<String, SkillTree> initialize() {
         extractAllSkillData();
 
-        HashMap<String, FileConfiguration> configurationHashMap = new HashMap<>();
+        HashMap<String, SkillTree> configurationHashMap = new HashMap<>();
 
         for (File file : treeFolder.listFiles()) {
             if (!file.getName().endsWith(".yml")) continue;
 
             String fileName = file.getName().replace(".yml", "");
-            FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
 
-            configurationHashMap.put(fileName, fileConfiguration);
+            FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
+            String treeName = fileConfiguration.getString("name", fileName);
+
+            configurationHashMap.put(fileName, new SkillTree(treeName, fileConfiguration, plugin));
+
+
         }
 
         return configurationHashMap;
-    }
-
-    public void buildTree(Inventory inventory, XRPGPlayer xrpgPlayer, String id) {
-        HashMap<String, Integer> skills = xrpgPlayer.getAllLearnedSkills();
-
-        FileConfiguration fileConfiguration = plugin.getTreeData(id);
-        List<String> layout = fileConfiguration.getStringList("interface.order");
-        int rowNum = 0;
-        for (String row : layout) {
-            char[] chars = row.toCharArray();
-            for (int i = 0; i < chars.length; i++) {
-                if (chars[i] == 'x') continue;
-
-                String skillId = fileConfiguration.getString("interface.legend." + chars[i] + ".skill");
-                ConfigurationSection skillData = plugin.getSkillData(skillId);
-
-                Material material = Material.RED_WOOL;
-                if (skills.containsKey(skillId)) {
-                    material = Material.GREEN_WOOL;
-                }
-
-                ItemStack item = Utils.buildItemStack(material, skillData.getString("name", "???"), skillData.getStringList("description"));
-
-                setRequiredMeta(fileConfiguration, item, skillId);
-
-                inventory.setItem(i + (rowNum * 9), item);
-
-            }
-            rowNum++;
-        }
-    }
-
-    private void setRequiredMeta(FileConfiguration fileConfiguration, ItemStack item, String skillId) {
-        ItemMeta meta = item.getItemMeta();
-
-
-        meta.getPersistentDataContainer().set(plugin.getKey("skillId"), PersistentDataType.STRING, skillId);
-
-        List<String> requiredSkills = fileConfiguration.getStringList("skills." + skillId + ".requires");
-        if (requiredSkills.size() > 0) {
-
-            StringBuilder requiredSkillsBuilder = new StringBuilder();
-            for (String requiredSkill : requiredSkills) {
-                requiredSkillsBuilder.append(requiredSkill).append(", ");
-            }
-
-            requiredSkillsBuilder.delete(requiredSkillsBuilder.length() - 1, requiredSkillsBuilder.length());
-
-            meta.getPersistentDataContainer().set(plugin.getKey("requires"), PersistentDataType.STRING, requiredSkillsBuilder.toString());
-        }
-
-        item.setItemMeta(meta);
     }
 
     private void extractAllSkillData() {

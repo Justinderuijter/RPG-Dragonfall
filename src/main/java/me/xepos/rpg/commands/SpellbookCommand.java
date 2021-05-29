@@ -2,8 +2,6 @@ package me.xepos.rpg.commands;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -39,8 +37,7 @@ public class SpellbookCommand implements TabExecutor {
 
             if (xrpgPlayer == null) return true;
 
-            TextComponent text = Component.text("Spellbook");
-            Inventory inventory = Bukkit.createInventory(null, 27, text);
+            Inventory inventory = Bukkit.createInventory(null, 27, "Spellbook");
 
             fillSeparator(inventory);
 
@@ -68,7 +65,7 @@ public class SpellbookCommand implements TabExecutor {
     private ItemStack createSpellBookItem(Material material, String itemName){
         final ItemStack skillIcon = new ItemStack(material);
         final ItemMeta meta = skillIcon.getItemMeta();
-        meta.displayName(Component.text(itemName));
+        //meta.displayName(Component.text(itemName));
         skillIcon.setItemMeta(meta);
 
         return skillIcon;
@@ -80,7 +77,7 @@ public class SpellbookCommand implements TabExecutor {
         final ItemMeta saveMeta = saveIcon.getItemMeta();
         final ItemMeta separatorMeta = separator.getItemMeta();
 
-        saveMeta.displayName(Component.text("Save spellbook"));
+        saveMeta.setDisplayName("Save spellbook");
         saveMeta.getPersistentDataContainer().set(plugin.getKey("separator"), PersistentDataType.BYTE, (byte)1);
         saveIcon.setItemMeta(saveMeta);
 

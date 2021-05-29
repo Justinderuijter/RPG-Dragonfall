@@ -41,7 +41,8 @@ public class XRPGPlayer {
         this.playerId = playerId;
         this.guildId = playerData.getClassId();
         this.lastClassChangeTime = playerData.getLastClassChange();
-        this.skillUnlockPoints = playerData.getFreeChangeTickets();
+        this.skillUpgradePoints = playerData.getSkillUpgradePoints();
+        this.skillUnlockPoints = playerData.getSkillUnlockPoints();
         this.spellKeybinds.clear();
         //Need to check for null as this will be new for new players
         if (playerData.getKeybinds() != null)
@@ -339,6 +340,14 @@ public class XRPGPlayer {
         this.skillUpgradePoints = skillUpgradePoints;
     }
 
+    public void reduceSkillUpgradePoints(){
+        this.skillUpgradePoints--;
+    }
+
+    public void reduceSkillUnlockPoints(){
+        this.skillUnlockPoints--;
+    }
+
     //////////////////////////////////
     //                              //
     //  Handlers getters & setters  //
@@ -391,7 +400,7 @@ public class XRPGPlayer {
             skills.put(skillId, learnedSkills.get(skillId).getSkillLevel());
         }
 
-        return new PlayerData(this.guildId, this.skillUnlockPoints, this.lastClassChangeTime, this.spellKeybinds, skills);
+        return new PlayerData(this.guildId, this.skillUnlockPoints, this.skillUpgradePoints, this.lastClassChangeTime, this.spellKeybinds, skills);
     }
 
     public List<String> getSpellKeybinds() {

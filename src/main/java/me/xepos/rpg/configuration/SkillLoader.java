@@ -131,17 +131,22 @@ public class SkillLoader {
 
     public void loadPlayerSkills(PlayerData data, XRPGPlayer xrpgPlayer){
         for (String skillId:data.getSkills().keySet()) {
-            try {
-                Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
-                Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
+            final int level = data.getSkills().getOrDefault(skillId, 1);
+            addSkillToPlayer(skillId, xrpgPlayer, level);
+        }
+    }
 
-                //The instance of the skill automatically assigns itself to the XRPGPlayer
-                constructor.newInstance(xrpgPlayer, plugin.getSkillData(skillId), plugin);
+    public void addSkillToPlayer(String skillId, XRPGPlayer xrpgPlayer, int level){
+        try {
+            Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
+            Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class, Integer.class);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                Bukkit.getLogger().warning("Something went wrong for " + skillId);
-            }
+            //The instance of the skill automatically assigns itself to the XRPGPlayer
+            constructor.newInstance(xrpgPlayer, plugin.getSkillData(skillId), plugin, level);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Bukkit.getLogger().warning("Something went wrong for " + skillId);
         }
     }
 }

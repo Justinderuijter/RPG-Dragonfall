@@ -2,20 +2,16 @@ package me.xepos.rpg.listeners;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.configuration.ClassLoader;
-import me.xepos.rpg.configuration.TreeLoader;
+import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
-import me.xepos.rpg.datatypes.PlayerData;
-import me.xepos.rpg.events.XRPGClassChangedEvent;
+import me.xepos.rpg.datatypes.TreeData;
+import me.xepos.rpg.enums.SkillRefundType;
+import me.xepos.rpg.tree.SkillTree;
 import me.xepos.rpg.utils.PacketUtils;
-import me.xepos.rpg.utils.Utils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,20 +27,22 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.HashMap;
 import java.util.Set;
+import java.util.UUID;
 
 public class InventoryListener implements Listener {
 
+    private final HashMap<UUID, TreeData> treeData;
     private final XRPG plugin;
-    private final ClassLoader classLoader;
     private final IDatabaseManager databaseManager;
-    private final TreeLoader treeLoader;
+    private final SkillLoader skillLoader;
 
-    public InventoryListener(XRPG plugin, ClassLoader classLoader, TreeLoader treeLoader, IDatabaseManager databaseManager) {
+    public InventoryListener(XRPG plugin, SkillLoader skillLoader, IDatabaseManager databaseManager) {
         this.plugin = plugin;
-        this.classLoader = classLoader;
         this.databaseManager = databaseManager;
-        this.treeLoader = treeLoader;
+        this.skillLoader = skillLoader;
+        this.treeData = new HashMap<>();
     }
 
     @EventHandler
@@ -60,59 +58,11 @@ public class InventoryListener implements Listener {
             }
         }
 
-        if (e.getView().getTitle().equalsIgnoreCase("Pick A Class")) {
-            if (e.getCurrentItem() == null)
-                return;
-
-            if (xrpgPlayer == null) {
-                e.setCancelled(true);
-                return;
-            }
-
-            ItemMeta meta = e.getCurrentItem().getItemMeta();
-            if (meta != null) {
-                String classId = meta.getPersistentDataContainer().get(new NamespacedKey(plugin, "classId"), PersistentDataType.STRING);
-                String classDisplayName = e.getCurrentItem().getItemMeta().getDisplayName();
-
-                if (classId == null) {
-                    e.setCancelled(true);
-                    return;
-                }
-
-                if (xrpgPlayer.getFreeChangeTickets() <= 0) {
-                    player.sendMessage(ChatColor.RED + "You don't have enough tickets!");
-                    e.setCancelled(true);
-                    return;
-                }
-
-                if (xrpgPlayer.getClassId().equals(classId)) {
-                    player.sendMessage(ChatColor.RED + "Can't change to this class, it's already your current class!");
-                    e.setCancelled(true);
-                    return;
-                }
-
-                XRPGClassChangedEvent event = new XRPGClassChangedEvent(player, xrpgPlayer.getClassId(), xrpgPlayer.getClassDisplayName(), classId, classDisplayName);
-                Bukkit.getServer().getPluginManager().callEvent(event);
-
-                if (!event.isCancelled()) {
-                    PlayerData data = xrpgPlayer.extractData();
-
-                    //Need to save before changing class to prevent data loss
-                    new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
-
-                    Bukkit.broadcastMessage(xrpgPlayer.getPlayer().getName() + " changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName + "!");
-                    data.setClassId(classId);
-                    classLoader.loadClass(data, xrpgPlayer);
-                    Utils.removeAllModifiers(player);
-                }
-            }
-
-            e.setCancelled(true);
-        } else if (e.getView().getTitle().equalsIgnoreCase("Spellbook")) {
+        if (e.getView().getTitle().equalsIgnoreCase("Spellbook")) {
             if (!(e.getClickedInventory() instanceof PlayerInventory)) {
                 e.getWhoClicked().sendMessage("Spellbook: " + e.getSlot());
 
-                if (e.getClick() == ClickType.SHIFT_LEFT || e.getClick() == ClickType.SHIFT_RIGHT){
+                if (e.getClick() == ClickType.SHIFT_LEFT || e.getClick() == ClickType.SHIFT_RIGHT) {
                     e.setCancelled(true);
                     return;
                 }
@@ -129,11 +79,11 @@ public class InventoryListener implements Listener {
                 if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("separator"), PersistentDataType.BYTE)) {
                     e.setCancelled(true);
                     if (e.getCurrentItem().getType() == Material.WRITABLE_BOOK) {
-                        e.getWhoClicked().sendMessage(Component.text("You clicked save"));
+                        //e.getWhoClicked().sendMessage(Component.text("You clicked save"));
 
                         updateKeybinds(xrpgPlayer, e.getClickedInventory());
 
-                        e.getWhoClicked().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                        e.getWhoClicked().closeInventory();
                         new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
                     }
                 }
@@ -141,23 +91,73 @@ public class InventoryListener implements Listener {
 
             }
             e.setCancelled(true);
-        }else if(e.getView().getTitle().equals("Skill Trees")) {
+        } else if (e.getView().getTitle().equals("Skill Trees")) {
             e.setCancelled(true);
-            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("classId"), PersistentDataType.STRING)){
-                String classId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("classId"), PersistentDataType.STRING);
-                FileConfiguration fileConfiguration = plugin.getTreeData(classId);
+            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("classId"), PersistentDataType.STRING)) {
+                String treeId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("classId"), PersistentDataType.STRING);
 
-                Inventory newInventory = Bukkit.createInventory(null, 54, "Skill Tree: " + fileConfiguration.getString("name", "???"));
-                treeLoader.buildTree(newInventory, xrpgPlayer, classId);
-                player.openInventory(newInventory);
+                SkillTree tree = plugin.getSkillTree(treeId);
+
+                treeData.put(player.getUniqueId(), new TreeData(xrpgPlayer, treeId, tree));
+                player.openInventory(tree.getInventory(xrpgPlayer));
             }
             //Inventory inventory = Bukkit.createInventory(null, 54, "TreeTest");
             //treeLoader.buildTree(inventory, xrpgPlayer, strings[0]);
 
-        }else if (e.getView().getTitle().contains("Skill Tree: ")){
+        } else if (e.getView().getTitle().startsWith("Skill Tree: ")) {
             e.setCancelled(true);
 
-            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("skillId"), PersistentDataType.STRING)){
+            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null) {
+                if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("skillId"), PersistentDataType.STRING)) {
+                    final String skillId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("skillId"), PersistentDataType.STRING);
+                    //Set<String> learnedSkills = xrpgPlayer.getAllLearnedSkills().keySet();
+                    TreeData data = treeData.get(player.getUniqueId());
+                    //Backing out of the inventory will remove the object from the HashMap
+                    if (e.getClick() == ClickType.LEFT) {
+                        if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("level"), PersistentDataType.INTEGER)) {
+                            int level = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("level"), PersistentDataType.INTEGER);
+                            int maxLevel = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("maxLevel"), PersistentDataType.INTEGER);
+                            player.sendMessage("Level: " + level);
+                            player.sendMessage("Max Level: " + maxLevel);
+
+                            if (level == 0) {
+                                if (xrpgPlayer.getSkillUnlockPoints() > 0){
+                                    player.sendMessage("Unlock Points: " + xrpgPlayer.getSkillUnlockPoints());
+                                    player.sendMessage("SkillId: " + skillId);
+
+                                    data.addSkillToUnlock(skillId, 1);
+                                    xrpgPlayer.reduceSkillUnlockPoints();
+                                    //Update icon
+                                    updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), 1);
+                                }
+                            } else {
+                                if (xrpgPlayer.getSkillUpgradePoints() > 0 && data.canLevel(skillId)){
+                                    data.addLevel(skillId);
+
+                                    xrpgPlayer.reduceSkillUpgradePoints();
+                                    //Update icon
+                                    updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), data.getCurrentSkillLevel(skillId));
+                                }
+                            }
+                        }
+                    } else if (e.getClick() == ClickType.RIGHT) {
+                        SkillRefundType refundType = data.revertSkill(skillId);
+                        if (refundType == SkillRefundType.REFUND_UNLOCK_POINT){
+                            xrpgPlayer.setSkillUnlockPoints(xrpgPlayer.getSkillUnlockPoints() + 1);
+                        }else if(refundType == SkillRefundType.REFUND_UPGRADE_POINT){
+                            xrpgPlayer.setSkillUpgradePoints(xrpgPlayer.getSkillUpgradePoints() + 1);
+                        }
+                        updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), data.getCurrentSkillLevel(skillId));
+                    }
+                }else if(e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("separator"), PersistentDataType.STRING) && e.getCurrentItem().getType() == Material.WRITTEN_BOOK){
+                    // save logic
+                    TreeData data = treeData.get(player.getUniqueId());
+                    data.applyChanges(skillLoader);
+
+                    new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
+
+                    player.closeInventory();
+                }
 
             }
 
@@ -175,12 +175,12 @@ public class InventoryListener implements Listener {
     public void onItemDrag(final InventoryDragEvent e) {
         if (e.getView().getTitle().equalsIgnoreCase("Pick A Class")) {
             e.setCancelled(true);
-        }else if (e.getView().getTitle().equals("Spellbook")){
+        } else if (e.getView().getTitle().equals("Spellbook")) {
 
             Set<Integer> bottom = e.getRawSlots();
             bottom.removeIf(x -> x < e.getView().getTopInventory().getSize());
 
-            if (e.getRawSlots().stream().anyMatch(bottom::contains)){
+            if (e.getRawSlots().stream().anyMatch(bottom::contains)) {
                 e.setCancelled(true);
             }
 
@@ -193,7 +193,7 @@ public class InventoryListener implements Listener {
                 e.setCancelled(true);
             }
 
-            if(xrpgPlayer.isSpellCastModeEnabled()){
+            if (xrpgPlayer.isSpellCastModeEnabled()) {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
             }
         }
@@ -202,9 +202,15 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryClose(final InventoryCloseEvent e) {
-        if (!e.getView().getTitle().equals("Spellbook")) return;
+        if (!e.getView().getTitle().equals("Spellbook")){
+            e.getPlayer().setItemOnCursor(null);
+        }
 
-        e.getPlayer().setItemOnCursor(null);
+        //Check if we are actually allowed to discard the object
+        if (e.getView().getTitle().startsWith("Skill Tree: ")){
+            treeData.remove(e.getPlayer().getUniqueId());
+        }
+
     }
 
     @EventHandler
@@ -248,4 +254,28 @@ public class InventoryListener implements Listener {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
+    private void updateClickedIcon(Inventory inventory, int slotId, ItemStack item, int newLevel){
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.getPersistentDataContainer().remove(plugin.getKey("level"));
+        int maxLevel = itemMeta.getPersistentDataContainer().get(plugin.getKey("maxLevel"), PersistentDataType.INTEGER);
+        Material material;
+        if (newLevel == 0){
+            material = Material.RED_WOOL;
+        }else if(newLevel == maxLevel){
+            material = Material.GREEN_WOOL;
+        }else{
+            material = Material.ORANGE_WOOL;
+        }
+
+        String name = itemMeta.getDisplayName().substring(0, itemMeta.getDisplayName().indexOf("("));
+        name += "(" + newLevel + "/" + maxLevel + ")";
+        itemMeta.setDisplayName(name);
+
+        itemMeta.getPersistentDataContainer().set(plugin.getKey("level"), PersistentDataType.INTEGER, newLevel);
+        ItemStack newItem = new ItemStack(material);
+        newItem.setItemMeta(itemMeta);
+
+        inventory.setItem(slotId, newItem);
+    }
 }

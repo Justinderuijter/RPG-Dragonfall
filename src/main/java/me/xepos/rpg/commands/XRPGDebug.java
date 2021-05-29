@@ -5,6 +5,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.handlers.PassiveEventHandler;
+import me.xepos.rpg.skills.Nimble;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -94,6 +95,11 @@ public class XRPGDebug implements CommandExecutor {
                         default:
                             return false;
                     }
+                }else if(strings.length == 2){
+                    XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
+
+
+                    new Nimble(xrpgPlayer, plugin.getSkillData("Nimble"), plugin, 1);
                 }
             }
 

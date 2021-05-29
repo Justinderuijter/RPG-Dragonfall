@@ -4,18 +4,25 @@ icon: BOW
 skills:
   Focus:
     unlocked: true
+    max-level: 3
   SnipeShot:
     requires: [ Focus ]
+    max-level: 1
   RapidFire:
     requires: [ Focus ]
+    max-level: 2
   DisengagingShot:
     requires: [ Focus ]
+    max-level: 1
   AceUpMySleeve:
     requires: [ RapidFire, DisengagingShot ]
+    max-level: 2
   EnderArrow:
     requires: [ DisengagingShot, AceUpMySleeve ]
+    max-level: 1
   TrueInfinity:
     requires: [ AceUpMySleeve, EnderArrow ]
+    max-level: 2
 
 interface:
   order:

@@ -48,6 +48,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
                 XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, playerData);
 
+                skillLoader.loadPlayerSkills(playerData, xrpgPlayer);
 
                 plugin.addRPGPlayer(playerId, xrpgPlayer);
 
@@ -61,7 +62,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
         } else {
             String defaultClassId = plugin.getDefaultClassId();
-            PlayerData data = new PlayerData(defaultClassId, 2, 0);
+            PlayerData data = new PlayerData(defaultClassId, 5, 5, 0);
             XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, data);
             skillLoader.loadPlayerSkills(data, xrpgPlayer);
             plugin.addRPGPlayer(playerId, xrpgPlayer);

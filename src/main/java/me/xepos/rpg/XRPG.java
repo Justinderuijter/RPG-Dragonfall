@@ -13,6 +13,7 @@ import me.xepos.rpg.dependencies.protection.ProtectionSetFactory;
 import me.xepos.rpg.listeners.*;
 import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.tasks.ManaTask;
+import me.xepos.rpg.tree.SkillTree;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -56,7 +57,7 @@ public final class XRPG extends JavaPlugin {
     private static HashMap<String, FileConfiguration> skillData;
 
     //Skill trees
-    private static HashMap<String, FileConfiguration> treeData;
+    private static HashMap<String, SkillTree> treeData;
 
     //Players
     private static final ConcurrentHashMap<UUID, XRPGPlayer> RPGPlayers = new ConcurrentHashMap<>();
@@ -82,7 +83,7 @@ public final class XRPG extends JavaPlugin {
         this.treeData = treeLoader.initialize();
 
 
-        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook", "requires"};
+        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook", "requires", "level", "maxLevel"};
 
         for (String name:keyNames) {
             this.keyRegistry.put(name, new NamespacedKey(this, name));
@@ -116,7 +117,6 @@ public final class XRPG extends JavaPlugin {
 
         this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this, classData));
         this.getCommand("xrpgreload").setExecutor(new XRPGReload());
-        this.getCommand("changeclass").setExecutor(new ChangeClassCommand(this, inventoryGUI));
         this.getCommand("spellmode").setExecutor(new ToggleSpellCommand(this));
         this.getCommand("spellbook").setExecutor(new SpellbookCommand(this));
         this.getCommand("tree").setExecutor(new TreeCommand(this, treeLoader, treeMenu));
@@ -153,16 +153,14 @@ public final class XRPG extends JavaPlugin {
         treeMenu = Bukkit.createInventory(null, 9, "Skill Trees");
 
         for (String treeId:treeData.keySet()) {
-            FileConfiguration configuration = treeData.get(treeId);
-            String materialString = configuration.getString("icon", "BARRIER").toUpperCase();
-            Material material = Material.getMaterial(materialString);
+            SkillTree tree = treeData.get(treeId);
 
-            ItemStack item = Utils.buildItemStack(material, configuration.getString("name", "???"), configuration.getStringList("description"));
-            ItemMeta meta = item.getItemMeta();
-            meta.getPersistentDataContainer().set(getKey("classId"), PersistentDataType.STRING, treeId);
-            item.setItemMeta(meta);
+            ItemStack icon = tree.getIcon();
+            ItemMeta iconMeta = icon.getItemMeta();
+            iconMeta.getPersistentDataContainer().set(this.getKey("classId"), PersistentDataType.STRING, treeId);
+            icon.setItemMeta(iconMeta);
 
-            treeMenu.addItem(item);
+            treeMenu.addItem(icon);
         }
     }
 
@@ -179,7 +177,7 @@ public final class XRPG extends JavaPlugin {
 
     private void initEventListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(this, databaseManager), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(this, treeLoader, databaseManager), this);
+        getServer().getPluginManager().registerEvents(new InventoryListener(this, skillLoader, databaseManager), this);
         getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
         getServer().getPluginManager().registerEvents(new FollowerListener(this), this);
     }
@@ -269,7 +267,7 @@ public final class XRPG extends JavaPlugin {
         return classData;
     }
 
-    public HashMap<String, FileConfiguration> getTreeData(){ return treeData; }
+    public HashMap<String, SkillTree> getTreeData(){ return treeData; }
 
     public NamespacedKey getKey(String keyName){
         return keyRegistry.get(keyName);
@@ -283,7 +281,7 @@ public final class XRPG extends JavaPlugin {
         return skillData.get(skillId);
     }
 
-    public FileConfiguration getTreeData(String treeId){
+    public SkillTree getSkillTree(String treeId){
         return treeData.get(treeId);
     }
 

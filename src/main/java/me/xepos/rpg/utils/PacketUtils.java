@@ -3,7 +3,6 @@ package me.xepos.rpg.utils;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import net.kyori.adventure.text.Component;
 import net.minecraft.server.v1_16_R3.PacketPlayOutSetSlot;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -29,7 +28,7 @@ public class PacketUtils {
 
             ItemStack itemStack = new ItemStack(Material.valueOf(materialName));
             ItemMeta meta = itemStack.getItemMeta();
-            meta.displayName(Component.text(skillName));
+            //meta.displayName(Component.text(skillName));
             itemStack.setItemMeta(meta);
 
             //For packets player inventory hotbar starts at index 36

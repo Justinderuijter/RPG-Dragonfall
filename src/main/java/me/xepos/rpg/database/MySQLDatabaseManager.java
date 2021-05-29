@@ -123,7 +123,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
                     plugin.getClassData().keySet().forEach(x -> Bukkit.getLogger().severe(x));
                     XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, classId);
                     //classLoader.loadClass(classId, xrpgPlayer);
-                    xrpgPlayer.setFreeChangeTickets(results.getInt("tickets"));
+                    //xrpgPlayer.setFreeChangeTickets(results.getInt("tickets"));
                     return xrpgPlayer;
                 }
             }
@@ -179,7 +179,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
         try{
             PreparedStatement ps = connection.prepareStatement("UPDATE xrpg_classes SET classId=?,tickets=? WHERE uuid=?");
             ps.setString(1, xrpgPlayer.getGuildId());
-            ps.setString(2, String.valueOf(xrpgPlayer.getFreeChangeTickets()));
+            //ps.setString(2, String.valueOf(xrpgPlayer.getFreeChangeTickets()));
             ps.setString(3, xrpgPlayer.getPlayerId().toString());
 
             ps.executeUpdate();

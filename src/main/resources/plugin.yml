@@ -14,11 +14,6 @@ commands:
   xrpgreload:
     description: reloads xrpg configuration
     usage: /<command>
-  changeclass:
-    description: changes your XRPG class
-    usage: /<command> <class>
-    aliases:
-      - cs
   spellmode:
     description: switch to or from spell casting mode
     usage: /<command> <on|off|toggle|status>
