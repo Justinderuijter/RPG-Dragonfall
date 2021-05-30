@@ -2,6 +2,7 @@ package me.xepos.rpg.tree;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.TreeCache;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
@@ -25,6 +26,7 @@ public class SkillTree {
     private final ItemStack icon;
     private final XRPG plugin;
 
+    private TreeCache treeCache;
     private final HashMap<String, SkillInfo> skills;
     private final ConfigurationSection interfaceSection;
 
@@ -36,10 +38,8 @@ public class SkillTree {
         String materialString = section.getString("icon", "BARRIER").toUpperCase();
         Material material = Material.getMaterial(materialString);
         if (material == null) material = Material.BARRIER;
-        this.icon = new ItemStack(material);
+        this.icon = Utils.buildItemStack(material, treeName, null);
 
-        ItemMeta meta = this.icon.getItemMeta();
-        meta.setDisplayName(treeName);
         //lore maybe
 
         this.interfaceSection = section.getConfigurationSection("interface");
@@ -105,6 +105,10 @@ public class SkillTree {
     }
 
     private void buildTree(Inventory inventory, XRPGPlayer xrpgPlayer) {
+        if (this.treeCache == null){
+            this.treeCache = new TreeCache();
+        }
+
         HashMap<String, XRPGSkill> playerSkills = xrpgPlayer.getAllLearnedSkills();
 
         List<String> layout = interfaceSection.getStringList("order");
@@ -137,7 +141,13 @@ public class SkillTree {
 
                 setRequiredMeta(interfaceSection, item, skillId, currentLevel, maxLevel);
 
-                inventory.setItem(i + (rowNum * 9), item);
+                final int itemIndex = i + (rowNum * 9);
+
+                inventory.setItem(itemIndex, item);
+
+                if (!this.treeCache.contains(skillId)){
+                    this.treeCache.addToCache(skillId, itemIndex);
+                }
 
             }
             rowNum++;
@@ -181,5 +191,9 @@ public class SkillTree {
         }
 
         item.setItemMeta(meta);
+    }
+
+    public int getSlotForSkill(String skillId){
+        return this.treeCache.getSlotForSkill(skillId);
     }
 }

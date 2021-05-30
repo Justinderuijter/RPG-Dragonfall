@@ -32,7 +32,6 @@ public class XRPGPlayer {
     //Status Effects
     public transient ConcurrentHashMap<String, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
     private transient double damageTakenMultiplier = 1.0;
-    private transient boolean canUseShield = true;
     private transient boolean isStunned = false;
     private transient long lastStunTime = 0;
 
@@ -188,14 +187,6 @@ public class XRPGPlayer {
         for (PassiveEventHandler handler : handlerList.values()) {
             handler.clear();
         }
-    }
-
-    public boolean isShieldAllowed() {
-        return canUseShield;
-    }
-
-    public void setShieldAllowed(boolean canUseShield) {
-        this.canUseShield = canUseShield;
     }
 
     public int getCurrentMana() {

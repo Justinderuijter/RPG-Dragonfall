@@ -11,8 +11,6 @@ import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.utils.SpellmodeUtils;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -138,13 +136,14 @@ public class PlayerListener implements Listener {
             ItemStack item = e.getItem();
             //Cancel using shield if not allowed
             if (item != null){
-                if (item.getType() == Material.SHIELD && !xrpgPlayer.isShieldAllowed()) {
+/*                if (item.getType() == Material.SHIELD && !xrpgPlayer.isShieldAllowed()) {
                     player.sendMessage(ChatColor.RED + "You can't use shields!");
                     player.sendMessage(ChatColor.RED + "Attempting to use it slowed you down!");
                     player.sendMessage(ChatColor.RED + "Yet you don't seem to be blocking anything at all...");
                     e.setCancelled(true);
                     return;
-                }else if(item.getItemMeta().getPersistentDataContainer().has(plugin.getKey("spellbook"), PersistentDataType.BYTE)){
+                }else */
+                if(item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(plugin.getKey("spellbook"), PersistentDataType.BYTE)){
                     SpellmodeUtils.enterSpellmode(xrpgPlayer);
                 }
             }
@@ -192,12 +191,6 @@ public class PlayerListener implements Listener {
     public void onEntityShootBow(EntityShootBowEvent e) {
         if (e.getEntity() instanceof Player) {
             XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getEntity().getUniqueId());
-            if (!plugin.getFileConfiguration(xrpgPlayer.getGuildId()).getBoolean("allow-bow", true)) {
-                xrpgPlayer.getPlayer().sendMessage(ChatColor.RED + "You're not lectured on archery!");
-                e.setConsumeItem(false);
-                e.setCancelled(true);
-                return;
-            }
             xrpgPlayer.getPassiveEventHandler("SHOOT_BOW").invoke(e);
         }
     }

@@ -6,7 +6,6 @@ import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.datatypes.TreeData;
-import me.xepos.rpg.enums.SkillRefundType;
 import me.xepos.rpg.tree.SkillTree;
 import me.xepos.rpg.utils.PacketUtils;
 import org.bukkit.Bukkit;
@@ -15,7 +14,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockDispenseArmorEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -24,7 +22,6 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashMap;
@@ -98,7 +95,7 @@ public class InventoryListener implements Listener {
 
                 SkillTree tree = plugin.getSkillTree(treeId);
 
-                treeData.put(player.getUniqueId(), new TreeData(xrpgPlayer, treeId, tree));
+                treeData.put(player.getUniqueId(), new TreeData(xrpgPlayer, treeId, tree, plugin));
                 player.openInventory(tree.getInventory(xrpgPlayer));
             }
             //Inventory inventory = Bukkit.createInventory(null, 54, "TreeTest");
@@ -121,14 +118,14 @@ public class InventoryListener implements Listener {
                             player.sendMessage("Max Level: " + maxLevel);
 
                             if (level == 0) {
-                                if (xrpgPlayer.getSkillUnlockPoints() > 0){
+                                if (xrpgPlayer.getSkillUnlockPoints() > 0 && data.hasAllRequired(skillId)){
                                     player.sendMessage("Unlock Points: " + xrpgPlayer.getSkillUnlockPoints());
                                     player.sendMessage("SkillId: " + skillId);
 
                                     data.addSkillToUnlock(skillId, 1);
                                     xrpgPlayer.reduceSkillUnlockPoints();
                                     //Update icon
-                                    updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), 1);
+                                    data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), 1);
                                 }
                             } else {
                                 if (xrpgPlayer.getSkillUpgradePoints() > 0 && data.canLevel(skillId)){
@@ -136,20 +133,21 @@ public class InventoryListener implements Listener {
 
                                     xrpgPlayer.reduceSkillUpgradePoints();
                                     //Update icon
-                                    updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), data.getCurrentSkillLevel(skillId));
+                                    data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), data.getCurrentSkillLevel(skillId));
                                 }
                             }
                         }
                     } else if (e.getClick() == ClickType.RIGHT) {
-                        SkillRefundType refundType = data.revertSkill(skillId);
+                        data.revertSkill(skillId);
+                        /*SkillRefundType refundType = data.revertSkill(skillId);
                         if (refundType == SkillRefundType.REFUND_UNLOCK_POINT){
                             xrpgPlayer.setSkillUnlockPoints(xrpgPlayer.getSkillUnlockPoints() + 1);
                         }else if(refundType == SkillRefundType.REFUND_UPGRADE_POINT){
                             xrpgPlayer.setSkillUpgradePoints(xrpgPlayer.getSkillUpgradePoints() + 1);
-                        }
-                        updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), data.getCurrentSkillLevel(skillId));
+                        }*/
+                        data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), data.getCurrentSkillLevel(skillId));
                     }
-                }else if(e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("separator"), PersistentDataType.STRING) && e.getCurrentItem().getType() == Material.WRITTEN_BOOK){
+                }else if(e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("separator"), PersistentDataType.BYTE) && e.getCurrentItem().getType() == Material.WRITABLE_BOOK){
                     // save logic
                     TreeData data = treeData.get(player.getUniqueId());
                     data.applyChanges(skillLoader);
@@ -159,14 +157,6 @@ public class InventoryListener implements Listener {
                     player.closeInventory();
                 }
 
-            }
-
-        } else /*if(e.getInventory() instanceof PlayerInventory)*/ {
-            if (xrpgPlayer == null) return;
-
-            if (e.getSlot() == 40 && e.getCursor().getType() == Material.SHIELD && !xrpgPlayer.isShieldAllowed()) {
-                e.getWhoClicked().sendMessage("Can't use shield");
-                e.setCancelled(true);
             }
         }
     }
@@ -189,9 +179,9 @@ public class InventoryListener implements Listener {
             XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getWhoClicked().getUniqueId());
             if (xrpgPlayer == null) return;
 
-            if (e.getInventorySlots().contains(40) && !xrpgPlayer.isShieldAllowed() && e.getCursor() != null && e.getCursor().getType() == Material.SHIELD) {
+/*            if (e.getInventorySlots().contains(40) && !xrpgPlayer.isShieldAllowed() && e.getCursor() != null && e.getCursor().getType() == Material.SHIELD) {
                 e.setCancelled(true);
-            }
+            }*/
 
             if (xrpgPlayer.isSpellCastModeEnabled()) {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
@@ -219,21 +209,22 @@ public class InventoryListener implements Listener {
 
         if (xrpgPlayer == null) return;
 
-        if (!xrpgPlayer.isShieldAllowed() && e.getOffHandItem().getType() == Material.SHIELD) {
+/*        if (!xrpgPlayer.isShieldAllowed() && e.getOffHandItem().getType() == Material.SHIELD) {
             e.setCancelled(true);
-        } else if (xrpgPlayer.isSpellCastModeEnabled()) {
+        } else */
+        if (xrpgPlayer.isSpellCastModeEnabled()) {
             e.setCancelled(true);
         }
     }
 
-    @EventHandler
+/*    @EventHandler
     public void onBlockDispenseArmor(BlockDispenseArmorEvent e) {
         if (e.getTargetEntity() instanceof Player && e.getItem().getType() == Material.SHIELD) {
             if (!plugin.getXRPGPlayer(e.getTargetEntity().getUniqueId()).isShieldAllowed()) {
                 e.setCancelled(true);
             }
         }
-    }
+    }*/
 
     private void updateKeybinds(XRPGPlayer xrpgPlayer, Inventory inventory) {
         xrpgPlayer.getSpellKeybinds().clear();
@@ -252,30 +243,5 @@ public class InventoryListener implements Listener {
             }
 
         }
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private void updateClickedIcon(Inventory inventory, int slotId, ItemStack item, int newLevel){
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.getPersistentDataContainer().remove(plugin.getKey("level"));
-        int maxLevel = itemMeta.getPersistentDataContainer().get(plugin.getKey("maxLevel"), PersistentDataType.INTEGER);
-        Material material;
-        if (newLevel == 0){
-            material = Material.RED_WOOL;
-        }else if(newLevel == maxLevel){
-            material = Material.GREEN_WOOL;
-        }else{
-            material = Material.ORANGE_WOOL;
-        }
-
-        String name = itemMeta.getDisplayName().substring(0, itemMeta.getDisplayName().indexOf("("));
-        name += "(" + newLevel + "/" + maxLevel + ")";
-        itemMeta.setDisplayName(name);
-
-        itemMeta.getPersistentDataContainer().set(plugin.getKey("level"), PersistentDataType.INTEGER, newLevel);
-        ItemStack newItem = new ItemStack(material);
-        newItem.setItemMeta(itemMeta);
-
-        inventory.setItem(slotId, newItem);
     }
 }

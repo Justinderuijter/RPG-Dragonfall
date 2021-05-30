@@ -51,7 +51,7 @@ public final class XRPG extends JavaPlugin {
 
     //Classes
     private String defaultClassId = null;
-    private static HashMap<String, FileConfiguration> classData;
+    //private static HashMap<String, FileConfiguration> classData;
 
     //Skills
     private static HashMap<String, FileConfiguration> skillData;
@@ -115,11 +115,12 @@ public final class XRPG extends JavaPlugin {
         }
 
 
-        this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this, classData));
+        this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this));
         this.getCommand("xrpgreload").setExecutor(new XRPGReload());
         this.getCommand("spellmode").setExecutor(new ToggleSpellCommand(this));
         this.getCommand("spellbook").setExecutor(new SpellbookCommand(this));
-        this.getCommand("tree").setExecutor(new TreeCommand(this, treeLoader, treeMenu));
+        this.getCommand("tree").setExecutor(new TreeCommand(this, treeMenu));
+        this.getCommand("xrpginfo").setExecutor(new XRPGInfoCommand(this));
         System.out.println("RPG classes loaded!");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -230,12 +231,6 @@ public final class XRPG extends JavaPlugin {
         this.defaultClassId = defaultClassId;
     }
 
-    public void addClassData(String classId, FileConfiguration dataFile) {
-        if (!this.classData.containsKey(classId)) {
-            this.classData.put(classId, dataFile);
-        }
-    }
-
     public ItemStack getSpellbookItem(){
         final String name = getConfig().getString("items.spellbook.name", "Spellbook");
         final List<String> lore = getConfig().getStringList("items.spellbook.lore");
@@ -257,14 +252,6 @@ public final class XRPG extends JavaPlugin {
         }
 
         return item;
-    }
-
-    public FileConfiguration getFileConfiguration(String classId) {
-        return classData.get(classId);
-    }
-
-    public HashMap<String, FileConfiguration> getClassData() {
-        return classData;
     }
 
     public HashMap<String, SkillTree> getTreeData(){ return treeData; }

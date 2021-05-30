@@ -27,3 +27,6 @@ commands:
   tree:
     description: open tree
     usage: /<command>
+  xrpginfo:
+    description: get information about a player or skill
+    usage: /<command> (player|skill) <player|skillId>

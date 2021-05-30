@@ -10,7 +10,6 @@ import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,11 +19,9 @@ import java.util.UUID;
 public class XRPGDebug implements CommandExecutor {
 
     private final XRPG plugin;
-    private final HashMap<String, FileConfiguration> classData;
 
-    public XRPGDebug(XRPG plugin, HashMap<String, FileConfiguration> classData) {
+    public XRPGDebug(XRPG plugin) {
         this.plugin = plugin;
-        this.classData = classData;
     }
 
     @Override
@@ -63,11 +60,11 @@ public class XRPGDebug implements CommandExecutor {
                         case "skilldata":
                             HashMap<String, PassiveEventHandler> handlers = plugin.getXRPGPlayer(player).getPassiveHandlerList();
                             for (XRPGSkill skill:plugin.getXRPGPlayer(player).getActiveHandler().getSkills().values()) {
-                                player.sendMessage(skill.getName());
+                                player.sendMessage(skill.getName() + ": " + skill.getSkillLevel());
                             }
                             for (String handlerName : handlers.keySet()) {
                                 for (XRPGSkill skill : handlers.get(handlerName).getSkills().values()) {
-                                    player.sendMessage(skill.getName());
+                                    player.sendMessage(skill.getName() + ": " + skill.getSkillLevel());
                                 }
                             }
                             return true;
@@ -78,13 +75,6 @@ public class XRPGDebug implements CommandExecutor {
                                 counter++;
                             }
                             return true;
-                        case "classes":
-                            for (String classId : classData.keySet()) {
-                                player.sendMessage(classId);
-                            }
-
-                            return true;
-
                         case "clear":
                             plugin.getXRPGPlayer(player).getSpellKeybinds().clear();
                             return true;

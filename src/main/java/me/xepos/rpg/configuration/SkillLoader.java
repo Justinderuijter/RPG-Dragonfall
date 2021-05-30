@@ -139,9 +139,14 @@ public class SkillLoader {
     public void addSkillToPlayer(String skillId, XRPGPlayer xrpgPlayer, int level){
         try {
             Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
-            Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class, Integer.class);
+            Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class, int.class);
 
             //The instance of the skill automatically assigns itself to the XRPGPlayer
+            if (plugin.getSkillData(skillId) == null){
+                xrpgPlayer.getPlayer().sendMessage("SKILLDATA IS NULL FOR " + skillId);
+                return;
+            }
+
             constructor.newInstance(xrpgPlayer, plugin.getSkillData(skillId), plugin, level);
 
         } catch (Exception e) {

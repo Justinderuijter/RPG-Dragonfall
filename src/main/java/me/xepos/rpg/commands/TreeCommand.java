@@ -2,7 +2,6 @@ package me.xepos.rpg.commands;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.configuration.TreeLoader;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,12 +12,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class TreeCommand implements CommandExecutor {
     private final XRPG plugin;
-    private final TreeLoader treeLoader;
     private final Inventory inventory;
 
-    public TreeCommand(XRPG plugin, TreeLoader treeLoader, Inventory inventory){
+    public TreeCommand(XRPG plugin, Inventory inventory){
         this.plugin = plugin;
-        this.treeLoader = treeLoader;
         this.inventory = inventory;
     }
 

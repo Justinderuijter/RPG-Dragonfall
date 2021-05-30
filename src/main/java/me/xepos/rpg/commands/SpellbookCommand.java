@@ -2,6 +2,7 @@ package me.xepos.rpg.commands;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -63,12 +64,7 @@ public class SpellbookCommand implements TabExecutor {
     }
 
     private ItemStack createSpellBookItem(Material material, String itemName){
-        final ItemStack skillIcon = new ItemStack(material);
-        final ItemMeta meta = skillIcon.getItemMeta();
-        //meta.displayName(Component.text(itemName));
-        skillIcon.setItemMeta(meta);
-
-        return skillIcon;
+        return Utils.buildItemStack(material, itemName, null);
     }
 
     private void fillSeparator(Inventory inventory){

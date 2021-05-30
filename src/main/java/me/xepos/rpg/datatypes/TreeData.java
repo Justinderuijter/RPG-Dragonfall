@@ -1,11 +1,16 @@
 package me.xepos.rpg.datatypes;
 
+import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
-import me.xepos.rpg.enums.SkillRefundType;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tree.SkillInfo;
 import me.xepos.rpg.tree.SkillTree;
+import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
@@ -20,13 +25,15 @@ public class TreeData {
     private final HashMap<String, Integer> skillsToUnlock;
     private final HashMap<String, XRPGSkill> skills;
     private final HashMap<String, Integer> progression;
+    private final XRPG plugin;
 
-    public TreeData(XRPGPlayer xrpgPlayer, @Nullable String currentTreeId, SkillTree currentTree) {
+    public TreeData(XRPGPlayer xrpgPlayer, @Nullable String currentTreeId, SkillTree currentTree, XRPG plugin) {
         if (currentTreeId != null)
             this.currentTreeId = currentTreeId;
 
         this.xrpgPlayer = new WeakReference<>(xrpgPlayer);
         this.currentTree = currentTree;
+        this.plugin = plugin;
         this.skills = xrpgPlayer.getAllLearnedSkills();
 
         this.skillsToUnlock = new HashMap<>();
@@ -71,7 +78,7 @@ public class TreeData {
         }
     }
 
-    public SkillRefundType revertSkill(String skillId){
+    public void revertSkill(String skillId){
         boolean removeProgression = false;
         boolean removeToUnlock = false;
 
@@ -85,27 +92,49 @@ public class TreeData {
             }
         }
 
+        final XRPGPlayer player = xrpgPlayer.get();
+        if (player == null) return;
+
+
         if (removeProgression){
-            final int level = progression.getOrDefault(skillId, 0);
-            progression.put(skillId, level - 1);
-            if (level - 1 <= 0){
-                progression.remove(skillId);
-                return SkillRefundType.REFUND_UNLOCK_POINT;
-            }
-            return SkillRefundType.REFUND_UPGRADE_POINT;
-
+            reduceHashmapLevel(player, progression, skillId);
         }else if (removeToUnlock){
-            final int level = skillsToUnlock.getOrDefault(skillId, 0);
-            skillsToUnlock.put(skillId, level - 1);
-            if (level - 1 <= 0){
-                skillsToUnlock.remove(skillId);
-
-                return SkillRefundType.REFUND_UNLOCK_POINT;
-            }
-            return SkillRefundType.REFUND_UPGRADE_POINT;
+            reduceHashmapLevel(player, skillsToUnlock, skillId);
         }
+    }
 
-        return SkillRefundType.NO_REFUND;
+    private void reduceHashmapLevel(XRPGPlayer player, HashMap<String, Integer> hashMap, String skillId){
+        final int level = hashMap.getOrDefault(skillId, 0);
+        hashMap.put(skillId, level - 1);
+        if (level - 1 <= 0){
+            unLevelUnlocks(player, skillId, hashMap);
+        }else {
+            player.setSkillUpgradePoints(player.getSkillUpgradePoints() + 1);
+        }
+    }
+
+    public void unLevelUnlocks(XRPGPlayer player, String skillId, HashMap<String, Integer> hashMap){
+        hashMap.remove(skillId);
+        player.setSkillUnlockPoints(player.getSkillUnlockPoints() + 1);
+
+        for (String unlock: currentTree.getUnlocks(skillId)) {
+            final Inventory inventory = player.getPlayer().getOpenInventory().getTopInventory();
+            final int slot = currentTree.getSlotForSkill(unlock);
+
+
+           for (int i = 0; i < getCurrentSkillLevel(unlock) + 1; i++) {
+                revertSkill(unlock);
+            }
+
+/*            if (skillsToUnlock.containsKey(unlock)){
+                final int level = skillsToUnlock.get(unlock);
+
+                player.setSkillUpgradePoints(player.getSkillUpgradePoints() + level -1);
+                player.setSkillUnlockPoints(player.getSkillUnlockPoints() + 1);
+            }*/
+
+            updateClickedIcon(inventory, slot, inventory.getItem(slot), getCurrentSkillLevel(unlock));
+        }
     }
 
 
@@ -138,6 +167,7 @@ public class TreeData {
 
         for (String string:requiredSkills) {
             if (!skills.containsKey(string) && !skillsToUnlock.containsKey(string)) {
+                xrpgPlayer.get().getPlayer().sendMessage("You do not have " + string);
                 return false;
             }
         }
@@ -160,22 +190,36 @@ public class TreeData {
 
     }
 
-/*    public XRPGTreeOutcome addLevel(String skillId, int maxLevel) {
-        XRPGSkill xrpgSkill = skills.get(skillId);
-        if (xrpgSkill == null) {
-            return XRPGTreeOutcome.SKILL_NOT_FOUND;
+    @SuppressWarnings("ConstantConditions")
+    public void updateClickedIcon(Inventory inventory, int slotId, ItemStack item, int newLevel){
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.getPersistentDataContainer().remove(plugin.getKey("level"));
+        int maxLevel = itemMeta.getPersistentDataContainer().get(plugin.getKey("maxLevel"), PersistentDataType.INTEGER);
+        Material material;
+        if (newLevel == 0){
+            material = Material.RED_WOOL;
+        }else if(newLevel == maxLevel){
+            material = Material.GREEN_WOOL;
+        }else{
+            material = Material.ORANGE_WOOL;
         }
 
-        if (xrpgSkill.getSkillLevel() + 1 > maxLevel) {
-            return XRPGTreeOutcome.FAIL;
-        }
-        xrpgSkill.setSkillLevel(xrpgSkill.getSkillLevel());
-        addProgression(skillId, 1);
-        return XRPGTreeOutcome.SUCCESS;
-    }*/
+        String name = itemMeta.getDisplayName().substring(0, itemMeta.getDisplayName().indexOf("("));
+        name += "(" + newLevel + "/" + maxLevel + ")";
+        itemMeta.setDisplayName(name);
+
+        itemMeta.getPersistentDataContainer().set(plugin.getKey("level"), PersistentDataType.INTEGER, newLevel);
+        ItemStack newItem = new ItemStack(material);
+        newItem.setItemMeta(itemMeta);
+
+        inventory.setItem(slotId, newItem);
+    }
+
 
     public void addSkillToUnlock(String skillId, int level) {
-        skillsToUnlock.put(skillId, level);
+        if (hasAllRequired(skillId)) {
+            skillsToUnlock.put(skillId, level);
+        }
     }
 
     public int getSkillToUnlockLevel(String skillId) {
