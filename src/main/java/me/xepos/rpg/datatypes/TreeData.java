@@ -19,6 +19,9 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * A class used to cache and calculate the data of a tree edit session
+ */
 public class TreeData {
 
     private String currentTreeId;
@@ -47,7 +50,13 @@ public class TreeData {
         }
     }
 
-    public boolean canLevel(String skillId) {
+    /**
+     * Checks if a skill is max level or not
+     *
+     * @param skillId:      The unique identifier for the skill that will be checked
+     * @return true if the skill is not the maximum level, otherwise false.
+     */
+    public boolean isNotMaxed(String skillId) {
         XRPGSkill skill = skills.get(skillId);
 
         int level = progression.getOrDefault(skillId, 0);
@@ -61,6 +70,13 @@ public class TreeData {
         }
     }
 
+    /**
+     * Gets the level of the skill.
+     * This combines the level of the cached data and the level of the learned skill.
+     *
+     * @param skillId:      The unique identifier for the skill that will be checked
+     * @return the level of the skill
+     */
     public int getCurrentSkillLevel(String skillId) {
         XRPGSkill skill = skills.get(skillId);
 
@@ -73,6 +89,12 @@ public class TreeData {
         }
     }
 
+    /**
+     * Unlevels the specified skill and the skills that require this skill (if any)
+     *
+     * @param skillId The unique identifier for the skill that will be unleveled
+     * @param revertAll if the skill should be fully unleveled, false means only 1 level will be removed
+     */
     public void revertSkill(String skillId, final boolean revertAll) {
         if (progression.containsKey(skillId) && progression.get(skillId) > 0){
 
@@ -85,21 +107,13 @@ public class TreeData {
                 spentUnlockPoints--;
                 spentUpgradePoints = spentUpgradePoints - level + 1;
 
-                player.getPlayer().sendMessage("1:");
-                player.getPlayer().sendMessage("Removed 1 unlock point.");
-                player.getPlayer().sendMessage("Removed " + (level + 1) + " upgrade points");
-
             } else {
                 progression.put(skillId, level - 1);
                 if (level - 1 <= 0){
                     progression.remove(skillId);
                     spentUnlockPoints--;
-                    player.getPlayer().sendMessage("2:");
-                    player.getPlayer().sendMessage("Removed 1 unlock point.");
                 }else {
                     spentUpgradePoints--;
-                    player.getPlayer().sendMessage("3:");
-                    player.getPlayer().sendMessage("Removed 1 upgrade point.");
                 }
             }
 
@@ -108,20 +122,24 @@ public class TreeData {
                     final Inventory inventory = player.getPlayer().getOpenInventory().getTopInventory();
                     final int slot = currentTree.getSlotForSkill(unlock);
 
-                    revertSkill(unlock, true);
-                    updateClickedIcon(inventory, slot, inventory.getItem(slot), getCurrentSkillLevel(unlock));
+                    if (!hasRequired(unlock)) {
+                        revertSkill(unlock, true);
+                        updateClickedIcon(inventory, slot, inventory.getItem(slot), getCurrentSkillLevel(unlock));
+                    }
                 }
             }
-
-
         }
     }
 
 
-
+    /**
+     * Adds a level to the specified skill if the requirements are met and it is not maxed
+     *
+     * @param skillId The unique identifier for the skill that will be leveled
+     */
     public void addLevel(String skillId) {
         if (hasRequired(skillId)){
-            if (canLevel(skillId)){
+            if (isNotMaxed(skillId)){
                 if (progression.containsKey(skillId)){
                     final int level = progression.get(skillId);
                     progression.put(skillId, level + 1);
@@ -134,10 +152,12 @@ public class TreeData {
                 }
             }
         }
-        xrpgPlayer.get().getPlayer().sendMessage("Unlock points used: " + spentUnlockPoints);
-        xrpgPlayer.get().getPlayer().sendMessage("Upgrade points used: " + spentUpgradePoints);
     }
 
+    /**
+     * Checks if the player has enough points to unlock a skill
+     * @return true if the player has enough points to unlock a skill, else false.
+     */
     public boolean hasUnlockPoints() {
         XRPGPlayer player = xrpgPlayer.get();
         if (player == null) return false;
@@ -151,6 +171,10 @@ public class TreeData {
         return spentUnlockPoints < player.getSkillUnlockPoints();
     }
 
+    /**
+     * Checks if the player has enough points to upgrade a skill
+     * @return true if the player has enough points to upgrade a skill, else false.
+     */
     public boolean hasUpgradePoints() {
         XRPGPlayer player = xrpgPlayer.get();
         if (player == null) return false;
@@ -164,6 +188,12 @@ public class TreeData {
         return spentUpgradePoints < player.getSkillUpgradePoints();
     }
 
+    /**
+     * Checks if the player has the required prerequisite skill(s) to level the specified skill
+     *
+     * @param skillId The unique identifier for the skill that will be tested
+     * @return true if the player has enough points to upgrade a skill, else false.
+     */
     public boolean hasRequired(String skillId) {
         final SkillInfo skillInfo = currentTree.getSkillInfo(skillId);
         if (skillInfo == null) return false;
@@ -181,6 +211,12 @@ public class TreeData {
         return false;
     }
 
+    /**
+     * Syncs the cached data with the actual player data.
+     * Learns the skills that need to be learned and levels those that need to be leveled.
+     *
+     * @param skillLoader The skillLoader that will be used to add skills to the player.
+     */
     public void applyChanges(SkillLoader skillLoader) {
         for (String skillId : skills.keySet()) {
             final int levelsToAdd = progression.get(skillId);
@@ -201,6 +237,15 @@ public class TreeData {
 
     }
 
+    /**
+     * Updates the item in the specified inventory and slot to correctly display data
+     * such as skill level and progression to the player.
+     *
+     * @param inventory the inventory that will be checked
+     * @param slotId the inventory slot that will be updated
+     * @param item the item that will be updated
+     * @param newLevel the new level that should be displayed
+     */
     @SuppressWarnings("ConstantConditions")
     public void updateClickedIcon(Inventory inventory, int slotId, ItemStack item, int newLevel) {
         ItemMeta itemMeta = item.getItemMeta();
@@ -226,16 +271,6 @@ public class TreeData {
         inventory.setItem(slotId, newItem);
     }
 
-
-/*    public void addSkillToUnlock(String skillId, int level) {
-        if (hasRequired(skillId)) {
-            skillsToUnlock.put(skillId, level);
-            spentUnlockPoints++;
-
-            xrpgPlayer.get().getPlayer().sendMessage("Used Unlock point");
-            xrpgPlayer.get().getPlayer().sendMessage("Used: " + spentUnlockPoints);
-        }
-    }*/
 
     private void addProgression(String skillId, int amount) {
         int levels = progression.get(skillId);
