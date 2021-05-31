@@ -123,7 +123,7 @@ public class InventoryListener implements Listener {
                                     data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), 1);
                                 }
                             } else {
-                                if (xrpgPlayer.getSkillUpgradePoints() > 0 && data.canLevel(skillId) && data.hasUpgradePoints()){
+                                if (xrpgPlayer.getSkillUpgradePoints() > 0 && data.isNotMaxed(skillId) && data.hasUpgradePoints()){
                                     data.addLevel(skillId);
 
                                     //Update icon
