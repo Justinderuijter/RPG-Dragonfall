@@ -114,31 +114,25 @@ public class InventoryListener implements Listener {
                         if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("level"), PersistentDataType.INTEGER)) {
                             int level = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("level"), PersistentDataType.INTEGER);
                             int maxLevel = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("maxLevel"), PersistentDataType.INTEGER);
-                            player.sendMessage("Level: " + level);
-                            player.sendMessage("Max Level: " + maxLevel);
 
                             if (level == 0) {
-                                if (xrpgPlayer.getSkillUnlockPoints() > 0 && data.hasAllRequired(skillId)){
-                                    player.sendMessage("Unlock Points: " + xrpgPlayer.getSkillUnlockPoints());
-                                    player.sendMessage("SkillId: " + skillId);
+                                if (xrpgPlayer.getSkillUnlockPoints() > 0 && data.hasRequired(skillId) && data.hasUnlockPoints()){
 
-                                    data.addSkillToUnlock(skillId, 1);
-                                    xrpgPlayer.reduceSkillUnlockPoints();
+                                    data.addLevel(skillId);
                                     //Update icon
                                     data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), 1);
                                 }
                             } else {
-                                if (xrpgPlayer.getSkillUpgradePoints() > 0 && data.canLevel(skillId)){
+                                if (xrpgPlayer.getSkillUpgradePoints() > 0 && data.canLevel(skillId) && data.hasUpgradePoints()){
                                     data.addLevel(skillId);
 
-                                    xrpgPlayer.reduceSkillUpgradePoints();
                                     //Update icon
                                     data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), data.getCurrentSkillLevel(skillId));
                                 }
                             }
                         }
                     } else if (e.getClick() == ClickType.RIGHT) {
-                        data.revertSkill(skillId);
+                        data.revertSkill(skillId, false);
                         /*SkillRefundType refundType = data.revertSkill(skillId);
                         if (refundType == SkillRefundType.REFUND_UNLOCK_POINT){
                             xrpgPlayer.setSkillUnlockPoints(xrpgPlayer.getSkillUnlockPoints() + 1);

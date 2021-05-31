@@ -6,6 +6,8 @@ import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tree.SkillInfo;
 import me.xepos.rpg.tree.SkillTree;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -21,8 +23,9 @@ public class TreeData {
 
     private String currentTreeId;
     private SkillTree currentTree;
+    private int spentUpgradePoints;
+    private int spentUnlockPoints;
     private final WeakReference<XRPGPlayer> xrpgPlayer;
-    private final HashMap<String, Integer> skillsToUnlock;
     private final HashMap<String, XRPGSkill> skills;
     private final HashMap<String, Integer> progression;
     private final XRPG plugin;
@@ -31,176 +34,184 @@ public class TreeData {
         if (currentTreeId != null)
             this.currentTreeId = currentTreeId;
 
+        this.spentUnlockPoints = 0;
+        this.spentUpgradePoints = 0;
         this.xrpgPlayer = new WeakReference<>(xrpgPlayer);
         this.currentTree = currentTree;
         this.plugin = plugin;
         this.skills = xrpgPlayer.getAllLearnedSkills();
 
-        this.skillsToUnlock = new HashMap<>();
         this.progression = new HashMap<>();
         for (String skillId : skills.keySet()) {
             this.progression.put(skillId, 0);
         }
     }
 
-    public boolean canLevel(String skillId){
-        if (skillsToUnlock.containsKey(skillId)){
-            SkillInfo skillInfo = currentTree.getSkillInfo(skillId);
-            if (skillInfo == null) return false;
+    public boolean canLevel(String skillId) {
+        XRPGSkill skill = skills.get(skillId);
 
-            if (skillsToUnlock.get(skillId) < skillInfo.getMaxLevel()){
-                return true;
-            }
-        }else if (progression.containsKey(skillId)){
-            SkillInfo skillInfo = currentTree.getSkillInfo(skillId);
-            XRPGSkill xrpgSkill = skills.get(skillId);
-            if (skillInfo == null || xrpgSkill == null) return false;
+        int level = progression.getOrDefault(skillId, 0);
+        SkillInfo skillInfo = currentTree.getSkillInfo(skillId);
+        if (skillInfo == null) return false;
 
-            if (xrpgSkill.getSkillLevel() + progression.get(skillId) < skillInfo.getMaxLevel()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public int getCurrentSkillLevel(String skillId){
-        if (skillsToUnlock.containsKey(skillId)){
-            return skillsToUnlock.get(skillId);
-        } else{
-            XRPGSkill xrpgSkill = skills.get(skillId);
-            if (xrpgSkill == null) return 0;
-
-            if(progression.containsKey(skillId)) {
-
-                return xrpgSkill.getSkillLevel() + progression.get(skillId);
-
-            }else{ return xrpgSkill.getSkillLevel(); }
+        if (skill == null) {
+            return level < skillInfo.getMaxLevel();
+        } else {
+            return skill.getSkillLevel() + level < skillInfo.getMaxLevel();
         }
     }
 
-    public void revertSkill(String skillId){
-        boolean removeProgression = false;
-        boolean removeToUnlock = false;
+    public int getCurrentSkillLevel(String skillId) {
+        XRPGSkill skill = skills.get(skillId);
 
-        if (progression.containsKey(skillId)){
-            if (progression.get(skillId) > 0){
-                removeProgression = true;
-            }
-        } else if(skillsToUnlock.containsKey(skillId)){
-            if (skillsToUnlock.get(skillId) > 0){
-                removeToUnlock = true;
-            }
-        }
-
-        final XRPGPlayer player = xrpgPlayer.get();
-        if (player == null) return;
-
-
-        if (removeProgression){
-            reduceHashmapLevel(player, progression, skillId);
-        }else if (removeToUnlock){
-            reduceHashmapLevel(player, skillsToUnlock, skillId);
+        if (skill == null) {
+            return progression.getOrDefault(skillId, 0);
+        } else {
+            if (progression.containsKey(skillId)) {
+                return skill.getSkillLevel() + progression.get(skillId);
+            } else return skill.getSkillLevel();
         }
     }
 
-    private void reduceHashmapLevel(XRPGPlayer player, HashMap<String, Integer> hashMap, String skillId){
-        final int level = hashMap.getOrDefault(skillId, 0);
-        hashMap.put(skillId, level - 1);
-        if (level - 1 <= 0){
-            unLevelUnlocks(player, skillId, hashMap);
-        }else {
-            player.setSkillUpgradePoints(player.getSkillUpgradePoints() + 1);
-        }
-    }
+    public void revertSkill(String skillId, final boolean revertAll) {
+        if (progression.containsKey(skillId) && progression.get(skillId) > 0){
 
-    public void unLevelUnlocks(XRPGPlayer player, String skillId, HashMap<String, Integer> hashMap){
-        hashMap.remove(skillId);
-        player.setSkillUnlockPoints(player.getSkillUnlockPoints() + 1);
+            final XRPGPlayer player = xrpgPlayer.get();
+            if (player == null) return;
 
-        for (String unlock: currentTree.getUnlocks(skillId)) {
-            final Inventory inventory = player.getPlayer().getOpenInventory().getTopInventory();
-            final int slot = currentTree.getSlotForSkill(unlock);
+            final int level = progression.get(skillId);
+            if (revertAll) {
+                progression.remove(skillId);
+                spentUnlockPoints--;
+                spentUpgradePoints = spentUpgradePoints - level + 1;
 
+                player.getPlayer().sendMessage("1:");
+                player.getPlayer().sendMessage("Removed 1 unlock point.");
+                player.getPlayer().sendMessage("Removed " + (level + 1) + " upgrade points");
 
-           for (int i = 0; i < getCurrentSkillLevel(unlock) + 1; i++) {
-                revertSkill(unlock);
+            } else {
+                progression.put(skillId, level - 1);
+                if (level - 1 <= 0){
+                    progression.remove(skillId);
+                    spentUnlockPoints--;
+                    player.getPlayer().sendMessage("2:");
+                    player.getPlayer().sendMessage("Removed 1 unlock point.");
+                }else {
+                    spentUpgradePoints--;
+                    player.getPlayer().sendMessage("3:");
+                    player.getPlayer().sendMessage("Removed 1 upgrade point.");
+                }
             }
 
-/*            if (skillsToUnlock.containsKey(unlock)){
-                final int level = skillsToUnlock.get(unlock);
+            if (progression.getOrDefault(skillId, 0) <= 0){
+                for (String unlock:currentTree.getUnlocks(skillId)) {
+                    final Inventory inventory = player.getPlayer().getOpenInventory().getTopInventory();
+                    final int slot = currentTree.getSlotForSkill(unlock);
 
-                player.setSkillUpgradePoints(player.getSkillUpgradePoints() + level -1);
-                player.setSkillUnlockPoints(player.getSkillUnlockPoints() + 1);
-            }*/
+                    revertSkill(unlock, true);
+                    updateClickedIcon(inventory, slot, inventory.getItem(slot), getCurrentSkillLevel(unlock));
+                }
+            }
 
-            updateClickedIcon(inventory, slot, inventory.getItem(slot), getCurrentSkillLevel(unlock));
+
         }
     }
 
 
 
     public void addLevel(String skillId) {
-        XRPGSkill xrpgSkill = skills.get(skillId);
+        if (hasRequired(skillId)){
+            if (canLevel(skillId)){
+                if (progression.containsKey(skillId)){
+                    final int level = progression.get(skillId);
+                    progression.put(skillId, level + 1);
 
-        if (hasAllRequired(skillId)) { // Check if we have all required skills
-            if (xrpgSkill == null) { //We don't know the skill yet
-                if (skillsToUnlock.containsKey(skillId)) {
-                    //if we don't have the skill but it is cached
-                    final int level = skillsToUnlock.get(skillId);
-                    skillsToUnlock.put(skillId, level + 1);
-                } else {
-                    //if we don't have the skill and it's not cached
-                    skillsToUnlock.put(skillId, 1);
+                    spentUpgradePoints++;
+                }else{
+                    progression.put(skillId, 1);
+
+                    spentUnlockPoints++;
                 }
-            } else { //We did already know the skill
-                final int level = progression.getOrDefault(skillId, 0);
-                progression.put(skillId, level + 1);
             }
         }
+        xrpgPlayer.get().getPlayer().sendMessage("Unlock points used: " + spentUnlockPoints);
+        xrpgPlayer.get().getPlayer().sendMessage("Upgrade points used: " + spentUpgradePoints);
     }
 
-    public boolean hasAllRequired(String skillId){
+    public boolean hasUnlockPoints() {
+        XRPGPlayer player = xrpgPlayer.get();
+        if (player == null) return false;
+
+        if (spentUnlockPoints < 0) {
+            player.getPlayer().sendMessage(ChatColor.RED + "Something went wrong:");
+            player.getPlayer().sendMessage(ChatColor.RED + "spentUnlockPoints in TreeData is negative!");
+            player.getPlayer().sendMessage(ChatColor.RED + "Please forward this to your administrator.");
+            Bukkit.getLogger().warning(ChatColor.RED + player.getPlayer().getName() + ": spentUnlockPoints in TreeData is negative");
+        }
+        return spentUnlockPoints < player.getSkillUnlockPoints();
+    }
+
+    public boolean hasUpgradePoints() {
+        XRPGPlayer player = xrpgPlayer.get();
+        if (player == null) return false;
+
+        if (spentUpgradePoints < 0) {
+            player.getPlayer().sendMessage(ChatColor.RED + "Something went wrong:");
+            player.getPlayer().sendMessage(ChatColor.RED + "spentUpgradePoints in TreeData is negative!");
+            player.getPlayer().sendMessage(ChatColor.RED + "Please forward this to your administrator.");
+            Bukkit.getLogger().warning(ChatColor.RED + player.getPlayer().getName() + ": spentUpgradePoints in TreeData is negative");
+        }
+        return spentUpgradePoints < player.getSkillUpgradePoints();
+    }
+
+    public boolean hasRequired(String skillId) {
         final SkillInfo skillInfo = currentTree.getSkillInfo(skillId);
         if (skillInfo == null) return false;
 
         List<String> requiredSkills = skillInfo.getRequired();
+        if (requiredSkills.isEmpty()) {
+            return true;
+        }
 
-        for (String string:requiredSkills) {
-            if (!skills.containsKey(string) && !skillsToUnlock.containsKey(string)) {
-                xrpgPlayer.get().getPlayer().sendMessage("You do not have " + string);
-                return false;
+        for (String string : requiredSkills) {
+            if (skills.containsKey(string) || progression.containsKey(string)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
-    public void applyChanges(SkillLoader skillLoader){
-        for (String skillId:skills.keySet()) {
+    public void applyChanges(SkillLoader skillLoader) {
+        for (String skillId : skills.keySet()) {
             final int levelsToAdd = progression.get(skillId);
             final XRPGSkill xrpgSkill = skills.get(skillId);
+
             xrpgSkill.setSkillLevel(xrpgSkill.getSkillLevel() + levelsToAdd);
+            progression.remove(skillId);
         }
 
         XRPGPlayer player = xrpgPlayer.get();
         if (player != null) {
-            for (String skillId : skillsToUnlock.keySet()) {
-                skillLoader.addSkillToPlayer(skillId, player, skillsToUnlock.get(skillId));
+            for (String skillId : progression.keySet()) {
+                skillLoader.addSkillToPlayer(skillId, player, progression.get(skillId));
             }
+            player.setSkillUpgradePoints(player.getSkillUpgradePoints() - spentUpgradePoints);
+            player.setSkillUnlockPoints(player.getSkillUnlockPoints() - spentUnlockPoints);
         }
 
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void updateClickedIcon(Inventory inventory, int slotId, ItemStack item, int newLevel){
+    public void updateClickedIcon(Inventory inventory, int slotId, ItemStack item, int newLevel) {
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.getPersistentDataContainer().remove(plugin.getKey("level"));
         int maxLevel = itemMeta.getPersistentDataContainer().get(plugin.getKey("maxLevel"), PersistentDataType.INTEGER);
         Material material;
-        if (newLevel == 0){
+        if (newLevel == 0) {
             material = Material.RED_WOOL;
-        }else if(newLevel == maxLevel){
+        } else if (newLevel == maxLevel) {
             material = Material.GREEN_WOOL;
-        }else{
+        } else {
             material = Material.ORANGE_WOOL;
         }
 
@@ -216,15 +227,15 @@ public class TreeData {
     }
 
 
-    public void addSkillToUnlock(String skillId, int level) {
-        if (hasAllRequired(skillId)) {
+/*    public void addSkillToUnlock(String skillId, int level) {
+        if (hasRequired(skillId)) {
             skillsToUnlock.put(skillId, level);
-        }
-    }
+            spentUnlockPoints++;
 
-    public int getSkillToUnlockLevel(String skillId) {
-        return skillsToUnlock.get(skillId);
-    }
+            xrpgPlayer.get().getPlayer().sendMessage("Used Unlock point");
+            xrpgPlayer.get().getPlayer().sendMessage("Used: " + spentUnlockPoints);
+        }
+    }*/
 
     private void addProgression(String skillId, int amount) {
         int levels = progression.get(skillId);
