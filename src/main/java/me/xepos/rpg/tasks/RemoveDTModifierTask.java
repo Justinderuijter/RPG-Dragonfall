@@ -24,6 +24,6 @@ public class RemoveDTModifierTask extends BukkitRunnable {
     public void run() {
         XRPGDamageTakenRemovedEvent eventRemove = new XRPGDamageTakenRemovedEvent(sourcePlayer, targetPlayer.getPlayer(), source);
         Bukkit.getServer().getPluginManager().callEvent(eventRemove);
-        Utils.removeDTModifier(targetPlayer, source.getName());
+        Utils.removeDTModifier(targetPlayer, source.getSkillName());
     }
 }

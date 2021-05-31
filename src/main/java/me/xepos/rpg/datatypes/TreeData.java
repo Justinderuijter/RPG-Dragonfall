@@ -231,8 +231,8 @@ public class TreeData {
             for (String skillId : progression.keySet()) {
                 skillLoader.addSkillToPlayer(skillId, player, progression.get(skillId));
             }
-            player.setSkillUpgradePoints(player.getSkillUpgradePoints() - spentUpgradePoints);
-            player.setSkillUnlockPoints(player.getSkillUnlockPoints() - spentUnlockPoints);
+            player.setSkillUpgradePoints((byte)(player.getSkillUpgradePoints() - spentUpgradePoints));
+            player.setSkillUnlockPoints((byte)(player.getSkillUnlockPoints() - spentUnlockPoints));
         }
 
     }

@@ -1,10 +1,10 @@
-/*package me.xepos.rpg.configuration;
+package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
-import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.datatypes.PlayerData;
+import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.enums.ModifierType;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -20,11 +20,13 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class ClassLoader {
     private final XRPG plugin;
@@ -33,9 +35,11 @@ public class ClassLoader {
 
     public ClassLoader(XRPG plugin) {
         this.plugin = plugin;
+
+        checkClassFolder();
     }
 
-    public void checkClassFolder() {
+    private void checkClassFolder() {
 
         if (!classFolder.exists()) {
             if (classFolder.mkdir()) {
@@ -49,19 +53,6 @@ public class ClassLoader {
                     add("sentinel.yml");
                     add("explorer.yml");
                     add("scholar.yml");
-                    add("scout.yml");
-                    add("trickster.yml");
-                    add("debugClass1.yml");
-                    add("debugClass2.yml");
-                    //add("assassin");
-                    //add("bard");
-                    //add("brawler");
-                    //add("guardian");
-                    //add("necromancer");
-                    //add("ranger");
-                    //add("ravager");
-                    //add("sorcerer");
-                    //add("wizard");
                 }};
                 for (String fileName : files) {
                     Bukkit.getLogger().info(fileName);
@@ -80,103 +71,40 @@ public class ClassLoader {
         }
     }
 
-    public void loadClass(PlayerData data, XRPGPlayer xrpgPlayer) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            final String classId = data.getClassId();
-            FileConfiguration classConfig = plugin.getFileConfiguration(classId);
-            if (classConfig == null) {
-                classConfig = plugin.getFileConfiguration(plugin.getDefaultClassId());
-                if (classConfig == null) return; //Default returned null too
-            }
-
-            //Change class clears all handlers, after that we set skills
-            xrpgPlayer.setShieldAllowed(classConfig.getBoolean("allow-shield", true));
-
-            xrpgPlayer.resetClassData(classId, plugin.getFileConfiguration(classId).getString("display.name", "???"));
-
-            List<String> skills = classConfig.getStringList("skills");
-
-            Set<String> addedSkills = new HashSet<>();
-            for (String skillId:skills) {
-                if (addSkill(skillId, xrpgPlayer)){
-                    addedSkills.add(skillId);
-                }
-
-            }
-            final ClassData classData = data.getClassData(classId);
-            if (classData != null){
-                for (String skillId:data.getClassData(classId).getSkills()) {
-                    if (addedSkills.contains(skillId)) continue;
-                    addSkill(skillId, xrpgPlayer);
-                }
-            }
-
-            for (String handler : xrpgPlayer.getPassiveHandlerList().keySet()) {
-                xrpgPlayer.getPassiveEventHandler(handler).initialize();
-            }
-        });
-    }
-
-    private boolean addSkill(String skillId, XRPGPlayer xrpgPlayer){
-        try {
-            Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
-            Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
-
-            //The instance of the skill automatically assigns itself to the XRPGPlayer
-            constructor.newInstance(xrpgPlayer, plugin.getSkillData(skillId), plugin);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Bukkit.getLogger().warning("Something went wrong for " + skillId);
-            return false;
-        }
-    }
-
-    public void loadPlayerSkills(ClassData data, XRPGPlayer xrpgPlayer){
-        for (String skillId:data.getSkills()) {
-            try {
-                Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
-                Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
-
-                //The instance of the skill automatically assigns itself to the XRPGPlayer
-                constructor.newInstance(xrpgPlayer, plugin.getSkillData(skillId), plugin);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Bukkit.getLogger().warning("Something went wrong for " + skillId);
-            }
-        }
-    }
-
-    public HashMap<String, FileConfiguration> initializeClasses() {
-        HashMap<String, FileConfiguration> configurationHashMap = new HashMap<>();
+    public HashMap<String, ClassInfo> initializeClasses() {
+        HashMap<String, ClassInfo> configurationHashMap = new HashMap<>();
 
         for (File file : classFolder.listFiles()) {
             if (file.getName().contains(".yml")) {
 
                 FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
-                boolean isDefault = fileConfiguration.getBoolean("default", false);
                 boolean isEnabled = fileConfiguration.getBoolean("enabled", true);
 
                 if (!isEnabled) continue; //Skip is class is disabled
 
                 String fileName = file.getName().replace(".yml", "");
 
-                //First enabled class tagged with default is the default class
-                if (plugin.getDefaultClassId() == null || isDefault) {
-                    plugin.setDefaultClassId(fileName);
-                }
-
                 registerAttributes(fileConfiguration, fileName);
 
-                configurationHashMap.put(fileName, fileConfiguration);
+                String name = fileConfiguration.getString("display.name", "???");
+                Material material = Material.getMaterial(fileConfiguration.getString("display.icon", "BARRIER").toUpperCase());
+                if (material == null) material = Material.BARRIER;
+
+                final byte baseMana = (byte) fileConfiguration.getInt("base-mana", 20);
+                final String treeId = fileConfiguration.getString("treeId", fileName);
+
+                ClassInfo classInfo = new ClassInfo(name, material, fileConfiguration.getStringList("display.description"), baseMana, treeId);
+
+                classInfo.setEnabled(fileConfiguration.getBoolean("enabled", true));
+
+                configurationHashMap.put(fileName, classInfo);
             }
             Bukkit.getLogger().info("Loaded " + file.getName());
         }
         return configurationHashMap;
     }
 
-    private void registerAttributes(FileConfiguration fileConfiguration, String fileName){
+    private void registerAttributes(FileConfiguration fileConfiguration, String fileName) {
 
         ConfigurationSection attributeSection = fileConfiguration.getConfigurationSection("attributes");
         if (attributeSection != null) {
@@ -187,11 +115,11 @@ public class ClassLoader {
         }
     }
 
-    private void loadAttributeModifier(ConfigurationSection attributeSection, String key, String fileName, AttributeModifierManager manager){
+    private void loadAttributeModifier(ConfigurationSection attributeSection, String key, String fileName, AttributeModifierManager manager) {
         String keyType = key.substring(0, key.indexOf('-')).toUpperCase();
 
         Attribute attribute = null;
-        switch (keyType){
+        switch (keyType) {
             case "HEALTH":
                 attribute = Attribute.GENERIC_MAX_HEALTH;
                 break;
@@ -230,35 +158,19 @@ public class ClassLoader {
     }
 
 
-    @SuppressWarnings("ConstantConditions")
     public List<ItemStack> initializeMenu() {
         List<ItemStack> menuItems = new ArrayList<>();
 
-        for (String classId : plugin.getClassData().keySet()) {
-            ConfigurationSection displaySettings = plugin.getFileConfiguration(classId).getConfigurationSection("display");
+        for (String classId : plugin.getClassInfo().keySet()) {
+            ItemStack icon = Utils.buildItemStack(plugin.getClassInfo(classId).getIcon(), plugin.getClassInfo(classId).getDisplayName(), plugin.getClassInfo(classId).getDescription());
 
-            if (displaySettings != null) {
-
-                String materialString = displaySettings.getString("icon", "BARRIER");
-                //Not sure why it complains about this potentially being null but here we are
-                if (materialString == null) {
-                    materialString = "BARRIER";
-                }
-
-                Material material = Material.getMaterial(materialString);
-                List<String> description = displaySettings.getStringList("description");
-
-                ItemStack icon = new ItemStack(material);
-                ItemMeta meta = icon.getItemMeta();
-                if (meta != null) {
-                    meta.setLore(description);
-                    meta.setDisplayName(displaySettings.getString("name", "???"));
-                    meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "classId"), PersistentDataType.STRING, classId);
-                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                    icon.setItemMeta(meta);
-                }
-                menuItems.add(icon);
+            ItemMeta meta = icon.getItemMeta();
+            if (meta != null) {
+                meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "classId"), PersistentDataType.STRING, classId);
+                meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                icon.setItemMeta(meta);
             }
+            menuItems.add(icon);
 
         }
         return menuItems;
@@ -302,4 +214,4 @@ public class ClassLoader {
             throw new IllegalArgumentException("ResourcePath cannot be null or empty");
         }
     }
-}*/
+}

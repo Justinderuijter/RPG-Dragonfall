@@ -53,6 +53,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
                 plugin.addRPGPlayer(playerId, xrpgPlayer);
 
 
+
             } catch (IOException ex) {
                 System.out.println("Couldn't load player data for " + playerId.toString() + ".json");
             } catch (Exception ex) {
@@ -61,8 +62,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
             }
 
         } else {
-            String defaultClassId = plugin.getDefaultClassId();
-            PlayerData data = new PlayerData(defaultClassId, 5, 5, 0);
+            PlayerData data = new PlayerData("");
             XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, data);
             skillLoader.loadPlayerSkills(data, xrpgPlayer);
             plugin.addRPGPlayer(playerId, xrpgPlayer);
@@ -75,11 +75,6 @@ public class JSONDatabaseManager implements IDatabaseManager {
         PlayerData extractedData = xrpgPlayer.extractData();
         File dataFile = new File(playerDataFolder, xrpgPlayer.getPlayerId().toString() + ".json");
         try {
-/*            dataFile.createNewFile();
-            FileWriter myWriter = new FileWriter(dataFile);
-            myWriter.write(dataToSave);
-            myWriter.close();
-            System.out.println("Successfully wrote to the file.");*/
             if (!dataFile.exists()) {
                 dataFile.createNewFile();
             }
@@ -90,6 +85,19 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
             if (StringUtils.isNotBlank(data)) {
                 PlayerData savedData = gson.fromJson(data, PlayerData.class);
+
+                //This looks confusing so to clear it up:
+                //1. We take the saved data
+                //2. We get the current class' class data from the extracted data
+                //3. We replace the value in the savedData if it exists, otherwise add it.
+                final String classId = extractedData.getClassId();
+                savedData.setClassId(classId);
+
+                if (!StringUtils.isBlank(classId)) {
+                    savedData.addClassData(classId, extractedData.getClassData(classId));
+                }
+
+                //4. turn the new data to json and save it.
                 dataToSave = gson.toJson(savedData);
 
             } else {

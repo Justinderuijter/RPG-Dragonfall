@@ -34,7 +34,7 @@ public class SpellbookCommand implements TabExecutor {
                 return true;
             }
             Player player = (Player) commandSender;
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
+            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
 
             if (xrpgPlayer == null) return true;
 

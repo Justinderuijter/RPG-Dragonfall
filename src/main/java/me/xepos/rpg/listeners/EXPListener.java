@@ -24,7 +24,7 @@ public class EXPListener implements Listener {
         if (e.getEntity().getKiller() == null) return;
         if (e.getEntity() instanceof AbstractVillager) return;
         Player player = e.getEntity().getKiller();
-        XRPGPlayer gainer = plugin.getXRPGPlayer(player);
+        XRPGPlayer gainer = plugin.getXRPGPlayer(player, true);
 
         if (gainer != null) {
             double health = e.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();

@@ -1,5 +1,7 @@
 required-items:
   - AXE
+name: "Rage"
+icon: BLAZE_POWDER
 range: 3
 rage-on-hit: 5
 bonus-rage-on-kill: 5

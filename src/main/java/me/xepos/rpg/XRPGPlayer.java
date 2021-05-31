@@ -1,11 +1,14 @@
 package me.xepos.rpg;
 
+import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.handlers.ActiveEventHandler;
 import me.xepos.rpg.handlers.BowEventHandler;
 import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.IFollowerContainer;
 import me.xepos.rpg.skills.base.XRPGSkill;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -18,12 +21,14 @@ public class XRPGPlayer {
     private transient UUID playerId;
     private transient Player player;
     private transient String classDisplay;
+    private boolean isClassEnabled;
     private int currentMana;
     private int maximumMana;
+    private long lastBookReceivedTime;
     private long lastClassChangeTime;
-    private String guildId;
-    private int skillUnlockPoints = 0;
-    private int skillUpgradePoints = 0;
+    private String classId;
+    private byte skillUnlockPoints = 0;
+    private byte skillUpgradePoints = 0;
     private boolean spellCastModeEnabled = false;
     private List<String> spellKeybinds = new ArrayList<>();
     private int level;
@@ -38,14 +43,21 @@ public class XRPGPlayer {
     public XRPGPlayer(UUID playerId, PlayerData playerData) {
         this.player = null;
         this.playerId = playerId;
-        this.guildId = playerData.getClassId();
+        this.isClassEnabled = playerData.isClassEnabled();
+        this.classId = playerData.getClassId();
         this.lastClassChangeTime = playerData.getLastClassChange();
-        this.skillUpgradePoints = playerData.getSkillUpgradePoints();
-        this.skillUnlockPoints = playerData.getSkillUnlockPoints();
+        this.lastBookReceivedTime = playerData.getLastBookReceived();
         this.spellKeybinds.clear();
-        //Need to check for null as this will be new for new players
-        if (playerData.getKeybinds() != null)
-            this.spellKeybinds.addAll(playerData.getKeybinds());
+
+        //New players won't have a classId
+        if (!StringUtils.isBlank(this.classId)){
+            final ClassData data = playerData.getClassData(this.classId);
+
+            this.skillUnlockPoints = data.getSkillUnlockPoints();
+            this.skillUpgradePoints = data.getSkillUpgradePoints();
+
+            this.spellKeybinds.addAll(data.getKeybindOrder());
+        }
 
         if (handlerList.isEmpty())
             initializePassiveHandlers();
@@ -56,10 +68,10 @@ public class XRPGPlayer {
 
     //Constructor for loading profiles
     @Deprecated
-    public XRPGPlayer(UUID playerId, String guildId) {
+    public XRPGPlayer(UUID playerId, String classId) {
         this.player = null;
         this.playerId = playerId;
-        this.guildId = guildId;
+        this.classId = classId;
         this.lastClassChangeTime = 0;
 
         if (handlerList.isEmpty())
@@ -70,10 +82,10 @@ public class XRPGPlayer {
     }
 
     @Deprecated
-    public XRPGPlayer(Player player, String guildId) {
+    public XRPGPlayer(Player player, String classId) {
         this.player = player;
         this.playerId = player.getUniqueId();
-        this.guildId = guildId;
+        this.classId = classId;
         this.lastClassChangeTime = 0;
 
         if (handlerList.isEmpty())
@@ -140,12 +152,8 @@ public class XRPGPlayer {
         return System.currentTimeMillis() > lastStunTime + 20 * 1000L;
     }
 
-    public String getGuildId() {
-        return guildId;
-    }
-
-    public void setGuildId(String guildId) {
-        this.guildId = guildId;
+    public String getClassId() {
+        return classId;
     }
 
     public UUID getPlayerId() {
@@ -173,11 +181,24 @@ public class XRPGPlayer {
         return classDisplay;
     }
 
-    public void resetClassData(String classId, String classDisplayName) {
-        if (classId == null || classId.equals("")) return;
+    public void applyNewPlayerData(PlayerData playerData, String classDisplayName) {
+        Bukkit.getLogger().severe("ClassId: " + playerData.getClassId());
+        if (playerData.getClassId() == null || playerData.getClassId().equals("")) return;
 
-        this.guildId = classId;
+        ClassData classData = playerData.getClassData(playerData.getClassId());
+
+        this.classId = playerData.getClassId();
         this.classDisplay = classDisplayName;
+
+        if (classData != null) {
+            this.currentMana = classData.getLastMana();
+            this.level = classData.getLevel();
+            this.currentExp = classData.getExperience();
+        }else{
+            this.currentMana = this.maximumMana;
+            this.level = 1;
+            this.currentExp = 0;
+        }
 
         //Clearing keybinds
         spellKeybinds.clear();
@@ -258,6 +279,17 @@ public class XRPGPlayer {
         return spellKeybinds.get(slotId);
     }
 
+    public boolean isClassEnabled() {
+        return isClassEnabled;
+    }
+
+    public void setClassEnabled(boolean classEnabled) {
+        isClassEnabled = classEnabled;
+        if (!classEnabled){
+            spellCastModeEnabled = false;
+        }
+    }
+
     //////////////////////////////////
     //                              //
     //            Levels            //
@@ -319,7 +351,7 @@ public class XRPGPlayer {
         return skillUnlockPoints;
     }
 
-    public void setSkillUnlockPoints(int skillUnlockPoints) {
+    public void setSkillUnlockPoints(byte skillUnlockPoints) {
         this.skillUnlockPoints = skillUnlockPoints;
     }
 
@@ -327,7 +359,7 @@ public class XRPGPlayer {
         return skillUpgradePoints;
     }
 
-    public void setSkillUpgradePoints(int skillUpgradePoints) {
+    public void setSkillUpgradePoints(byte skillUpgradePoints) {
         this.skillUpgradePoints = skillUpgradePoints;
     }
 
@@ -391,7 +423,12 @@ public class XRPGPlayer {
             skills.put(skillId, learnedSkills.get(skillId).getSkillLevel());
         }
 
-        return new PlayerData(this.guildId, this.skillUnlockPoints, this.skillUpgradePoints, this.lastClassChangeTime, this.spellKeybinds, skills);
+        PlayerData playerData = new PlayerData(this.classId, this.lastClassChangeTime, this.lastBookReceivedTime, this.isClassEnabled);
+        if (StringUtils.isNotBlank(this.classId)){
+            playerData.addClassData(this.classId, new ClassData(this.level, this.currentExp, (byte) this.currentMana , this.skillUpgradePoints, this.skillUnlockPoints, skills, this.spellKeybinds));
+        }
+
+        return playerData;
     }
 
     public List<String> getSpellKeybinds() {

@@ -2,21 +2,20 @@ package me.xepos.rpg.commands;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.tree.SkillTree;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 public class TreeCommand implements CommandExecutor {
     private final XRPG plugin;
-    private final Inventory inventory;
 
-    public TreeCommand(XRPG plugin, Inventory inventory){
+    public TreeCommand(XRPG plugin){
         this.plugin = plugin;
-        this.inventory = inventory;
     }
 
     @Override
@@ -27,17 +26,20 @@ public class TreeCommand implements CommandExecutor {
                 return true;
             }
             Player player = (Player) commandSender;
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
+            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
             if (xrpgPlayer == null){
                 player.sendMessage(ChatColor.RED + "Cannot use this command!");
                 return true;
+            }else if (StringUtils.isEmpty(xrpgPlayer.getClassId())){
+                player.sendMessage("You do not currently have a class selected");
+                return true;
             }
 
-            player.openInventory(inventory);
+            SkillTree tree = plugin.getSkillTree(plugin.getClassInfo(xrpgPlayer.getClassId()).getSkillTreeId());
+
+            player.openInventory(tree.getInventory(xrpgPlayer));
             return true;
         }
-
-
 
         return false;
     }

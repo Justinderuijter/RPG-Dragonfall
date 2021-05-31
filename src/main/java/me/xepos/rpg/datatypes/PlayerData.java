@@ -1,60 +1,76 @@
 package me.xepos.rpg.datatypes;
 
-import java.util.ArrayList;
+import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
+
 import java.util.HashMap;
-import java.util.List;
 
 public class PlayerData {
     private String classId;
+    private boolean isClassEnabled;
     private long lastClassChange = 0;
-    private int skillUpgradePoints;
-    private int skillUnlockPoints;
-    private final List<String> keybinds;
-    private final HashMap<String, Integer> skills;
+    private long lastBookReceived = 0;
+    private HashMap<String, ClassData> classes;
 
-    public PlayerData(String classId, int skillUnlockPoints, int skillUpgradePoints, long lastClassChange, List<String> keybinds, HashMap<String, Integer> skills){
+    public PlayerData(String classId, long lastClassChange, long lastBookReceived, boolean isClassEnabled) {
         this.classId = classId;
-        this.skillUpgradePoints = skillUpgradePoints;
-        this.skillUnlockPoints = skillUnlockPoints;
+        this.isClassEnabled = isClassEnabled;
         this.lastClassChange = lastClassChange;
-        this.keybinds = keybinds;
-        this.skills = skills;
+        this.lastBookReceived = lastBookReceived;
+        this.classes = new HashMap<>();
     }
 
-    public PlayerData(String classId, int skillUnlockPoints, int skillUpgradePoints, long lastClassChange){
+    public PlayerData(@Nullable String classId){
         this.classId = classId;
-        this.skillUnlockPoints = skillUnlockPoints;
-        this.skillUpgradePoints = skillUpgradePoints;
-        this.lastClassChange = lastClassChange;
-        this.keybinds = new ArrayList<>();
-        this.skills = new HashMap<>();
-    }
-
-    public void setClassId(String classId){
-        this.classId = classId;
+        this.lastClassChange = 0;
+        this.lastBookReceived = 0;
+        this.classes = new HashMap<>();
     }
 
     public String getClassId() {
         return classId;
     }
 
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
+
     public long getLastClassChange() {
         return lastClassChange;
     }
 
-    public int getSkillUnlockPoints() {
-        return skillUnlockPoints;
+    public void setLastClassChange(long lastClassChange) {
+        this.lastClassChange = lastClassChange;
     }
 
-    public List<String> getKeybinds() {
-        return keybinds;
+    public long getLastBookReceived() {
+        return lastBookReceived;
     }
 
-    public HashMap<String, Integer> getSkills() {
-        return skills;
+    public void setLastBookReceived(long lastBookReceived) {
+        this.lastBookReceived = lastBookReceived;
     }
 
-    public int getSkillUpgradePoints() {
-        return skillUpgradePoints;
+    public boolean isClassEnabled() {
+        return isClassEnabled;
+    }
+
+    public void setClassEnabled(boolean classEnabled) {
+        isClassEnabled = classEnabled;
+    }
+
+    public HashMap<String, ClassData> getClasses() {
+        return classes;
+    }
+
+    public ClassData getClassData(String classId){
+        return classes.get(classId);
+    }
+
+    public void setClasses(HashMap<String, ClassData> classes) {
+        this.classes = classes;
+    }
+
+    public void addClassData(String classId, ClassData classData){
+        this.classes.put(classId, classData);
     }
 }

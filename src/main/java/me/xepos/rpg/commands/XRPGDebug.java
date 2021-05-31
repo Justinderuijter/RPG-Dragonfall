@@ -37,10 +37,10 @@ public class XRPGDebug implements CommandExecutor {
                             player.sendMessage("Fireballs: " + plugin.projectiles.size());
                             return true;
                         case "damagetaken":
-                            for (String d : plugin.getXRPGPlayer(player).dmgTakenMultipliers.keySet()) {
-                                player.sendMessage(plugin.getXRPGPlayer(player).dmgTakenMultipliers.get(d).toString());
+                            for (String d : plugin.getXRPGPlayer(player, true).dmgTakenMultipliers.keySet()) {
+                                player.sendMessage(plugin.getXRPGPlayer(player, true).dmgTakenMultipliers.get(d).toString());
                             }
-                            player.sendMessage("dmgTakenMP" + plugin.getXRPGPlayer(player).dmgTakenMultipliers.size());
+                            player.sendMessage("dmgTakenMP" + plugin.getXRPGPlayer(player, true).dmgTakenMultipliers.size());
                             return true;
                         case "modifiers":
                             for (String identifier : AttributeModifierManager.getInstance().getModifiers(ModifierType.POSITIVE).keySet()) {
@@ -53,30 +53,30 @@ public class XRPGDebug implements CommandExecutor {
                             return true;
                         case "players":
                             for (UUID id : plugin.getRPGPlayers().keySet()) {
-                                XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(id);
-                                player.sendMessage(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getGuildId());
+                                XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(id, true);
+                                player.sendMessage(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getClassId());
                             }
                             return true;
                         case "skilldata":
-                            HashMap<String, PassiveEventHandler> handlers = plugin.getXRPGPlayer(player).getPassiveHandlerList();
-                            for (XRPGSkill skill:plugin.getXRPGPlayer(player).getActiveHandler().getSkills().values()) {
-                                player.sendMessage(skill.getName() + ": " + skill.getSkillLevel());
+                            HashMap<String, PassiveEventHandler> handlers = plugin.getXRPGPlayer(player, true).getPassiveHandlerList();
+                            for (XRPGSkill skill:plugin.getXRPGPlayer(player, true).getActiveHandler().getSkills().values()) {
+                                player.sendMessage(skill.getSkillName() + ": " + skill.getSkillLevel());
                             }
                             for (String handlerName : handlers.keySet()) {
                                 for (XRPGSkill skill : handlers.get(handlerName).getSkills().values()) {
-                                    player.sendMessage(skill.getName() + ": " + skill.getSkillLevel());
+                                    player.sendMessage(skill.getSkillName() + ": " + skill.getSkillLevel());
                                 }
                             }
                             return true;
                         case "keybinds":
                             int counter = 0;
-                            for (String name:plugin.getXRPGPlayer(player).getSpellKeybinds()) {
+                            for (String name:plugin.getXRPGPlayer(player, true).getSpellKeybinds()) {
                                 player.sendMessage(counter + ": " + name);
                                 counter++;
                             }
                             return true;
                         case "clear":
-                            plugin.getXRPGPlayer(player).getSpellKeybinds().clear();
+                            plugin.getXRPGPlayer(player, true).getSpellKeybinds().clear();
                             return true;
                         case "skill":
                             for (String skillId:plugin.getAllSkills()) {
@@ -86,7 +86,7 @@ public class XRPGDebug implements CommandExecutor {
                             return false;
                     }
                 }else if(strings.length == 2){
-                    XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
+                    XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
 
 
                     new Nimble(xrpgPlayer, plugin.getSkillData("Nimble"), plugin, 1);

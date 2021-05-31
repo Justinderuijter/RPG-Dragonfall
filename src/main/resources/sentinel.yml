@@ -1,3 +1,4 @@
+enabled: true
 display:
   name: "Sentinel"
   icon: SHIELD
@@ -7,17 +8,4 @@ display:
     - "Draw the attention of nearby mobs with your attacks"
     - "medium damage, low mobility, high defense"
 
-default: true
-enabled: true
-allow-bow: false
-allow-shield: true
-
-attributes:
-  health-flat-bonus: 10.0
-  armor-flat-bonus: 4.0
-
-skills:
-  - "Aegis"
-  - "TrueDefender"
-  - "ShieldBash"
-  - "GuardPoint"
+base-mana: 20

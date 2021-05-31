@@ -30,3 +30,6 @@ commands:
   xrpginfo:
     description: get information about a player or skill
     usage: /<command> (player|skill) <player|skillId>
+  class:
+    description: change or toggle your class
+    usage: /<command> <>

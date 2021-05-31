@@ -28,10 +28,12 @@ public class FollowerListener implements Listener {
         if (((CraftEntity) e.getEntity()).getHandle() instanceof Follower) {
             Follower follower = (Follower) ((CraftLivingEntity) e.getEntity()).getHandle();
             if (follower.getOwner() instanceof Player) {
-                XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer((Player) follower.getOwner());
+                XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer((Player) follower.getOwner(), true);
 
-                for (IFollowerContainer skill : xrpgPlayer.getFollowerSkills()) {
-                    skill.getFollowers().remove(follower);
+                if (xrpgPlayer != null) {
+                    for (IFollowerContainer skill : xrpgPlayer.getFollowerSkills()) {
+                        skill.getFollowers().remove(follower);
+                    }
                 }
             }
 

@@ -98,17 +98,17 @@ public class MySQLDatabaseManager implements IDatabaseManager {
     }
 
     private void createPlayer(UUID playerId){
-        try {
-            if (!uuidExists(playerId)) {
-                PreparedStatement ps = connection.prepareStatement("INSERT IGNORE INTO xrpg_classes (uuid,classId,tickets) VALUES (?,?,2)");
-                ps.setString(1, playerId.toString());
-                ps.setString(2, plugin.getDefaultClassId());
-
-                ps.executeUpdate();
-            }
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
+//        try {
+//            if (!uuidExists(playerId)) {
+//                PreparedStatement ps = connection.prepareStatement("INSERT IGNORE INTO xrpg_classes (uuid,classId,tickets) VALUES (?,?,2)");
+//                ps.setString(1, playerId.toString());
+//                ps.setString(2, plugin.getDefaultClassId());
+//
+//                ps.executeUpdate();
+//            }
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//        }
     }
 
     private XRPGPlayer getPlayerData(UUID playerId){
@@ -159,7 +159,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
         }catch (SQLException e){
             e.printStackTrace();
         }
-        return plugin.getDefaultClassId();
+        return "";
     }
 
     private void setClassId(UUID playerId, String classId){
@@ -177,7 +177,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
     private void updatePlayer(XRPGPlayer xrpgPlayer){
         try{
             PreparedStatement ps = connection.prepareStatement("UPDATE xrpg_classes SET classId=?,tickets=? WHERE uuid=?");
-            ps.setString(1, xrpgPlayer.getGuildId());
+            ps.setString(1, xrpgPlayer.getClassId());
             //ps.setString(2, String.valueOf(xrpgPlayer.getFreeChangeTickets()));
             ps.setString(3, xrpgPlayer.getPlayerId().toString());
 

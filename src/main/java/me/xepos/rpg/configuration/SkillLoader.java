@@ -2,7 +2,9 @@ package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.PlayerData;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -130,9 +132,21 @@ public class SkillLoader {
     }
 
     public void loadPlayerSkills(PlayerData data, XRPGPlayer xrpgPlayer){
-        for (String skillId:data.getSkills().keySet()) {
-            final int level = data.getSkills().getOrDefault(skillId, 1);
-            addSkillToPlayer(skillId, xrpgPlayer, level);
+        if (StringUtils.isBlank(data.getClassId())) return;
+
+        ClassInfo classInfo = plugin.getClassInfo(data.getClassId());
+
+        if (classInfo == null) return;
+
+        String displayName = classInfo.getDisplayName();
+
+        xrpgPlayer.applyNewPlayerData(data, displayName);
+
+        if (!data.getClasses().isEmpty()){
+            for (String skillId:data.getClasses().get(data.getClassId()).getSkills().keySet()) {
+                final int level = data.getClassData(data.getClassId()).getSkills().getOrDefault(skillId, 1);
+                addSkillToPlayer(skillId, xrpgPlayer, level);
+            }
         }
     }
 

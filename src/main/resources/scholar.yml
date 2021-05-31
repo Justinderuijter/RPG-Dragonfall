@@ -1,3 +1,4 @@
+enabled: true
 display:
   name: "Scholar"
   icon: GOLDEN_APPLE
@@ -7,10 +8,4 @@ display:
     - "Draw the attention of nearby mobs with your attacks"
     - "medium damage, low mobility, high defense"
 
-default: false
-enabled: true
-allow-bow: true
-allow-shield: true
-
-skills:
-  - "Blessed"
+base-mana: 20

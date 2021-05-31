@@ -1,11 +1,13 @@
 package me.xepos.rpg;
 
 import me.xepos.rpg.commands.*;
+import me.xepos.rpg.configuration.ClassLoader;
 import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.configuration.TreeLoader;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.datatypes.BaseProjectileData;
+import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.parties.PartyManagerFactory;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
@@ -20,7 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -28,17 +29,13 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("all")
 public final class XRPG extends JavaPlugin {
 
-    private Inventory inventoryGUI;
-    private Inventory treeMenu;
+    private List<ItemStack> GUIBaseItems;
     private SkillLoader skillLoader;
     private TreeLoader treeLoader;
 
@@ -50,8 +47,7 @@ public final class XRPG extends JavaPlugin {
     private IDatabaseManager databaseManager;
 
     //Classes
-    private String defaultClassId = null;
-    //private static HashMap<String, FileConfiguration> classData;
+    private static HashMap<String, ClassInfo> classInfo;
 
     //Skills
     private static HashMap<String, FileConfiguration> skillData;
@@ -78,9 +74,9 @@ public final class XRPG extends JavaPlugin {
         //Loaders
         this.skillLoader = new SkillLoader(this);
         this.skillData = this.skillLoader.initializeSkills();
-
         this.treeLoader = new TreeLoader(this);
         this.treeData = treeLoader.initialize();
+        this.classInfo = new ClassLoader(this).initializeClasses();
 
 
         final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook", "requires", "level", "maxLevel"};
@@ -104,7 +100,7 @@ public final class XRPG extends JavaPlugin {
         //CraftLoader disabled as it won't be used (for now)
         //new CraftLoader(this).initCustomRecipes();
 
-        initTreeMenuGUI();
+        this.GUIBaseItems = generateBaseGUIItems();
         //registering listeners/commands
         initEventListeners();
         if (mcMMO != null){
@@ -119,8 +115,9 @@ public final class XRPG extends JavaPlugin {
         this.getCommand("xrpgreload").setExecutor(new XRPGReload());
         this.getCommand("spellmode").setExecutor(new ToggleSpellCommand(this));
         this.getCommand("spellbook").setExecutor(new SpellbookCommand(this));
-        this.getCommand("tree").setExecutor(new TreeCommand(this, treeMenu));
+        this.getCommand("tree").setExecutor(new TreeCommand(this));
         this.getCommand("xrpginfo").setExecutor(new XRPGInfoCommand(this));
+        this.getCommand("class").setExecutor(new ChangeClassCommand(this, GUIBaseItems));
         System.out.println("RPG classes loaded!");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -150,7 +147,7 @@ public final class XRPG extends JavaPlugin {
         this.databaseManager.disconnect();
     }
 
-    private void initTreeMenuGUI(){
+/*    private void initTreeMenuGUI(){
         treeMenu = Bukkit.createInventory(null, 9, "Skill Trees");
 
         for (String treeId:treeData.keySet()) {
@@ -163,18 +160,8 @@ public final class XRPG extends JavaPlugin {
 
             treeMenu.addItem(icon);
         }
-    }
-
-/*    private void initClassChangeGUI() {
-        inventoryGUI = Bukkit.createInventory(null, 18, "Pick A Class");
-
-        for (ItemStack item : classLoader.initializeMenu()) {
-            int slot = Utils.getLastAvailableInventorySlot(inventoryGUI);
-            if (slot != -1) {
-                inventoryGUI.setItem(slot, item);
-            }
-        }
     }*/
+
 
     private void initEventListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(this, databaseManager), this);
@@ -195,16 +182,30 @@ public final class XRPG extends JavaPlugin {
         return partyManager;
     }
 
-    public Inventory getInventoryGUI() {
-        return inventoryGUI;
+    public XRPGPlayer getXRPGPlayer(Player player, boolean force) {
+        XRPGPlayer xrpgPlayer = RPGPlayers.get(player.getUniqueId());
+        if (force || xrpgPlayer.isClassEnabled()){
+            return xrpgPlayer;
+        }
+
+        return null;
     }
 
-    public XRPGPlayer getXRPGPlayer(Player player) {
-        return RPGPlayers.get(player.getUniqueId());
+    public XRPGPlayer getXRPGPlayer(Player player){
+        return this.getXRPGPlayer(player, false);
+    }
+
+    public XRPGPlayer getXRPGPlayer(UUID playerUUID, boolean force) {
+        XRPGPlayer xrpgPlayer = RPGPlayers.get(playerUUID);
+        if (force || xrpgPlayer.isClassEnabled()){
+            return xrpgPlayer;
+        }
+
+        return null;
     }
 
     public XRPGPlayer getXRPGPlayer(UUID playerUUID) {
-        return RPGPlayers.get(playerUUID);
+        return this.getXRPGPlayer(playerUUID, false);
     }
 
     public void removeXRPGPlayer(Player player) {
@@ -223,12 +224,12 @@ public final class XRPG extends JavaPlugin {
         RPGPlayers.put(playerUUID, xrpgPlayer);
     }
 
-    public String getDefaultClassId() {
-        return defaultClassId;
+    public ClassInfo getClassInfo(String classId){
+        return classInfo.get(classId);
     }
 
-    public void setDefaultClassId(String defaultClassId) {
-        this.defaultClassId = defaultClassId;
+    public HashMap<String, ClassInfo> getClassInfo(){
+        return classInfo;
     }
 
     public ItemStack getSpellbookItem(){
@@ -252,6 +253,24 @@ public final class XRPG extends JavaPlugin {
         }
 
         return item;
+    }
+
+    public List<ItemStack> generateBaseGUIItems(){
+        List<ItemStack> items = new ArrayList<>();
+        for (String classId:this.getClassInfo().keySet()) {
+            ClassInfo info = this.getClassInfo(classId);
+
+            if (info.isEnabled()){
+                ItemStack itemStack = Utils.buildItemStack(info.getIcon(), info.getDisplayName(), info.getDescription());
+                final ItemMeta meta = itemStack.getItemMeta();
+                meta.getPersistentDataContainer().set(getKey("classId"), PersistentDataType.STRING, classId);
+
+                itemStack.setItemMeta(meta);
+
+                items.add(itemStack);
+            }
+        }
+        return items;
     }
 
     public HashMap<String, SkillTree> getTreeData(){ return treeData; }

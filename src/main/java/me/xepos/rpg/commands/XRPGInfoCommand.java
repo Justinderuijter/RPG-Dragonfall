@@ -2,6 +2,8 @@ package me.xepos.rpg.commands;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.skills.base.XRPGSkill;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -11,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class XRPGInfoCommand implements TabExecutor {
@@ -41,7 +44,7 @@ public class XRPGInfoCommand implements TabExecutor {
                             return true;
                         }
 
-                        displayPlayerStats(commandSender, target);
+                        return displayPlayerStats(commandSender, target);
 
                     } else if (strings[0].equalsIgnoreCase("skill")) {
 
@@ -63,7 +66,7 @@ public class XRPGInfoCommand implements TabExecutor {
     private boolean displayPlayerStats(CommandSender commandSender, Player target) {
         final ChatColor primaryColor = ChatColor.YELLOW;
 
-        XRPGPlayer xrpgTarget = plugin.getXRPGPlayer(target);
+        XRPGPlayer xrpgTarget = plugin.getXRPGPlayer(target, true);
         boolean querySelf = false;
         if ((commandSender instanceof Player && commandSender.equals(target)) || commandSender.isOp()) {
             querySelf = true;
@@ -74,16 +77,27 @@ public class XRPGInfoCommand implements TabExecutor {
             return true;
         }
 
-        commandSender.sendMessage(primaryColor + "--------[" + ChatColor.RED + target.getDisplayName() + primaryColor + "]--------");
-        String playerGuild = xrpgTarget.getGuildId();
-        if (playerGuild == null) playerGuild = "None";
-        commandSender.sendMessage(primaryColor + "Guild: " + ChatColor.GREEN + playerGuild);
+        commandSender.sendMessage(primaryColor + "----------[" + ChatColor.RED + target.getDisplayName() + primaryColor + "]----------");
+        String classId = xrpgTarget.getClassDisplayName();
+        if (StringUtils.isBlank(classId)) classId = "None";
+        commandSender.sendMessage(primaryColor + "Class: " + ChatColor.GREEN + classId);
         commandSender.sendMessage(primaryColor + "Mana: " + ChatColor.BLUE + xrpgTarget.getCurrentMana() + ChatColor.WHITE + "/" + ChatColor.BLUE + xrpgTarget.getMaximumMana());
 
         if (querySelf) {
             commandSender.sendMessage(primaryColor + "Unlock Points: " + colorIntStringViaValue(xrpgTarget.getSkillUnlockPoints()));
             commandSender.sendMessage(primaryColor + "Upgrade Points: " + colorIntStringViaValue(xrpgTarget.getSkillUpgradePoints()));
         }
+
+        StringBuilder skillString = new StringBuilder();
+        HashMap<String, XRPGSkill> skillHashMap = xrpgTarget.getAllLearnedSkills();
+        for (String skillId:skillHashMap.keySet()) {
+            XRPGSkill skill = skillHashMap.get(skillId);
+            skillString.append(ChatColor.GREEN).append(skill.getSkillName()).append(ChatColor.WHITE).append(" (").append(ChatColor.GREEN).append(skill.getSkillLevel()).append(ChatColor.WHITE).append("), ");
+        }
+        if (skillString.length() > 2) {
+            skillString = new StringBuilder(skillString.substring(0, skillString.lastIndexOf(", ")));
+        }
+        commandSender.sendMessage(primaryColor + "Skills: " + skillString);
 
 
         return true;

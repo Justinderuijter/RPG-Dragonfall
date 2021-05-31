@@ -22,7 +22,7 @@ public class Aegis extends XRPGPassiveSkill {
     public Aegis(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
-        xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName(), this);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Aegis extends XRPGPassiveSkill {
         Player player = (Player) e.getEntity();
         if (player.getInventory().getItemInOffHand().getType() == Material.SHIELD) {
 
-            if(!isSkillReady()){
+            if (!isSkillReady()) {
                 return;
             }
 
@@ -56,13 +56,14 @@ public class Aegis extends XRPGPassiveSkill {
                 //Applying the DTModifier if event is cancelled
                 XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, this, getDamageMultiplier());
                 Bukkit.getServer().getPluginManager().callEvent(event);
-                if (!event.isCancelled()) {
-                    XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(target);
-                    Utils.addDTModifier(xrpgTarget, getName(), getDamageMultiplier());
+                XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(target, true);
+                if (xrpgTarget != null && !event.isCancelled()) {
+                    Utils.addDTModifier(xrpgTarget, getSkillName(), getDamageMultiplier());
                     target.sendMessage(player.getDisplayName() + " Granted you " + getSkillName() + "!");
 
                     new RemoveDTModifierTask(player, xrpgTarget, this).runTaskLaterAsynchronously(getPlugin(), (long) duration * 20);
                 }
+
             }
             if (nearbyPlayers.size() > 0) {
                 player.sendMessage(ChatColor.GREEN + "Applied " + getSkillName() + " to " + nearbyPlayers.size() + " player(s)!");

@@ -1,3 +1,4 @@
+enabled: true
 display:
   name: "Explorer"
   icon: MAP
@@ -7,10 +8,4 @@ display:
     - "Draw the attention of nearby mobs with your attacks"
     - "medium damage, low mobility, high defense"
 
-default: false
-enabled: true
-allow-bow: true
-allow-shield: true
-
-skills:
-  - "Nimble"
+base-mana: 20

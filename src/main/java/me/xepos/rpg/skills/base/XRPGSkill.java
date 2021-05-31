@@ -91,10 +91,6 @@ public abstract class XRPGSkill {
         return skillVariables.getDouble("damage-multiplier");
     }
 
-    public String getName() {
-        return skillVariables.getString("name", this.getClass().getSimpleName());
-    }
-
     public int getRequiredMana() {
         if (plugin.useMana()) {
             return skillVariables.getInt("mana", 0);

@@ -5,9 +5,11 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
+import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.datatypes.TreeData;
-import me.xepos.rpg.tree.SkillTree;
+import me.xepos.rpg.events.XRPGClassChangedEvent;
 import me.xepos.rpg.utils.PacketUtils;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -45,9 +47,9 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onItemClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
-        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
 
-        if (xrpgPlayer.isSpellCastModeEnabled()) {
+        if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
             if (e.getSlot() < xrpgPlayer.getSpellKeybinds().size() && e.getClickedInventory() instanceof PlayerInventory) {
                 e.setCancelled(true);
@@ -56,6 +58,11 @@ public class InventoryListener implements Listener {
         }
 
         if (e.getView().getTitle().equalsIgnoreCase("Spellbook")) {
+            if (xrpgPlayer == null){
+                e.setCancelled(true);
+                return;
+            }
+
             if (!(e.getClickedInventory() instanceof PlayerInventory)) {
                 e.getWhoClicked().sendMessage("Spellbook: " + e.getSlot());
 
@@ -88,21 +95,38 @@ public class InventoryListener implements Listener {
 
             }
             e.setCancelled(true);
-        } else if (e.getView().getTitle().equals("Skill Trees")) {
+        } else if (e.getView().getTitle().equals("Change Your Class") || e.getView().getTitle().equals("Pick A Class")) {
             e.setCancelled(true);
-            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("classId"), PersistentDataType.STRING)) {
-                String treeId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("classId"), PersistentDataType.STRING);
+            if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null && e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("classId"), PersistentDataType.STRING)){
+                if (xrpgPlayer == null) return;
 
-                SkillTree tree = plugin.getSkillTree(treeId);
+                String classId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("classId"), PersistentDataType.STRING);
+                if (classId == null) return;
 
-                treeData.put(player.getUniqueId(), new TreeData(xrpgPlayer, treeId, tree, plugin));
-                player.openInventory(tree.getInventory(xrpgPlayer));
+                String classDisplayName = plugin.getClassInfo(classId).getDisplayName();
+                if (classDisplayName == null) return;
+
+                XRPGClassChangedEvent event = new XRPGClassChangedEvent(player, xrpgPlayer.getClassId(), xrpgPlayer.getClassDisplayName(), classId, classDisplayName);
+                Bukkit.getServer().getPluginManager().callEvent(event);
+
+                if (!event.isCancelled()) {
+                    PlayerData data = xrpgPlayer.extractData();
+
+                    //Need to save before changing class to prevent data loss
+                    new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
+
+                    Bukkit.broadcastMessage(xrpgPlayer.getPlayer().getName() + " changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName + "!");
+                    data.setClassId(classId);
+                    skillLoader.loadPlayerSkills(data, xrpgPlayer);
+                    Utils.removeAllModifiers(player);
+
+                    player.closeInventory();
+                }
             }
-            //Inventory inventory = Bukkit.createInventory(null, 54, "TreeTest");
-            //treeLoader.buildTree(inventory, xrpgPlayer, strings[0]);
-
+            
         } else if (e.getView().getTitle().startsWith("Skill Tree: ")) {
             e.setCancelled(true);
+            if (xrpgPlayer == null) return;
 
             if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null) {
                 if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("skillId"), PersistentDataType.STRING)) {
@@ -157,7 +181,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onItemDrag(final InventoryDragEvent e) {
-        if (e.getView().getTitle().equalsIgnoreCase("Pick A Class")) {
+        if (e.getView().getTitle().equals("Change Your Class") || e.getView().getTitle().equals("Pick A Class")) {
             e.setCancelled(true);
         } else if (e.getView().getTitle().equals("Spellbook")) {
 
@@ -170,12 +194,8 @@ public class InventoryListener implements Listener {
 
 
         } else {
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getWhoClicked().getUniqueId());
+            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getWhoClicked().getUniqueId(), true);
             if (xrpgPlayer == null) return;
-
-/*            if (e.getInventorySlots().contains(40) && !xrpgPlayer.isShieldAllowed() && e.getCursor() != null && e.getCursor().getType() == Material.SHIELD) {
-                e.setCancelled(true);
-            }*/
 
             if (xrpgPlayer.isSpellCastModeEnabled()) {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
@@ -199,7 +219,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onItemSwap(final PlayerSwapHandItemsEvent e) {
-        final XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
+        final XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer(), true);
 
         if (xrpgPlayer == null) return;
 

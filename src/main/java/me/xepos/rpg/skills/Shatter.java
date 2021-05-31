@@ -27,7 +27,7 @@ public class Shatter extends XRPGActiveSkill {
     public Shatter(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
-        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
     }
 
     @Override
@@ -88,11 +88,13 @@ public class Shatter extends XRPGActiveSkill {
                 Bukkit.getServer().getPluginManager().callEvent(event);
 
                 //Apply DTModifier if the event isn't cancelled
-                if (!event.isCancelled()) {
-                    XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(targetPlayer);
+                XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(targetPlayer, true);
+                if (xrpgTarget != null && !event.isCancelled()) {
                     Utils.addDTModifier(xrpgTarget, getSkillName(), shatterDTAmount);
                     new RemoveDTModifierTask(e.getPlayer(), xrpgTarget, this).runTaskLater(getPlugin(), (long) shatterDTDuration * 20L);
                 }
+
+
             }
         } else {
             livingEntity.addPotionEffect(potionEffect);

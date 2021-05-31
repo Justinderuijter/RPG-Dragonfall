@@ -2,7 +2,7 @@ package me.xepos.rpg.commands;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.utils.PacketUtils;
+import me.xepos.rpg.utils.SpellmodeUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -40,7 +40,7 @@ public class ToggleSpellCommand implements TabExecutor {
             if (strings.length != 1) return false;
 
             Player player = (Player) commandSender;
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
+            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
             if (xrpgPlayer == null) {
                 return true;
             }
@@ -48,14 +48,18 @@ public class ToggleSpellCommand implements TabExecutor {
             switch (strings[0].toLowerCase()) {
                 case "on":
                 case "enable":
-                    enableSpellCastMode(xrpgPlayer);
+                    SpellmodeUtils.enterSpellmode(xrpgPlayer);
                     return true;
                 case "off":
                 case "disable":
-                    disableSpellcastMode(xrpgPlayer);
+                    SpellmodeUtils.disableSpellmode(xrpgPlayer);
                     return true;
                 case "toggle":
-                    xrpgPlayer.setSpellCastModeEnabled(!xrpgPlayer.isSpellCastModeEnabled());
+                    if (xrpgPlayer.isSpellCastModeEnabled()){
+                        SpellmodeUtils.disableSpellmode(xrpgPlayer);
+                        return true;
+                    }
+                    SpellmodeUtils.enterSpellmode(xrpgPlayer);
                     return true;
                 default:
                     commandSender.sendMessage("Spellcast mode is " + (xrpgPlayer.isSpellCastModeEnabled() ? "enabled." : "disabled."));
@@ -88,22 +92,5 @@ public class ToggleSpellCommand implements TabExecutor {
 
         playerInventory.setItem(targetSlot, heldItem);
         playerInventory.setItem(heldItemSlot, targetItem);
-    }
-
-    private void enableSpellCastMode(XRPGPlayer xrpgPlayer){
-        xrpgPlayer.setSpellCastModeEnabled(true);
-        PlayerInventory inventory = xrpgPlayer.getPlayer().getInventory();
-        swapItems(inventory, 7);
-
-        int keybindSize = xrpgPlayer.getSpellKeybinds().size();
-        if(inventory.getHeldItemSlot() < keybindSize)
-            inventory.setHeldItemSlot(keybindSize + 1);
-
-        PacketUtils.sendSpellmodePacket(xrpgPlayer);
-    }
-
-    private void disableSpellcastMode(XRPGPlayer xrpgPlayer){
-        xrpgPlayer.setSpellCastModeEnabled(false);
-        xrpgPlayer.getPlayer().updateInventory();
     }
 }
