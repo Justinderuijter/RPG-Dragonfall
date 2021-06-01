@@ -9,8 +9,8 @@ import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.datatypes.TreeData;
 import me.xepos.rpg.events.XRPGClassChangedEvent;
 import me.xepos.rpg.utils.PacketUtils;
-import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -102,19 +102,25 @@ public class InventoryListener implements Listener {
                 String classDisplayName = plugin.getClassInfo(classId).getDisplayName();
                 if (classDisplayName == null) return;
 
+                if (classId.equals(xrpgPlayer.getClassId())){
+                    player.sendMessage(ChatColor.RED + "You already are " + xrpgPlayer.getClassDisplayName());
+                    return;
+                }
+
                 XRPGClassChangedEvent event = new XRPGClassChangedEvent(player, xrpgPlayer.getClassId(), xrpgPlayer.getClassDisplayName(), classId, classDisplayName);
                 Bukkit.getServer().getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
-                    PlayerData data = xrpgPlayer.extractData();
+                    //PlayerData data = xrpgPlayer.extractData();
+                    Bukkit.getScheduler().runTaskAsynchronously(plugin, ()->{
+                        PlayerData data = databaseManager.savePlayerData(xrpgPlayer);
 
-                    //Need to save before changing class to prevent data loss
-                    new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
 
-                    Bukkit.broadcastMessage(xrpgPlayer.getPlayer().getName() + " changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName + "!");
-                    data.setClassId(classId);
-                    skillLoader.loadPlayerSkills(data, xrpgPlayer);
-                    Utils.removeAllModifiers(player);
+
+                        data.setClassId(classId);
+
+                        skillLoader.loadPlayerSkills(data, xrpgPlayer);
+                    });
 
                     player.closeInventory();
                 }

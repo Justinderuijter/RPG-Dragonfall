@@ -3,6 +3,7 @@ package me.xepos.rpg.database;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
+import me.xepos.rpg.datatypes.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -82,8 +83,9 @@ public class MySQLDatabaseManager implements IDatabaseManager {
     }
 
     @Override
-    public void savePlayerData(XRPGPlayer xrpgPlayer) {
+    public PlayerData savePlayerData(XRPGPlayer xrpgPlayer) {
         updatePlayer(xrpgPlayer);
+        return null;
     }
 
     private void createTable(String tableName){

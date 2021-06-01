@@ -71,7 +71,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
     @Override
     @SuppressWarnings("all")
-    public void savePlayerData(XRPGPlayer xrpgPlayer) {
+    public PlayerData savePlayerData(XRPGPlayer xrpgPlayer) {
         PlayerData extractedData = xrpgPlayer.extractData();
         File dataFile = new File(playerDataFolder, xrpgPlayer.getPlayerId().toString() + ".json");
         try {
@@ -82,8 +82,11 @@ public class JSONDatabaseManager implements IDatabaseManager {
             String data = FileUtils.readFileToString(dataFile, "UTF-8");
             FileWriter saveWriter = new FileWriter(dataFile);
             String dataToSave;
+            PlayerData dataToReturn;
 
             if (StringUtils.isNotBlank(data)) {
+                Bukkit.getLogger().info("Data not blank: ");
+                Bukkit.getLogger().info(data);
                 PlayerData savedData = gson.fromJson(data, PlayerData.class);
 
                 //This looks confusing so to clear it up:
@@ -93,25 +96,36 @@ public class JSONDatabaseManager implements IDatabaseManager {
                 final String classId = extractedData.getClassId();
                 savedData.setClassId(classId);
 
-                if (!StringUtils.isBlank(classId)) {
+                Bukkit.getLogger().info("ClassId is: " + classId);
+
+                if (StringUtils.isNotBlank(classId)) {
+                    Bukkit.getLogger().info("Ey waddup I saved " + classId + ":");
                     savedData.addClassData(classId, extractedData.getClassData(classId));
                 }
 
                 //4. turn the new data to json and save it.
                 dataToSave = gson.toJson(savedData);
 
+                dataToReturn = savedData;
             } else {
+                Bukkit.getLogger().info("Created new file with the following information:");
                 //Just save the extracted data if nothing exists.
                 dataToSave = gson.toJson(extractedData);
-            }
 
+                dataToReturn = extractedData;
+            }
+            Bukkit.getLogger().info(dataToSave);
             saveWriter.write(dataToSave);
             saveWriter.close();
+
+            return dataToReturn;
 
         } catch (IOException e) {
             System.out.println("An error occurred while trying to save player data.");
             e.printStackTrace();
         }
+
+        return extractedData;
     }
 
     @Override

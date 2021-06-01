@@ -26,7 +26,7 @@ public class ClassData {
     }
 
     public ClassData() {
-        this.level = 0;
+        this.level = 1;
         this.experience = 0;
         this.lastMana = 0;
         this.skillUpgradePoints = 0;
@@ -62,5 +62,10 @@ public class ClassData {
 
     public List<String> getKeybindOrder() {
         return keybindOrder;
+    }
+
+    @Override
+    public String toString(){
+        return  "{ClassData{Level: + " + level + " +}{Experience: " + experience + "}{Mana: " + lastMana + "}{UpgradePoints: " + skillUpgradePoints + "}{UnlockPoints: " + skillUnlockPoints + "}}";
     }
 }

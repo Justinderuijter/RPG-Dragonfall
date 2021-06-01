@@ -2,6 +2,7 @@ package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.PlayerData;
 import org.apache.commons.lang.StringUtils;
@@ -57,10 +58,10 @@ public class SkillLoader {
 
         try {
             List<Path> paths = getPathsFromResourceJAR("skilldata");
-            for (Path path:paths) {
+            for (Path path : paths) {
                 saveResource(path.toString(), false);
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -131,32 +132,41 @@ public class SkillLoader {
         }
     }
 
-    public void loadPlayerSkills(PlayerData data, XRPGPlayer xrpgPlayer){
+    public void loadPlayerSkills(PlayerData data, XRPGPlayer xrpgPlayer) {
         if (StringUtils.isBlank(data.getClassId())) return;
 
         ClassInfo classInfo = plugin.getClassInfo(data.getClassId());
 
         if (classInfo == null) return;
+        //If the data exists but is null we add base classdata object
+
+        ClassData classData = data.getClasses().get(data.getClassId());
+
+        if (classData == null){
+            //data.addClassData(data.getClassId(), new ClassData());
+            classData = new ClassData();
+        }
 
         String displayName = classInfo.getDisplayName();
 
-        xrpgPlayer.applyNewPlayerData(data, displayName);
+        //data needs to hold the data for the class you're about to become
+        xrpgPlayer.resetPlayerDataForClassChange(data, displayName);
 
-        if (data.getClasses().containsKey(data.getClassId())){
-            for (String skillId:data.getClasses().get(data.getClassId()).getSkills().keySet()) {
-                final int level = data.getClassData(data.getClassId()).getSkills().getOrDefault(skillId, 1);
-                addSkillToPlayer(skillId, xrpgPlayer, level);
-            }
+
+        for (String skillId : classData.getSkills().keySet()) {
+            final int level = data.getClassData(data.getClassId()).getSkills().getOrDefault(skillId, 1);
+            addSkillToPlayer(skillId, xrpgPlayer, level);
         }
+
     }
 
-    public void addSkillToPlayer(String skillId, XRPGPlayer xrpgPlayer, int level){
+    public void addSkillToPlayer(String skillId, XRPGPlayer xrpgPlayer, int level) {
         try {
             Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
             Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class, int.class);
 
             //The instance of the skill automatically assigns itself to the XRPGPlayer
-            if (plugin.getSkillData(skillId) == null){
+            if (plugin.getSkillData(skillId) == null) {
                 xrpgPlayer.getPlayer().sendMessage("SKILLDATA IS NULL FOR " + skillId);
                 return;
             }

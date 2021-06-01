@@ -7,6 +7,8 @@ import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.Nimble;
 import me.xepos.rpg.skills.base.XRPGSkill;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -83,6 +85,7 @@ public class XRPGDebug implements CommandExecutor {
                                 player.sendMessage(skillId);
                             }
                         default:
+                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(strings[0]));
                             return false;
                     }
                 }else if(strings.length == 2){

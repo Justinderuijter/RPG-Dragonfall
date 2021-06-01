@@ -64,7 +64,11 @@ public class PlayerData {
     }
 
     public ClassData getClassData(String classId){
-        return classes.get(classId);
+        ClassData classData = classes.get(classId);
+        if (classData == null){
+            classData = new ClassData();
+        }
+        return classData;
     }
 
     public void setClasses(HashMap<String, ClassData> classes) {
@@ -73,5 +77,15 @@ public class PlayerData {
 
     public void addClassData(String classId, ClassData classData){
         this.classes.put(classId, classData);
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder string = new StringBuilder("PlayerData{{ClassId:" + classId + "}{+ " + isClassEnabled + " +}}");
+        for (String classId:this.classes.keySet()) {
+            string.append(classes.get(classId).toString());
+        }
+
+        return string.toString();
     }
 }

@@ -8,7 +8,6 @@ import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.IFollowerContainer;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -184,23 +183,21 @@ public class XRPGPlayer {
         return classDisplay;
     }
 
-    public void applyNewPlayerData(PlayerData playerData, String classDisplayName) {
-        Bukkit.getLogger().severe("ClassId: " + playerData.getClassId());
-        if (playerData.getClassId() == null || playerData.getClassId().equals("")) return;
-
-        ClassData classData = playerData.getClassData(playerData.getClassId());
+    public void resetPlayerDataForClassChange(PlayerData playerData, String classDisplayName) {
+        if (StringUtils.isBlank(playerData.getClassId())) return;
 
         this.classId = playerData.getClassId();
         this.classDisplay = classDisplayName;
-
-        if (classData != null) {
-            this.currentMana = classData.getLastMana();
+        this.isClassEnabled = playerData.isClassEnabled();
+        this.lastClassChangeTime = playerData.getLastClassChange();
+        this.lastBookReceivedTime = playerData.getLastBookReceived();
+        ClassData classData = playerData.getClassData(playerData.getClassId());
+        if (classData != null){
             this.level = classData.getLevel();
+            this.currentMana = classData.getLastMana();
             this.currentExp = classData.getExperience();
-        }else{
-            this.currentMana = this.maximumMana;
-            this.level = 1;
-            this.currentExp = 0;
+            this.skillUpgradePoints = classData.getSkillUpgradePoints();;
+            this.skillUnlockPoints = classData.getSkillUnlockPoints();
         }
 
         //Clearing keybinds
