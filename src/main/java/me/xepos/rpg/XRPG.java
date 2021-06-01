@@ -241,12 +241,6 @@ public final class XRPG extends JavaPlugin {
         final String name = getConfig().getString("items.spellbook.name", "Spellbook");
         final List<String> lore = getConfig().getStringList("items.spellbook.lore");
 
-/*
-        ItemStack spellbook = Utils.buildItemStack(Material.ENCHANTED_BOOK, name, lore);
-        if (spellbook.getItemMeta() != null){
-            spellbook.getItemMeta().getPersistentDataContainer().set(getKey("spellbook"), PersistentDataType.BYTE, (byte)1);
-        }
-*/
         ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {

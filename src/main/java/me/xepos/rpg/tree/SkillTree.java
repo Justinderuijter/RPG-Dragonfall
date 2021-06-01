@@ -154,7 +154,7 @@ public class SkillTree {
         }
 
         final List<String> description = new ArrayList<String>(){{
-            add("Click to save your chances.");
+            add("Click to save your changes.");
             add("After saving you " + ChatColor.BOLD + "WILL NOT");
             add("be able to undo your changes.");
         }};

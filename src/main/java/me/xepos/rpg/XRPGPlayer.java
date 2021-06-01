@@ -341,10 +341,10 @@ public class XRPGPlayer {
             this.player.sendMessage(ChatColor.GREEN + "You leveled up!");
             if (level % 5 == 0){
                 skillUnlockPoints++;
-                this.player.sendMessage(ChatColor.GREEN + "You gained a unlock point!");
+                this.player.sendMessage(ChatColor.GREEN + "You gained an unlock point!");
             }else if (level % 2 == 0){
                 skillUpgradePoints++;
-                this.player.sendMessage(ChatColor.GREEN + "You gained a upgrade point!");
+                this.player.sendMessage(ChatColor.GREEN + "You gained an upgrade point!");
             }
 
             tryLevelUp();
