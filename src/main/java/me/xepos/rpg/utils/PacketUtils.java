@@ -26,7 +26,7 @@ public class PacketUtils {
             final String skillName = plugin.getSkillData(xrpgPlayer.getSpellKeybinds().get(i)).getString("name", "???");
             final String materialName = plugin.getSkillData(xrpgPlayer.getSpellKeybinds().get(i)).getString("icon", "BARRIER");
 
-            ItemStack itemStack = new ItemStack(Material.valueOf(materialName));
+            ItemStack itemStack = Utils.buildItemStack(Material.getMaterial(materialName), skillName, null);
             ItemMeta meta = itemStack.getItemMeta();
             //meta.displayName(Component.text(skillName));
             itemStack.setItemMeta(meta);

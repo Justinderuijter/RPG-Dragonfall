@@ -25,8 +25,11 @@ commands:
     aliases:
       - sb
   tree:
-    description: open tree
+    description: opens the skilltree for your class
     usage: /<command>
+    aliases:
+      - skills
+      - talents
   xrpginfo:
     description: get information about a player or skill
     usage: /<command> (player|skill) <player|skillId>

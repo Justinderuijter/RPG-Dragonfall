@@ -126,6 +126,9 @@ public class ChangeClassCommand implements TabExecutor {
             for (String tab : completions) {
                 if (tab.toLowerCase().startsWith(strings[0].toLowerCase())) {
                     result.add(tab);
+                    if (result.contains("select") && plugin.getXRPGPlayer((Player) commandSender).getClassId().equals("")){
+                        result.remove("select");
+                    }
                 }
             }
             return result;

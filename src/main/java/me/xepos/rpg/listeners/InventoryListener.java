@@ -142,14 +142,14 @@ public class InventoryListener implements Listener {
                             int maxLevel = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("maxLevel"), PersistentDataType.INTEGER);
 
                             if (level == 0) {
-                                if (xrpgPlayer.getSkillUnlockPoints() > 0 && data.hasRequired(skillId) && data.hasUnlockPoints()){
+                                if (xrpgPlayer.getSkillUnlockPoints() > 0 && data.hasUnlockPoints() && data.hasRequired(skillId)){
 
                                     data.addLevel(skillId);
                                     //Update icon
                                     data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), 1);
                                 }
                             } else {
-                                if (xrpgPlayer.getSkillUpgradePoints() > 0 && data.isNotMaxed(skillId) && data.hasUpgradePoints()){
+                                if (xrpgPlayer.getSkillUpgradePoints() > 0 && data.hasUpgradePoints() && data.isNotMaxed(skillId)){
                                     data.addLevel(skillId);
 
                                     //Update icon

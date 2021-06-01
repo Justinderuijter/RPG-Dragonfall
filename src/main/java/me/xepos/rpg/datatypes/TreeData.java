@@ -168,7 +168,11 @@ public class TreeData {
             player.getPlayer().sendMessage(ChatColor.RED + "Please forward this to your administrator.");
             Bukkit.getLogger().warning(ChatColor.RED + player.getPlayer().getName() + ": spentUnlockPoints in TreeData is negative");
         }
-        return spentUnlockPoints < player.getSkillUnlockPoints();
+        if (spentUnlockPoints < player.getSkillUnlockPoints()){
+            return true;
+        }
+        player.getPlayer().sendTitle("", "You do not have enough unlock points!", 1 ,1, 1);
+        return false;
     }
 
     /**
@@ -185,7 +189,11 @@ public class TreeData {
             player.getPlayer().sendMessage(ChatColor.RED + "Please forward this to your administrator.");
             Bukkit.getLogger().warning(ChatColor.RED + player.getPlayer().getName() + ": spentUpgradePoints in TreeData is negative");
         }
-        return spentUpgradePoints < player.getSkillUpgradePoints();
+        if (spentUpgradePoints < player.getSkillUpgradePoints()){
+            return true;
+        }
+        player.getPlayer().sendTitle("", "You do not have enough upgrade points!", 1, 1, 1);
+        return false;
     }
 
     /**
@@ -195,6 +203,7 @@ public class TreeData {
      * @return true if the player has enough points to upgrade a skill, else false.
      */
     public boolean hasRequired(String skillId) {
+        final XRPGPlayer player = xrpgPlayer.get();
         final SkillInfo skillInfo = currentTree.getSkillInfo(skillId);
         if (skillInfo == null) return false;
 
@@ -207,6 +216,10 @@ public class TreeData {
             if (skills.containsKey(string) || progression.containsKey(string)) {
                 return true;
             }
+        }
+        if (player != null){
+            player.getPlayer().resetTitle();
+            player.getPlayer().sendTitle("", "You do not have the prerequisite skill required for this skill!", 1, 1, 1);
         }
         return false;
     }
