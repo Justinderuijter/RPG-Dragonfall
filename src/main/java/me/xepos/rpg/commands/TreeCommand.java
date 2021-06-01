@@ -2,6 +2,7 @@ package me.xepos.rpg.commands;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.TreeData;
 import me.xepos.rpg.tree.SkillTree;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -35,7 +36,11 @@ public class TreeCommand implements CommandExecutor {
                 return true;
             }
 
-            SkillTree tree = plugin.getSkillTree(plugin.getClassInfo(xrpgPlayer.getClassId()).getSkillTreeId());
+            String treeId = plugin.getClassInfo(xrpgPlayer.getClassId()).getSkillTreeId();
+
+            SkillTree tree = plugin.getSkillTree(treeId);
+
+            plugin.addTreeViewer(player.getUniqueId(), new TreeData(xrpgPlayer, treeId, tree, plugin));
 
             player.openInventory(tree.getInventory(xrpgPlayer));
             return true;

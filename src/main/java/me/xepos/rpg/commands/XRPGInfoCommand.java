@@ -78,9 +78,14 @@ public class XRPGInfoCommand implements TabExecutor {
         }
 
         commandSender.sendMessage(primaryColor + "----------[" + ChatColor.RED + target.getDisplayName() + primaryColor + "]----------");
-        String classId = xrpgTarget.getClassDisplayName();
-        if (StringUtils.isBlank(classId)) classId = "None";
-        commandSender.sendMessage(primaryColor + "Class: " + ChatColor.GREEN + classId);
+        if (StringUtils.isNotBlank(xrpgTarget.getClassId())){
+            commandSender.sendMessage(primaryColor + "Class: " + ChatColor.GREEN + xrpgTarget.getClassDisplayName());
+            commandSender.sendMessage(primaryColor + "Level: " + ChatColor.GREEN + xrpgTarget.getLevel());
+            commandSender.sendMessage(primaryColor + "Experience: " + ChatColor.GREEN + xrpgTarget.getCurrentExp() + ChatColor.WHITE + "/" + ChatColor.GREEN + xrpgTarget.getRequiredExpToLevel(xrpgTarget.getLevel()));
+        }else{
+            commandSender.sendMessage(primaryColor + "Class: " + ChatColor.GREEN + "None");
+        }
+
         commandSender.sendMessage(primaryColor + "Mana: " + ChatColor.BLUE + xrpgTarget.getCurrentMana() + ChatColor.WHITE + "/" + ChatColor.BLUE + xrpgTarget.getMaximumMana());
 
         if (querySelf) {

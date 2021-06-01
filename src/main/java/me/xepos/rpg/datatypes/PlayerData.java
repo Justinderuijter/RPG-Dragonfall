@@ -23,6 +23,7 @@ public class PlayerData {
         this.classId = classId;
         this.lastClassChange = 0;
         this.lastBookReceived = 0;
+        this.isClassEnabled = true;
         this.classes = new HashMap<>();
     }
 

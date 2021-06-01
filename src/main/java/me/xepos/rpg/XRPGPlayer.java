@@ -9,6 +9,7 @@ import me.xepos.rpg.skills.base.IFollowerContainer;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -53,6 +54,8 @@ public class XRPGPlayer {
         if (!StringUtils.isBlank(this.classId)){
             final ClassData data = playerData.getClassData(this.classId);
 
+            this.level = data.getLevel();
+            this.currentExp = data.getExperience();
             this.skillUnlockPoints = data.getSkillUnlockPoints();
             this.skillUpgradePoints = data.getSkillUpgradePoints();
 
@@ -333,18 +336,26 @@ public class XRPGPlayer {
 
 
     private void tryLevelUp() {
-        final double requiredExp = getRequiredExp();
+        final double requiredExp = getRequiredExpToLevel(this.level);
 
         if (this.currentExp >= requiredExp){
             this.level++;
             this.currentExp -= requiredExp;
+            this.player.sendMessage(ChatColor.GREEN + "You leveled up!");
+            if (level % 5 == 0){
+                skillUnlockPoints++;
+                this.player.sendMessage(ChatColor.GREEN + "You gained a unlock point!");
+            }else if (level % 2 == 0){
+                skillUpgradePoints++;
+                this.player.sendMessage(ChatColor.GREEN + "You gained a upgrade point!");
+            }
 
             tryLevelUp();
         }
     }
 
-    private double getRequiredExp() {
-        return (4 * (Math.pow(level, 3))) / 5 + 100;
+    public double getRequiredExpToLevel(int level) {
+        return (4 * (Math.pow(level, 3))) / 5 + 1000;
     }
 
     public int getSkillUnlockPoints() {

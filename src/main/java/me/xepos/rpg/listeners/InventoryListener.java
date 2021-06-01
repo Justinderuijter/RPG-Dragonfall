@@ -26,13 +26,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.HashMap;
 import java.util.Set;
-import java.util.UUID;
 
 public class InventoryListener implements Listener {
 
-    private final HashMap<UUID, TreeData> treeData;
     private final XRPG plugin;
     private final IDatabaseManager databaseManager;
     private final SkillLoader skillLoader;
@@ -41,7 +38,6 @@ public class InventoryListener implements Listener {
         this.plugin = plugin;
         this.databaseManager = databaseManager;
         this.skillLoader = skillLoader;
-        this.treeData = new HashMap<>();
     }
 
     @EventHandler
@@ -132,7 +128,7 @@ public class InventoryListener implements Listener {
                 if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("skillId"), PersistentDataType.STRING)) {
                     final String skillId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("skillId"), PersistentDataType.STRING);
                     //Set<String> learnedSkills = xrpgPlayer.getAllLearnedSkills().keySet();
-                    TreeData data = treeData.get(player.getUniqueId());
+                    TreeData data = plugin.getTreeView(player.getUniqueId());
                     //Backing out of the inventory will remove the object from the HashMap
                     if (e.getClick() == ClickType.LEFT) {
                         if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("level"), PersistentDataType.INTEGER)) {
@@ -167,7 +163,7 @@ public class InventoryListener implements Listener {
                     }
                 }else if(e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("separator"), PersistentDataType.BYTE) && e.getCurrentItem().getType() == Material.WRITABLE_BOOK){
                     // save logic
-                    TreeData data = treeData.get(player.getUniqueId());
+                    TreeData data = plugin.getTreeView(player.getUniqueId());
                     data.applyChanges(skillLoader);
 
                     new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
@@ -212,7 +208,7 @@ public class InventoryListener implements Listener {
 
         //Check if we are actually allowed to discard the object
         if (e.getView().getTitle().startsWith("Skill Tree: ")){
-            treeData.remove(e.getPlayer().getUniqueId());
+            plugin.removeTreeViewer(e.getPlayer().getUniqueId());
         }
 
     }

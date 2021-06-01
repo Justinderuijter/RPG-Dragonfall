@@ -142,7 +142,7 @@ public class SkillLoader {
 
         xrpgPlayer.applyNewPlayerData(data, displayName);
 
-        if (!data.getClasses().isEmpty()){
+        if (data.getClasses().containsKey(data.getClassId())){
             for (String skillId:data.getClasses().get(data.getClassId()).getSkills().keySet()) {
                 final int level = data.getClassData(data.getClassId()).getSkills().getOrDefault(skillId, 1);
                 addSkillToPlayer(skillId, xrpgPlayer, level);

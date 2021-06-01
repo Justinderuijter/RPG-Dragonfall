@@ -8,6 +8,7 @@ import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.datatypes.BaseProjectileData;
 import me.xepos.rpg.datatypes.ClassInfo;
+import me.xepos.rpg.datatypes.TreeData;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.parties.PartyManagerFactory;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
@@ -58,6 +59,8 @@ public final class XRPG extends JavaPlugin {
     //Players
     private static final ConcurrentHashMap<UUID, XRPGPlayer> RPGPlayers = new ConcurrentHashMap<>();
 
+    //Tree viewer
+    private static HashMap<UUID, TreeData> treeView;
     //Custom projectiles
     public final ConcurrentHashMap<UUID, BaseProjectileData> projectiles = new ConcurrentHashMap<>();
 
@@ -77,6 +80,8 @@ public final class XRPG extends JavaPlugin {
         this.treeLoader = new TreeLoader(this);
         this.treeData = treeLoader.initialize();
         this.classInfo = new ClassLoader(this).initializeClasses();
+
+        this.treeView = new HashMap<>();
 
 
         final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook", "requires", "level", "maxLevel"};
@@ -293,5 +298,25 @@ public final class XRPG extends JavaPlugin {
 
     public Set<String> getAllSkills(){
         return skillData.keySet();
+    }
+
+    public boolean isTreeViewer(Player player){
+        return treeView.containsKey(player.getUniqueId());
+    }
+
+    public boolean isTreeViewer(UUID playerUUID){
+        return treeView.containsKey(playerUUID);
+    }
+
+    public TreeData getTreeView(UUID playerUUID){
+        return treeView.get(playerUUID);
+    }
+
+    public void addTreeViewer(UUID playerUUID, TreeData treeData){
+        this.treeView.put(playerUUID, treeData);
+    }
+
+    public TreeData removeTreeViewer(UUID playerUUID){
+        return treeView.remove(playerUUID);
     }
 }
