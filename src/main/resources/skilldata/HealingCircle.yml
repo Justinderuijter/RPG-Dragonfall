@@ -1,4 +1,4 @@
-name: "Ballad"
+name: "Healing Circle"
 max-procs: 10
 interval: 1
 heal-per-proc: 1.0

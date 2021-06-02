@@ -1,18 +1,70 @@
-name: "Axe-wielding"
-icon: DIAMOND_AXE
+name: "Sentinel"
+icon: SHIELD
 
 skills:
+  HealthBoost:
+    max-level: 3
+  Aegis:
+    max-level: 3
+    requires: [ ShieldBash, Fortify ]
+  StaggeringPush:
+    max-level: 3
+    requires: [ HealthBoost, ShieldBash, ShieldBash ]
+  Fortify:
+    max-level: 3
+    requires: [ StaggeringPush, ShieldBash ]
+  ShieldBash:
+    max-level: 3
+    requires: [ Aegis, Rage, StaggeringPush ]
+  TrueDefender:
+    max-level: 2
+    requires: [ ShieldBash ]
+  SoaringSlash:
+    max-level: 3
+    requires: [ HealthBoost, Rage, UnarmoredDefense ]
   Rage:
-    unlocked: true
+    max-level: 1
+    requires: [ SoaringSlash, ShieldBash, Whirlwind ]
+  UnarmoredDefense:
+    max-level: 2
+    requires: [ SoaringSlash, Whirlwind ]
+  Shockwave:
+    max-level: 3
+    requires: [ UnarmoredDefense, Rage ]
+  Whirlwind:
+    max-level: 3
+    requires: [ Shockwave ]
 
 interface:
   order:
-    - "xxxxxxxxx"
-    - "xxxxxxxxx"
-    - "xxxxxxxxx"
-    - "xxxxxxxxx"
-    - "xxxxxxxxx"
-    - "xxxxrxxxx"
+    - "xxcxxxtxx"
+    - "xx#xxx#xx"
+    - "xxhxxxaxx"
+    - "xu#r#b#fx"
+    - "xxoxxxsxx"
+    - "xx##h##xx"
   legend:
+    h:
+      skill: HealthBoost
+    s:
+      skill: StaggeringPush
+    b:
+      skill: ShieldBash
+    f:
+      skill: Fortify
+    a:
+      skill: Aegis
+    t:
+      skill: TrueDefender
+    o:
+      skill: SoaringSlash
+    u:
+      skill: UnarmoredDefense
     r:
       skill: Rage
+    c:
+      skill: Shockwave
+    w:
+      skill: Whirlwind
+    '#':
+      path-item: CYAN_STAINED_GLASS_PANE

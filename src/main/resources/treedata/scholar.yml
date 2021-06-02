@@ -1,0 +1,70 @@
+name: "Scholar"
+icon: BOW
+
+skills:
+  Blessed:
+    max-level: 3
+  Fireball:
+    max-level: 3
+    requires: [ Blessed ]
+  HotHead:
+    max-level: 3
+    requires: [ Fireball, TrailOfFlames ]
+  Pyro:
+    max-level: 3
+    requires: [ MasterEnchanter, Fireball, HotHead ]
+  TrailOfFlames:
+    max-level: 3
+    requires: [ Pyro, HotHead ]
+  Overheat:
+    max-level: 2
+    requires: [ TrailOfFlames ]
+  HealingCircle:
+    max-level: 3
+    requires: [ Blessed ]
+  MasterEnchanter:
+    max-level: 3
+    requires: [ Intervention, Pyro, HealingCircle ]
+  Healer:
+    max-level: 3
+    requires: [ Intervention, HealingCircle ]
+  Intervention:
+    max-level: 3
+    requires: [ MasterEnchanter, Healer ]
+  InnerStrength:
+    max-level: 2
+    requires: [ Intervention ]
+
+interface:
+  order:
+    - "xxsxxxoxx"
+    - "xx#xxx#xx"
+    - "xxixxxtxx"
+    - "xe#m#p#hx"
+    - "xxcxxxfxx"
+    - "xx##b##xx"
+  legend:
+    b:
+      skill: Blessed
+    f:
+      skill: Fireball
+    h:
+      skill: HotHead
+    p:
+      skill: Pyro
+    t:
+      skill: TrailOfFlames
+    o:
+      skill: Overheat
+    c:
+      skill: HealingCircle
+    m:
+      skill: MasterEnchanter
+    e:
+      skill: Healer
+    i:
+      skill: Intervention
+    s:
+      skill: InnerStrength
+    '#':
+      path-item: CYAN_STAINED_GLASS_PANE

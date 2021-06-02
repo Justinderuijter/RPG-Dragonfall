@@ -110,43 +110,78 @@ public class SkillTree {
         }
 
         HashMap<String, XRPGSkill> playerSkills = xrpgPlayer.getAllLearnedSkills();
-
         List<String> layout = interfaceSection.getStringList("order");
+
+        String lastPathItemName = "";
+        ItemStack cachedItem = null;
+
         int rowNum = 0;
         for (String row : layout) {
             char[] chars = row.toCharArray();
             for (int i = 0; i < chars.length; i++) {
-                if (chars[i] == 'x') continue;
-
-                String skillId = interfaceSection.getString("legend." + chars[i] + ".skill");
-                final int maxLevel = skills.get(skillId).getMaxLevel();
-
-                final XRPGSkill skill = playerSkills.get(skillId);
-                int currentLevel = 0;
-                if (skill != null){
-                    currentLevel = skill.getSkillLevel();
-                }
-
-                ConfigurationSection skillData = plugin.getSkillData(skillId);
-
-                Material material = Material.RED_WOOL;
-                if (playerSkills.containsKey(skillId)) {
-                    if (playerSkills.get(skillId).getSkillLevel() >= skills.get(skillId).getMaxLevel()){
-                        material = Material.GREEN_WOOL;
-                    }else { material = Material.ORANGE_WOOL; }
-                }
-                String nodeName = skillData.getString("name", "???") + " (" + currentLevel + "/" + maxLevel + ")";
-
-                ItemStack item = Utils.buildItemStack(material, nodeName, skillData.getStringList("description"));
-
-                setRequiredMeta(interfaceSection, item, skillId, currentLevel, maxLevel);
-
+                if (chars[i] == 'x' || chars[i] == '-') continue;
                 final int itemIndex = i + (rowNum * 9);
 
-                inventory.setItem(itemIndex, item);
+                String skillId = interfaceSection.getString("legend." + chars[i] + ".skill");
+                if (skillId == null){
+                    //check if it's a path indicator
+                    String currentPathItemName = interfaceSection.getString("legend." + chars[i] + ".path-item");
+                    if (lastPathItemName.equalsIgnoreCase(currentPathItemName)){
+                        inventory.setItem(itemIndex, cachedItem);
+                    }else{
+                        Material material;
+                        try{
+                            material = Material.valueOf(currentPathItemName);
+                        }catch(IllegalArgumentException ex){
+                            material = Material.CYAN_STAINED_GLASS_PANE;
+                        }
+                        ItemStack item = Utils.buildItemStack(material, "", null);
 
-                if (!this.treeCache.contains(skillId)){
-                    this.treeCache.addToCache(skillId, itemIndex);
+                        //Caching
+                        lastPathItemName = currentPathItemName;
+                        cachedItem = item;
+
+                        inventory.setItem(itemIndex, item);
+                    }
+
+
+                }else{
+                    if (skills.get(skillId) == null){
+                        Bukkit.getLogger().info(skillId + " is null!");
+                        continue;
+                    }
+
+                    final int maxLevel = skills.get(skillId).getMaxLevel();
+
+                    final XRPGSkill skill = playerSkills.get(skillId);
+                    int currentLevel = 0;
+                    if (skill != null){
+                        currentLevel = skill.getSkillLevel();
+                    }
+
+                    ConfigurationSection skillData = plugin.getSkillData(skillId);
+
+                    Material material = Material.RED_WOOL;
+                    if (playerSkills.containsKey(skillId)) {
+                        if (playerSkills.get(skillId).getSkillLevel() >= skills.get(skillId).getMaxLevel()){
+                            material = Material.GREEN_WOOL;
+                        }else { material = Material.ORANGE_WOOL; }
+                    }
+                    if (skillData == null){
+                        Bukkit.getLogger().info("Skilldata is null for " + skillId);
+                    }
+                    String nodeName = skillData.getString("name", "???") + " (" + currentLevel + "/" + maxLevel + ")";
+
+                    ItemStack item = Utils.buildItemStack(material, nodeName, skillData.getStringList("description"));
+
+                    setRequiredMeta(interfaceSection, item, skillId, currentLevel, maxLevel);
+
+
+                    inventory.setItem(itemIndex, item);
+
+                    if (!this.treeCache.contains(skillId)){
+                        this.treeCache.addToCache(skillId, itemIndex);
+                    }
                 }
 
             }

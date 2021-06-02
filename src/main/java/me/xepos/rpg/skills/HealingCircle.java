@@ -11,10 +11,10 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 
 import java.util.List;
 
-public class Ballad extends XRPGActiveSkill {
+public class HealingCircle extends XRPGActiveSkill {
 
 
-    public Ballad(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public HealingCircle(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);

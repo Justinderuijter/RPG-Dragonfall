@@ -10,9 +10,9 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Focus extends XRPGPassiveSkill {
+public class Bullseye extends XRPGPassiveSkill {
 
-    public Focus(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public Bullseye(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         setRemainingCooldown(-1);

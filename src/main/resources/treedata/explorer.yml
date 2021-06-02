@@ -1,49 +1,71 @@
-name: "Archery"
+name: "Explorer"
 icon: BOW
 
 skills:
-  Focus:
+  Nimble:
     unlocked: true
     max-level: 3
-  SnipeShot:
-    requires: [ Focus ]
+  DisengagingShot:
+    requires: [ Nimble ]
+    max-level: 2
+  Bullseye:
+    requires: [ DisengagingShot ]
+    max-level: 1
+  Marksman:
+    requires: [ DisengagingShot, NightOwl, RapidFire ]
     max-level: 1
   RapidFire:
-    requires: [ Focus ]
+    requires: [ Marksman, Bullseye ]
     max-level: 2
-  DisengagingShot:
-    requires: [ Focus ]
+  BottomlessQuiver:
+    requires: [ RapidFire ]
+    max-level: 1
+  BlinkShot:
+    requires: [ Nimble ]
+    max-level: 2
+  NightOwl:
+    requires: [ BlinkShot, Marksman, AceUpMySleeve ]
+    max-level: 1
+  Backstab:
+    requires: [ BlinkShot, AceUpMySleeve ]
     max-level: 1
   AceUpMySleeve:
-    requires: [ RapidFire, DisengagingShot ]
-    max-level: 2
-  EnderArrow:
-    requires: [ DisengagingShot, AceUpMySleeve ]
+    requires: [ Backstab, AceUpMySleeve, NightOwl ]
     max-level: 1
-  TrueInfinity:
-    requires: [ AceUpMySleeve, EnderArrow ]
-    max-level: 2
+  ExposeWeakness:
+    requires: [ AceUpMySleeve ]
+    max-level: 1
 
 interface:
   order:
-    - "xxxxxxtxx"
-    - "xxxxxxxxx"
-    - "xexxxxaxx"
-    - "xxxxxxxxx"
-    - "xsxxrxxdx"
-    - "xxxxfxxxx"
+    - "xxwxxxqxx"
+    - "xx#xxx#xx"
+    - "xxaxxxrxx"
+    - "xb#o#m#ex"
+    - "xxlxxxdxx"
+    - "xx##n##xx"
   legend:
-    f:
-      skill: Focus
-    s:
-      skill: SnipeShot
-    r:
-      skill: RapidFire
+    n:
+      skill: Nimble
+    e:
+      skill: Bullseye
     d:
       skill: DisengagingShot
-    e:
-      skill: EnderArrow
+    m:
+      skill: Marksman
+    r:
+      skill: RapidFire
+    q:
+      skill: BottomlessQuiver
+    l:
+      skill: BlinkShot
+    o:
+      skill: NightOwl
+    b:
+      skill: Backstab
     a:
       skill: AceUpMySleeve
-    t:
-      skill: TrueInfinity
+    w:
+      skill: ExposeWeakness
+    '#':
+      path-item: CYAN_STAINED_GLASS_PANE

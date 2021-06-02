@@ -194,7 +194,8 @@ public class ProjectileListener implements Listener {
                 return 1.1D;
             }
             return 1.4D;
-        }else if (livingEntity instanceof IronGolem || livingEntity instanceof WitherSkeleton) return 2.0D;
+        }else if(livingEntity instanceof Giant) return 9.0D;
+        else if (livingEntity instanceof IronGolem || livingEntity instanceof WitherSkeleton) return 2.0D;
         //For these mobs the entire body is considered the head
         else if (livingEntity instanceof Slime || livingEntity instanceof Ghast || livingEntity instanceof Guardian) return -1.0D;
 
