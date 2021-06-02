@@ -69,7 +69,7 @@ public class ProjectileListener implements Listener {
                 }
 
                 //section exclusively for arrows.
-                if (e.getHitEntity() instanceof LivingEntity) {
+                if (e.getHitEntity() instanceof LivingEntity && !(e.getHitEntity() instanceof Enderman)) {
                     LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
                     if (projectileData.getDamageMultiplier() < 1.0) {
 
@@ -83,7 +83,7 @@ public class ProjectileListener implements Listener {
                     }
 
                     if (projectileData.getHeadshotDamage() != 1.0) {
-                        if (projectile.getLocation().getY() - e.getHitEntity().getLocation().getY() > 1.4D) {
+                        if (projectile.getLocation().getY() - e.getHitEntity().getLocation().getY() > getHeadShotHeight(livingEntity)) {
                             Arrow arrow = (Arrow) projectile;
                             double damage = arrow.getDamage() * projectileData.getHeadshotDamage();
                             double damageDifference = damage - arrow.getDamage();
@@ -186,5 +186,22 @@ public class ProjectileListener implements Listener {
                 }
             }
         }
+    }
+
+    private double getHeadShotHeight(LivingEntity livingEntity){
+        if (livingEntity instanceof Player){
+            if (((Player) livingEntity).isSneaking()){
+                return 1.1D;
+            }
+            return 1.4D;
+        }else if (livingEntity instanceof IronGolem || livingEntity instanceof WitherSkeleton) return 2.0D;
+        //For these mobs the entire body is considered the head
+        else if (livingEntity instanceof Slime || livingEntity instanceof Ghast || livingEntity instanceof Guardian) return -1.0D;
+
+        else if(livingEntity instanceof Ageable){
+            if (!((Ageable) livingEntity).isAdult()) return 0.6D;
+        }
+
+        return 1.4D;
     }
 }
