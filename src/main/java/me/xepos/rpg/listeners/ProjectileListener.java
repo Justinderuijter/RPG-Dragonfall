@@ -78,6 +78,8 @@ public class ProjectileListener implements Listener {
 
                     if (projectileData.getDamage() != 0) {
                         Utils.decreaseHealth(livingEntity, projectileData.getDamage());
+                        livingEntity.setNoDamageTicks(1);
+                        projectile.remove();
                     }
 
                     if (projectileData.getHeadshotDamage() != 1.0) {

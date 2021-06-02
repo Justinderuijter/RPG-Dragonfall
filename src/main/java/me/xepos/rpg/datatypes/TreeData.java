@@ -122,7 +122,7 @@ public class TreeData {
                     final Inventory inventory = player.getPlayer().getOpenInventory().getTopInventory();
                     final int slot = currentTree.getSlotForSkill(unlock);
 
-                    if (!hasRequired(unlock)) {
+                    if (!hasRequired(unlock, false)) {
                         revertSkill(unlock, true);
                         updateClickedIcon(inventory, slot, inventory.getItem(slot), getCurrentSkillLevel(unlock));
                     }
@@ -138,7 +138,7 @@ public class TreeData {
      * @param skillId The unique identifier for the skill that will be leveled
      */
     public void addLevel(String skillId) {
-        if (hasRequired(skillId)){
+        if (hasRequired(skillId, false)){
             if (isNotMaxed(skillId)){
                 if (progression.containsKey(skillId)){
                     final int level = progression.get(skillId);
@@ -171,7 +171,7 @@ public class TreeData {
         if (spentUnlockPoints < player.getSkillUnlockPoints()){
             return true;
         }
-        player.getPlayer().sendTitle("", "You do not have enough unlock points!", 1 ,1, 1);
+        player.getPlayer().sendMessage(ChatColor.RED + "You do not have enough unlock points");
         return false;
     }
 
@@ -192,7 +192,7 @@ public class TreeData {
         if (spentUpgradePoints < player.getSkillUpgradePoints()){
             return true;
         }
-        player.getPlayer().sendTitle("", "You do not have enough upgrade points!", 1, 1, 1);
+        player.getPlayer().sendMessage(ChatColor.RED + "You do not have enough upgrade points");
         return false;
     }
 
@@ -202,7 +202,7 @@ public class TreeData {
      * @param skillId The unique identifier for the skill that will be tested
      * @return true if the player has enough points to upgrade a skill, else false.
      */
-    public boolean hasRequired(String skillId) {
+    public boolean hasRequired(String skillId, boolean sendMessage) {
         final XRPGPlayer player = xrpgPlayer.get();
         final SkillInfo skillInfo = currentTree.getSkillInfo(skillId);
         if (skillInfo == null) return false;
@@ -217,9 +217,8 @@ public class TreeData {
                 return true;
             }
         }
-        if (player != null){
-            player.getPlayer().resetTitle();
-            player.getPlayer().sendTitle("", "You do not have the prerequisite skill required for this skill!", 1, 1, 1);
+        if (player != null && sendMessage){
+            player.getPlayer().sendMessage(ChatColor.RED + "You do not have the prerequisite skill required for this skill!");
         }
         return false;
     }
