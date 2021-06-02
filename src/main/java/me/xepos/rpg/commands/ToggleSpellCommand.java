@@ -7,8 +7,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,13 +82,4 @@ public class ToggleSpellCommand implements TabExecutor {
         return null;
     }
 
-    private void swapItems(final PlayerInventory playerInventory, final int targetSlot){
-        final int heldItemSlot = playerInventory.getHeldItemSlot();
-        ItemStack heldItem = playerInventory.getItem(heldItemSlot);
-
-        ItemStack targetItem = playerInventory.getItem(targetSlot);
-
-        playerInventory.setItem(targetSlot, heldItem);
-        playerInventory.setItem(heldItemSlot, targetItem);
-    }
 }
