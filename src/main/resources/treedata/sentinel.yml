@@ -27,7 +27,7 @@ skills:
     requires: [ SoaringSlash, ShieldBash, Whirlwind ]
   UnarmoredDefense:
     max-level: 2
-    requires: [ SoaringSlash, Whirlwind ]
+    requires: [ SoaringSlash, Shockwave ]
   Shockwave:
     max-level: 3
     requires: [ UnarmoredDefense, Rage ]
