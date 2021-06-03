@@ -10,6 +10,7 @@ import me.xepos.rpg.skills.base.XRPGSkill;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -25,7 +26,8 @@ public class XRPGPlayer {
     private transient String classDisplay;
     private boolean isClassEnabled;
     private int currentMana;
-    private int maximumMana;
+    private int baseMana;
+    private int levelMana;
     private long lastBookReceivedTime;
     private long lastClassChangeTime;
     private String classId;
@@ -57,6 +59,7 @@ public class XRPGPlayer {
 
             this.level = data.getLevel();
             this.currentExp = data.getExperience();
+            this.baseMana = data.getBaseMana();
             this.skillUnlockPoints = data.getSkillUnlockPoints();
             this.skillUpgradePoints = data.getSkillUpgradePoints();
 
@@ -179,6 +182,8 @@ public class XRPGPlayer {
     public void resetPlayerDataForClassChange(PlayerData playerData, String classDisplayName) {
         if (StringUtils.isBlank(playerData.getClassId())) return;
 
+        Bukkit.getLogger().info("Base mana for " + playerData.getClassId() + ": " + playerData.getClassData(playerData.getClassId()).getBaseMana());
+
         this.classId = playerData.getClassId();
         this.classDisplay = classDisplayName;
         this.isClassEnabled = playerData.isClassEnabled();
@@ -187,8 +192,12 @@ public class XRPGPlayer {
         ClassData classData = playerData.getClassData(playerData.getClassId());
         if (classData != null){
             this.level = classData.getLevel();
-            this.currentMana = classData.getLastMana();
             this.currentExp = classData.getExperience();
+            this.currentMana = classData.getLastMana();
+            this.baseMana = classData.getBaseMana();
+            if (classData.getLastMana() == -1){
+                this.currentMana = baseMana;
+            }
             this.skillUpgradePoints = classData.getSkillUpgradePoints();;
             this.skillUnlockPoints = classData.getSkillUnlockPoints();
         }
@@ -212,10 +221,10 @@ public class XRPGPlayer {
     }
 
     public void addMana(int value) {
-        if (this.currentMana >= maximumMana) return;
+        if (this.currentMana >= baseMana + levelMana) return;
 
-        if (this.currentMana + value > maximumMana) {
-            currentMana = maximumMana;
+        if (this.currentMana + value > baseMana + levelMana) {
+            currentMana = baseMana + levelMana;
         } else {
             this.currentMana += value;
         }
@@ -233,11 +242,15 @@ public class XRPGPlayer {
     }
 
     public int getMaximumMana() {
-        return maximumMana;
+        return baseMana + levelMana;
     }
 
-    public void setMaximumMana(int maximumMana) {
-        this.maximumMana = maximumMana;
+    public int getBaseMana() {
+        return baseMana;
+    }
+
+    public void setBaseMana(int baseMana) {
+        this.baseMana = baseMana;
     }
 
     public double getDamageTakenMultiplier() {
@@ -288,7 +301,7 @@ public class XRPGPlayer {
         for (IMessenger messenger:this.messengerSkills) {
             message.append(messenger.getMessage()).append(ChatColor.WHITE).append(" | ");
         }
-        message.append("Mana: ").append(ChatColor.BLUE).append(currentMana).append(ChatColor.WHITE).append("/").append(ChatColor.BLUE).append(maximumMana);
+        message.append("Mana: ").append(ChatColor.BLUE).append(currentMana).append(ChatColor.WHITE).append("/").append(ChatColor.BLUE).append(baseMana + levelMana);
         
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.toString()));
     }
@@ -436,7 +449,7 @@ public class XRPGPlayer {
 
         PlayerData playerData = new PlayerData(this.classId, this.lastClassChangeTime, this.lastBookReceivedTime, this.isClassEnabled);
         if (StringUtils.isNotBlank(this.classId)){
-            playerData.addClassData(this.classId, new ClassData(this.level, this.currentExp, (byte) this.currentMana , this.skillUpgradePoints, this.skillUnlockPoints, skills, this.spellKeybinds));
+            playerData.addClassData(this.classId, new ClassData(this.level, this.currentExp, (byte) this.currentMana, this.levelMana, this.skillUpgradePoints, this.skillUnlockPoints, skills, this.spellKeybinds));
         }
 
         return playerData;

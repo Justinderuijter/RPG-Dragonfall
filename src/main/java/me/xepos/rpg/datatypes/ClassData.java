@@ -5,19 +5,23 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ClassData {
-    private int level;
-    private double experience;
+    private final int level;
+    private final double experience;
     private int lastMana;
-    private byte skillUpgradePoints;
-    private byte skillUnlockPoints;
+    private int baseMana;
+    private int levelMana;
+    private final byte skillUpgradePoints;
+    private final byte skillUnlockPoints;
 
-    private HashMap<String, Integer> skills;
-    private List<String> keybindOrder;
+    private final HashMap<String, Integer> skills;
+    private final List<String> keybindOrder;
 
-    public ClassData(int level, double experience, int lastMana, byte skillUpgradePoints, byte skillUnlockPoints, HashMap<String, Integer> skills, List<String> keybindOrder) {
+    public ClassData(int level, double experience, int lastMana, int levelMana, byte skillUpgradePoints, byte skillUnlockPoints, HashMap<String, Integer> skills, List<String> keybindOrder) {
         this.level = level;
         this.experience = experience;
         this.lastMana = lastMana;
+        this.baseMana = baseMana;
+        this.lastMana = levelMana;
         this.skillUpgradePoints = skillUpgradePoints;
         this.skillUnlockPoints = skillUnlockPoints;
 
@@ -28,7 +32,7 @@ public class ClassData {
     public ClassData() {
         this.level = 1;
         this.experience = 0;
-        this.lastMana = 0;
+        this.lastMana = -1;
         this.skillUpgradePoints = 0;
         this.skillUnlockPoints = 0;
 
@@ -62,6 +66,14 @@ public class ClassData {
 
     public List<String> getKeybindOrder() {
         return keybindOrder;
+    }
+
+    public int getBaseMana() {
+        return baseMana;
+    }
+
+    public void setBaseMana(int baseMana) {
+        this.baseMana = baseMana;
     }
 
     @Override

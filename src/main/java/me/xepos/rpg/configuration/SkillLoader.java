@@ -146,6 +146,10 @@ public class SkillLoader {
             //data.addClassData(data.getClassId(), new ClassData());
             classData = new ClassData();
         }
+        Bukkit.getLogger().info("Base mana for " + data.getClassId() + ": " + plugin.getClassInfo(data.getClassId()).getBaseMana());
+        classData.setBaseMana(plugin.getClassInfo(data.getClassId()).getBaseMana());
+
+        data.getClasses().put(data.getClassId(), classData);
 
         String displayName = classInfo.getDisplayName();
 

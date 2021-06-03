@@ -5,7 +5,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.handlers.PassiveEventHandler;
-import me.xepos.rpg.skills.base.XRPGAttributeSkill;
+import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -15,7 +15,7 @@ import org.bukkit.event.Event;
 
 import java.util.UUID;
 
-public class HealthBoost extends XRPGAttributeSkill {
+public class HealthBoost extends XRPGPassiveSkill {
 
     private static final String healthAttributeName = "HEALTH_BOOST_HEALTH_";
     private static final String armorAttributeName = "HEALTH_BOOST_ARMOR_";

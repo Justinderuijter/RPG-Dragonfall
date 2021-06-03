@@ -29,25 +29,21 @@ public class SpellbookCommand implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (command.getName().equalsIgnoreCase("spellbook") ||command.getName().equalsIgnoreCase("sb")) {
-            if (!(commandSender instanceof Player)) {
-                commandSender.sendMessage("This command can only be executed by players!");
-                return true;
+            switch(strings.length){
+                case 0:
+                    return openSpellbook(commandSender);
+                case 1:
+                    if (strings[0].equalsIgnoreCase("open")){
+                        return openSpellbook(commandSender);
+                    }else if(strings[0].equalsIgnoreCase("get")){
+                        if (commandSender instanceof Player){
+                            ((Player)commandSender).getInventory().addItem(plugin.getSpellbookItem());
+                            return true;
+                        }
+                    }
+                    break;
             }
-            Player player = (Player) commandSender;
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
 
-            if (xrpgPlayer == null) return true;
-
-            Inventory inventory = Bukkit.createInventory(null, 27, "Spellbook");
-
-            fillSeparator(inventory);
-
-            fillKeybindSection(inventory, xrpgPlayer);
-
-            fillAvailableSpells(inventory, xrpgPlayer);
-
-            player.openInventory(inventory);
-            return true;
         }
         return false;
     }
@@ -55,6 +51,28 @@ public class SpellbookCommand implements TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         return null;
+    }
+
+    private boolean openSpellbook(CommandSender commandSender){
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage("This command can only be executed by players!");
+            return true;
+        }
+        Player player = (Player) commandSender;
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
+
+        if (xrpgPlayer == null) return true;
+
+        Inventory inventory = Bukkit.createInventory(null, 27, "Spellbook");
+
+        fillSeparator(inventory);
+
+        fillKeybindSection(inventory, xrpgPlayer);
+
+        fillAvailableSpells(inventory, xrpgPlayer);
+
+        player.openInventory(inventory);
+        return true;
     }
 
     private ItemStack createSpellBookItem(ConfigurationSection configurationSection){ ;
