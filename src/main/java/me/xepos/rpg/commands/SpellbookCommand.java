@@ -17,10 +17,15 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SpellbookCommand implements TabExecutor {
     private final XRPG plugin;
+    private final List<String> completions = new ArrayList<String>(){{
+        add("open");
+        add("get");
+    }};
 
     public SpellbookCommand(XRPG plugin){
         this.plugin = plugin;
@@ -50,6 +55,15 @@ public class SpellbookCommand implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        List<String> result = new ArrayList<>();
+        if (strings.length == 1){
+            for (String tab:completions) {
+                if (tab.toLowerCase().startsWith(strings[0].toLowerCase())){
+                    result.add(tab);
+                }
+            }
+            return result;
+        }
         return null;
     }
 
