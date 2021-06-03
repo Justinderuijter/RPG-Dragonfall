@@ -234,7 +234,10 @@ public class TreeData {
             final int levelsToAdd = progression.get(skillId);
             final XRPGSkill xrpgSkill = skills.get(skillId);
 
-            xrpgSkill.setSkillLevel(xrpgSkill.getSkillLevel() + levelsToAdd);
+            final int skillLevel = xrpgSkill.getSkillLevel() + levelsToAdd;
+
+            xrpgSkill.setSkillLevel(skillLevel);
+
             progression.remove(skillId);
         }
 
