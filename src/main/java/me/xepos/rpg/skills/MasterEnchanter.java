@@ -13,11 +13,11 @@ public class MasterEnchanter extends XRPGPassiveSkill {
     public MasterEnchanter(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
-        if (!xrpgPlayer.getPassiveHandlerList().containsKey(this.getClass().getSimpleName())){
-            xrpgPlayer.getPassiveHandlerList().put("PREPARE_ENCHANT", new PassiveEventHandler());
+        if (!xrpgPlayer.getPassiveHandlerList().containsKey("ENCHANT")){
+            xrpgPlayer.getPassiveHandlerList().put("ENCHANT", new PassiveEventHandler());
         }
 
-        xrpgPlayer.getPassiveEventHandler("PREPARE_ENCHANT").addSkill(this.getClass().getSimpleName(), this);
+        xrpgPlayer.getPassiveEventHandler("ENCHANT").addSkill(this.getClass().getSimpleName(), this);
     }
 
     @Override
