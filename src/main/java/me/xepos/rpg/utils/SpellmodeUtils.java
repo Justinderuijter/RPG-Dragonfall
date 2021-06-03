@@ -2,6 +2,7 @@ package me.xepos.rpg.utils;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
@@ -10,6 +11,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class SpellmodeUtils {
 
     public static void enterSpellmode(XRPGPlayer xrpgPlayer){
+        if (xrpgPlayer.getSpellKeybinds().size() == 0){
+            xrpgPlayer.getPlayer().sendMessage(ChatColor.RED + "You do not have any active spells configured in your spellbook!");
+            return;
+        }
         xrpgPlayer.setSpellCastModeEnabled(true);
         PlayerInventory inventory = xrpgPlayer.getPlayer().getInventory();
 
