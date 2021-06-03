@@ -5,8 +5,10 @@ import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.handlers.ActiveEventHandler;
 import me.xepos.rpg.handlers.BowEventHandler;
 import me.xepos.rpg.handlers.PassiveEventHandler;
-import me.xepos.rpg.skills.base.IFollowerContainer;
+import me.xepos.rpg.skills.base.IMessenger;
 import me.xepos.rpg.skills.base.XRPGSkill;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -123,7 +125,7 @@ public class XRPGPlayer {
     }
 
     //For convenience
-    private transient List<IFollowerContainer> followerSkills = new ArrayList<>();
+    private transient List<IMessenger> messengerSkills = new ArrayList<>();
 
     private transient ActiveEventHandler activeHandler;
     private final transient HashMap<String, PassiveEventHandler> handlerList = new HashMap<>();
@@ -166,17 +168,8 @@ public class XRPGPlayer {
         this.playerId = playerId;
     }
 
-    public List<IFollowerContainer> getFollowerSkills() {
-        return followerSkills;
-    }
-
-    public void setFollowerSkills(List<XRPGSkill> skills) {
-        followerSkills.clear();
-        for (XRPGSkill skill : skills) {
-            if (skill instanceof IFollowerContainer) {
-                followerSkills.add((IFollowerContainer) skill);
-            }
-        }
+    public List<IMessenger> getMessengerSkills() {
+        return messengerSkills;
     }
 
     public String getClassDisplayName() {
@@ -288,6 +281,16 @@ public class XRPGPlayer {
         if (!classEnabled){
             spellCastModeEnabled = false;
         }
+    }
+    
+    public void sendActionBarMessage(){
+        StringBuilder message = new StringBuilder();
+        for (IMessenger messenger:this.messengerSkills) {
+            message.append(messenger.getMessage()).append(ChatColor.WHITE).append(" | ");
+        }
+        message.append("Mana: ").append(ChatColor.BLUE).append(currentMana).append(ChatColor.WHITE).append("/").append(ChatColor.BLUE).append(maximumMana);
+        
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.toString()));
     }
 
     //////////////////////////////////

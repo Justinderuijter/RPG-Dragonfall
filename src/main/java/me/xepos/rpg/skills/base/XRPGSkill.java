@@ -32,8 +32,8 @@ public abstract class XRPGSkill {
         this.remainingCooldown = System.currentTimeMillis();
         this.skillLevel = skillLevel;
 
-        if (this instanceof IFollowerContainer) {
-            xrpgPlayer.getFollowerSkills().add((IFollowerContainer) this);
+        if (this instanceof IMessenger) {
+            xrpgPlayer.getMessengerSkills().add((IMessenger) this);
         }
     }
 
