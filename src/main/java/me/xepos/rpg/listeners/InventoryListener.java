@@ -42,7 +42,7 @@ public class InventoryListener implements Listener {
     }
 
     @EventHandler
-    public void onItemClick(InventoryClickEvent e) {
+    public void onItemClick(final InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
 
@@ -112,6 +112,12 @@ public class InventoryListener implements Listener {
                 Bukkit.getServer().getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
+                    if (xrpgPlayer.getClassId().length() == 0){
+                        Bukkit.broadcastMessage(player.getName() + " picked " + classDisplayName + " as their first class!");
+                    }else{
+                        Bukkit.broadcastMessage(player.getName() + " changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName);
+                    }
+
                     //PlayerData data = xrpgPlayer.extractData();
                     Bukkit.getScheduler().runTaskAsynchronously(plugin, ()->{
                         PlayerData data = databaseManager.savePlayerData(xrpgPlayer);
