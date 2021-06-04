@@ -35,4 +35,17 @@ commands:
     usage: /<command> (player|skill) <player|skillId>
   class:
     description: change or toggle your class
-    usage: /<command> <>
+    usage: /<command> <select|change|enable|disable|toggle>
+  xrpgadmin:
+    description: a set of administration commands
+    usage: /<command> ...
+
+permissions:
+  xrpg.*:
+    description: allows all commands for this plugin
+    default: op
+    children:
+      xrpg.admin: true
+  xrpg.admin:
+    description: allows administration commands for this plugin
+    default: op

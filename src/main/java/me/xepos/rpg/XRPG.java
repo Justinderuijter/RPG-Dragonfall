@@ -122,6 +122,7 @@ public final class XRPG extends JavaPlugin {
         this.getCommand("spellbook").setExecutor(new SpellbookCommand(this));
         this.getCommand("tree").setExecutor(new TreeCommand(this));
         this.getCommand("xrpginfo").setExecutor(new XRPGInfoCommand(this));
+        this.getCommand("xrpgadmin").setExecutor(new XRPGAdminCommand(this, skillLoader));
         this.getCommand("class").setExecutor(new ChangeClassCommand(this, GUIBaseItems));
         System.out.println("RPG classes loaded!");
 
@@ -284,6 +285,14 @@ public final class XRPG extends JavaPlugin {
 
     public FileConfiguration getSkillData(String skillId){
         return skillData.get(skillId);
+    }
+
+    public boolean hasSkillData(String skillId){
+        return skillData.containsKey(skillId);
+    }
+
+    public Set<String> getAllLoadedSkillIds(){
+        return skillData.keySet();
     }
 
     public SkillTree getSkillTree(String treeId){

@@ -347,7 +347,6 @@ public class XRPGPlayer {
         tryLevelUp();
     }
 
-
     private void tryLevelUp() {
         final double requiredExp = getRequiredExpToLevel(this.level);
 
@@ -368,7 +367,7 @@ public class XRPGPlayer {
     }
 
     public double getRequiredExpToLevel(int level) {
-        return (4 * (Math.pow(level, 3))) / 5 + 1000;
+        return 4 * (4 * (Math.pow(level, 3))) + 1000;
     }
 
     public int getSkillUnlockPoints() {
