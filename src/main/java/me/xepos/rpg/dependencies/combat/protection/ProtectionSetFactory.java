@@ -11,7 +11,7 @@ import java.util.List;
 import static org.bukkit.Bukkit.getServer;
 
 public class ProtectionSetFactory {
-    private final static List<String> configManagers = JavaPlugin.getPlugin(XRPG.class).getConfig().getStringList("Protection Managers");
+    private final static List<String> configManagers = JavaPlugin.getPlugin(XRPG.class).getConfig().getStringList("protection-managers");
     private final static List<IProtectionManager> managerList = new ArrayList<>();
 
     public static ProtectionSet getProtectionRules() {

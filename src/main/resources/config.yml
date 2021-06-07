@@ -1,5 +1,5 @@
 MySQL:
-  use MySQL: false
+  use-MySQL: false
   host: "localhost"
   port: "3306"
   database: ""
@@ -19,11 +19,13 @@ Party Manager Type: "Factions"
 # It is however recommended to not go above 2-3.
 # If you wish to not use any, simple remove all from the list below.
 # Currently supported: Factions3, FactionsUUID, WorldGuard 7.0+ and Towny
-Protection Managers:
+protection-managers:
   - "Factions"
 # - "WorldGuard"
 
-Mana:
+use-pvp-toggle: true
+
+mana:
   enabled: false
   recovery-delay: 5
   recovery-amount: 5
@@ -36,9 +38,9 @@ items:
       - "Can also be used to exit spellmode."
 
 
-Garbage Collection:
+garbage-collection:
   # Time that should pass between garbage collection.
   # Set to 0 to disable garbage collection.
-  Timer: 120
+  timer: 120
   # Will send message in console if true.
-  Verbose: false
+  verbose: false

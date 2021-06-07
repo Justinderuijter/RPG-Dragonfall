@@ -146,12 +146,12 @@ public final class XRPG extends JavaPlugin {
             databaseManager.loadPlayerData(player.getUniqueId());
         }
 
-        int timer = this.getConfig().getInt("Garbage Collection.Timer", 120);
+        int timer = this.getConfig().getInt("garbage-collection.timer", 120);
         if (timer > 0)
             new ClearHashMapTask(this, projectiles).runTaskTimerAsynchronously(this, timer * 20L, timer * 20L);
 
         if (useMana()) {
-            long delay = (long) (this.getConfig().getDouble("mana.recovery-amount", 5.0) * 20);
+            long delay = (long) (this.getConfig().getDouble("mana.recovery-delay", 5.0) * 20);
             new ManaTask(RPGPlayers, this.getConfig().getInt("mana.recovery-amount")).runTaskTimerAsynchronously(this, delay, delay);
         }
     }
