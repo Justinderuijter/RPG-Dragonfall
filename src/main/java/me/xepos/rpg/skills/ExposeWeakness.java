@@ -44,7 +44,7 @@ public class ExposeWeakness extends XRPGBowSkill {
                 EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
                 LivingEntity target = (LivingEntity) e.getEntity();
 
-                if (target instanceof Player && isTargetAllied((Player) target)) return;
+                if (target instanceof Player && canHurtTarget((Player) target)) return;
 
                 Utils.decreaseHealth(target, calculateDamage(target));
 

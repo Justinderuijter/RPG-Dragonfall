@@ -81,7 +81,7 @@ public class XRPGDebug implements CommandExecutor {
                             plugin.getXRPGPlayer(player, true).getSpellKeybinds().clear();
                             return true;
                         case "skill":
-                            for (String skillId:plugin.getAllSkills()) {
+                            for (String skillId:plugin.getAllLoadedSkillIds()) {
                                 player.sendMessage(skillId);
                             }
                         default:

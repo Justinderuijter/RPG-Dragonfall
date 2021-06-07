@@ -10,7 +10,7 @@ MySQL:
 # You can currently only have one party manager.
 # A party manager decided viable targets for skills with AoE effects
 # Or more advanced projectile based skills.
-# Currently supported: Factions3, FactionsUUID, Parties
+# Currently supported: Factions3, FactionsUUID, Parties, Towny and mcMMO
 
 Party Manager Type: "Factions"
 
@@ -18,7 +18,7 @@ Party Manager Type: "Factions"
 # As long as they are supported by the plugin.
 # It is however recommended to not go above 2-3.
 # If you wish to not use any, simple remove all from the list below.
-# Currently supported: Factions3, FactionsUUID and WorldGuard 7.0+
+# Currently supported: Factions3, FactionsUUID, WorldGuard 7.0+ and Towny
 Protection Managers:
   - "Factions"
 # - "WorldGuard"

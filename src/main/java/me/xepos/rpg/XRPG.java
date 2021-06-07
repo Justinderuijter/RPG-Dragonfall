@@ -13,6 +13,8 @@ import me.xepos.rpg.dependencies.combat.parties.IPartyManager;
 import me.xepos.rpg.dependencies.combat.parties.PartyManagerFactory;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSetFactory;
+import me.xepos.rpg.dependencies.combat.toggle.IPvPToggle;
+import me.xepos.rpg.dependencies.combat.toggle.PvPToggleFactory;
 import me.xepos.rpg.listeners.*;
 import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.tasks.ManaTask;
@@ -43,6 +45,7 @@ public final class XRPG extends JavaPlugin {
     //Ability targetting managers
     private IPartyManager partyManager;
     private ProtectionSet protectionSet;
+    private IPvPToggle pvpToggle;
 
     //Data manager
     private IDatabaseManager databaseManager;
@@ -71,6 +74,15 @@ public final class XRPG extends JavaPlugin {
     public void onEnable() {
 
         Plugin mcMMO = Bukkit.getPluginManager().getPlugin("mcMMO");
+        Plugin pvpToggle = Bukkit.getPluginManager().getPlugin("mcMMO");
+
+        boolean useMcMMO = false;
+        boolean usePvPToggle = false;
+
+        if (mcMMO != null) useMcMMO = true;
+        if (pvpToggle != null) usePvPToggle = true;
+
+
 
         //Load classes
         this.saveDefaultConfig();
@@ -109,12 +121,15 @@ public final class XRPG extends JavaPlugin {
         this.GUIBaseItems = generateBaseGUIItems();
         //registering listeners/commands
         initEventListeners();
-        if (mcMMO != null){
+
+        if (useMcMMO){
             Bukkit.getLogger().info("Using mcMMO for EXP calculations.");
             getServer().getPluginManager().registerEvents(new McMMOListener(this), this);
         }else{
             getServer().getPluginManager().registerEvents(new EXPListener(this), this);
         }
+
+        this.pvpToggle = PvPToggleFactory.getPvPToggle(usePvPToggle);
 
 
         this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this));
@@ -187,6 +202,10 @@ public final class XRPG extends JavaPlugin {
 
     public IPartyManager getPartyManager() {
         return partyManager;
+    }
+
+    public IPvPToggle getPvpToggle() {
+        return pvpToggle;
     }
 
     public XRPGPlayer getXRPGPlayer(Player player, boolean force) {
@@ -298,10 +317,6 @@ public final class XRPG extends JavaPlugin {
 
     public SkillTree getSkillTree(String treeId){
         return treeData.get(treeId);
-    }
-
-    public Set<String> getAllSkills(){
-        return skillData.keySet();
     }
 
     public boolean isTreeViewer(Player player){
