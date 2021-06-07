@@ -1,4 +1,4 @@
-package me.xepos.rpg.dependencies.combat.toggle;
+package me.xepos.rpg.dependencies.combat.pvptoggle;
 
 import me.xepos.rpg.XRPG;
 import org.bukkit.plugin.java.JavaPlugin;

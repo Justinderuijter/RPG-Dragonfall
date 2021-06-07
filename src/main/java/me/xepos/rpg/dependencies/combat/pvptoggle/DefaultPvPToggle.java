@@ -1,4 +1,4 @@
-package me.xepos.rpg.dependencies.combat.toggle;
+package me.xepos.rpg.dependencies.combat.pvptoggle;
 
 import org.bukkit.entity.Player;
 

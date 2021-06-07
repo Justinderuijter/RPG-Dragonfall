@@ -69,7 +69,7 @@ public class BloodPurification extends XRPGActiveSkill {
         for (LivingEntity livingEntity : livingEntities) {
             if (livingEntity instanceof Player) {
                 Player target = (Player) livingEntity;
-                if (getProtectionSet().isPvPTypeSame(caster.getLocation(), target.getLocation()) && getPartyManager().isPlayerAllied(caster, target)) {
+                if (getProtectionSet().isPvPTypeSame(caster.getLocation(), target.getLocation()) && getPartySet().isPlayerAllied(caster, target)) {
                     for (String key : modifierData.keySet()) {
                         Utils.removeUniqueModifier(target, modifierData.get(key));
                     }

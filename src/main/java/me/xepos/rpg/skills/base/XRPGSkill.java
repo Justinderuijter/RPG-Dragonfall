@@ -2,9 +2,8 @@ package me.xepos.rpg.skills.base;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.dependencies.combat.parties.IPartyManager;
+import me.xepos.rpg.dependencies.combat.parties.PartySet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
-import me.xepos.rpg.dependencies.combat.toggle.IPvPToggle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -18,8 +17,7 @@ public abstract class XRPGSkill {
     private final XRPGPlayer xrpgPlayer;
     private final XRPG plugin;
     private final ProtectionSet protectionSet;
-    private final IPartyManager partyManager;
-    private final IPvPToggle pvpToggle;
+    private final PartySet partySet;
 
     //Stats
     private final ConfigurationSection skillVariables;
@@ -30,8 +28,7 @@ public abstract class XRPGSkill {
         this.plugin = plugin;
         this.skillVariables = skillVariables;
         this.protectionSet = plugin.getProtectionSet();
-        this.partyManager = plugin.getPartyManager();
-        this.pvpToggle = plugin.getPvpToggle();
+        this.partySet = plugin.getPartySet();
         this.remainingCooldown = System.currentTimeMillis();
         this.skillLevel = skillLevel;
 
@@ -69,21 +66,21 @@ public abstract class XRPGSkill {
         return protectionSet;
     }
 
-    protected IPartyManager getPartyManager() {
-        return partyManager;
+    protected PartySet getPartySet() {
+        return partySet;
     }
 
     @SuppressWarnings("all")
     protected List<Player> getNearbyAlliedPlayers(Player caster, double x, double y, double z) {
-        return (List<Player>) new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), x, y, z, p -> p instanceof Player && p != caster && partyManager.isPlayerAllied(caster, (Player) p)));
+        return (List<Player>) new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), x, y, z, p -> p instanceof Player && p != caster && partySet.isPlayerAllied(caster, (Player) p)));
     }
 
     protected boolean canApplyBuffToFriendly(Player target){
-        return partyManager.isPlayerAllied(xrpgPlayer.getPlayer(), target) && protectionSet.isPvPTypeSame(xrpgPlayer.getPlayer().getLocation(), target.getLocation());
+        return partySet.isPlayerAllied(xrpgPlayer.getPlayer(), target) && protectionSet.isPvPTypeSame(xrpgPlayer.getPlayer().getLocation(), target.getLocation());
     }
 
     protected boolean canHurtTarget(Player target){
-        return partyManager.isPlayerAllied(xrpgPlayer.getPlayer(), target) && pvpToggle.hasPvPEnabled(target);
+        return partySet.isPlayerAllied(xrpgPlayer.getPlayer(), target) && partySet.canHurtPlayer(xrpgPlayer.getPlayer(), target);
     }
 
     public XRPGPlayer getXRPGPlayer() {

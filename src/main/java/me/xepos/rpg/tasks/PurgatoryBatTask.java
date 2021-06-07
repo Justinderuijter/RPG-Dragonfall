@@ -2,7 +2,7 @@ package me.xepos.rpg.tasks;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.dependencies.combat.parties.IPartyManager;
+import me.xepos.rpg.dependencies.combat.parties.PartySet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
@@ -29,7 +29,7 @@ public class PurgatoryBatTask extends BukkitRunnable {
     private final double damage;
     private final double dtAmount;
     private final XRPGSkill skill;
-    private final IPartyManager partyManager;
+    private final PartySet partyManager;
     private final ProtectionSet protectionSet;
     private final XRPG plugin;
     private final long delay;
@@ -42,7 +42,7 @@ public class PurgatoryBatTask extends BukkitRunnable {
         this.dtAmount = dtAmount;
         this.maxCount = maxCount;
         this.skill = skill;
-        this.partyManager = plugin.getPartyManager();
+        this.partyManager = plugin.getPartySet();
         this.protectionSet = plugin.getProtectionSet();
         this.plugin = plugin;
         this.delay = debuffDuration;

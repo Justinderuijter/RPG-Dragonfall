@@ -33,7 +33,7 @@ public class SoaringSlash extends XRPGActiveSkill {
         e.getPlayer().setVelocity(e.getPlayer().getEyeLocation().getDirection().multiply(new Vector(2, 0, 2)).add(new Vector(0, 1, 0)));
         setRemainingCooldown(getCooldown());
         if (landTask == null || landTask.isCancelled())
-            landTask = new RavagerLandTask(e.getPlayer(), getDamage(), getProtectionSet(), getPartyManager()).runTaskTimer(getPlugin(), 5L, 3L);
+            landTask = new RavagerLandTask(e.getPlayer(), getDamage(), getProtectionSet(), getPartySet()).runTaskTimer(getPlugin(), 5L, 3L);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package me.xepos.rpg.tasks;
 
-import me.xepos.rpg.dependencies.combat.parties.IPartyManager;
+import me.xepos.rpg.dependencies.combat.parties.PartySet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -17,9 +17,9 @@ public class RavagerLandTask extends BukkitRunnable {
     private final Player player;
     private final double damage;
     private final ProtectionSet protectionSet;
-    private final IPartyManager partyManager;
+    private final PartySet partyManager;
 
-    public RavagerLandTask(Player player, double damage, ProtectionSet protectionSet, IPartyManager partyManager) {
+    public RavagerLandTask(Player player, double damage, ProtectionSet protectionSet, PartySet partyManager) {
         this.player = player;
         this.damage = damage;
         this.protectionSet = protectionSet;

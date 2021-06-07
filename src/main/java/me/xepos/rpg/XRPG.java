@@ -9,12 +9,12 @@ import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.datatypes.BaseProjectileData;
 import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.TreeData;
-import me.xepos.rpg.dependencies.combat.parties.IPartyManager;
 import me.xepos.rpg.dependencies.combat.parties.PartyManagerFactory;
+import me.xepos.rpg.dependencies.combat.parties.PartySet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSetFactory;
-import me.xepos.rpg.dependencies.combat.toggle.IPvPToggle;
-import me.xepos.rpg.dependencies.combat.toggle.PvPToggleFactory;
+import me.xepos.rpg.dependencies.combat.pvptoggle.IPvPToggle;
+import me.xepos.rpg.dependencies.combat.pvptoggle.PvPToggleFactory;
 import me.xepos.rpg.listeners.*;
 import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.tasks.ManaTask;
@@ -43,7 +43,7 @@ public final class XRPG extends JavaPlugin {
     private TreeLoader treeLoader;
 
     //Ability targetting managers
-    private IPartyManager partyManager;
+    private PartySet partySet;
     private ProtectionSet protectionSet;
     private IPvPToggle pvpToggle;
 
@@ -108,7 +108,7 @@ public final class XRPG extends JavaPlugin {
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager(skillLoader);
 
         //Load ability targetting managers
-        this.partyManager = PartyManagerFactory.getPartyManager();
+        this.partySet = new PartySet(PvPToggleFactory.getPvPToggle(usePvPToggle), PartyManagerFactory.getPartyManager());
         this.protectionSet = ProtectionSetFactory.getProtectionRules();
 
         //Prevents throwing error if databaseManager shuts down this plugin.
@@ -200,8 +200,8 @@ public final class XRPG extends JavaPlugin {
         return protectionSet;
     }
 
-    public IPartyManager getPartyManager() {
-        return partyManager;
+    public PartySet getPartySet() {
+        return partySet;
     }
 
     public IPvPToggle getPvpToggle() {

@@ -12,7 +12,9 @@ MySQL:
 # Or more advanced projectile based skills.
 # Currently supported: Factions3, FactionsUUID, Parties, Towny and mcMMO
 
-Party Manager Type: "Factions"
+party-managers:
+  - "mcMMO"
+#  - "Towny"
 
 # You can have as many protection managers as you like
 # As long as they are supported by the plugin.
@@ -21,7 +23,8 @@ Party Manager Type: "Factions"
 # Currently supported: Factions3, FactionsUUID, WorldGuard 7.0+ and Towny
 protection-managers:
   - "Factions"
-# - "WorldGuard"
+#  - "WorldGuard"
+#  - "Towny"
 
 use-pvp-toggle: true
 

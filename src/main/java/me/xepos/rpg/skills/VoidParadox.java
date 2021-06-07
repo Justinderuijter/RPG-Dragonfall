@@ -48,7 +48,7 @@ public class VoidParadox extends XRPGActiveSkill {
             LivingEntity target = (LivingEntity) result.getHitEntity();
             if (target instanceof Player) {
                 Player targetPlayer = (Player) target;
-                if (!getPartyManager().isPlayerAllied(caster, targetPlayer) && getProtectionSet().isLocationValid(caster.getLocation(), targetPlayer.getLocation())) {
+                if (!getPartySet().isPlayerAllied(caster, targetPlayer) && getProtectionSet().isLocationValid(caster.getLocation(), targetPlayer.getLocation())) {
 
                     final double duration = getSkillVariables().getDouble("duration", 5.0);
 

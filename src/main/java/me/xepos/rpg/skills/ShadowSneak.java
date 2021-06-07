@@ -61,7 +61,7 @@ public class ShadowSneak extends XRPGActiveSkill {
 
             Vector direction = livingEntity.getLocation().getDirection().setY(0.).normalize().multiply(-2.);
             player.teleport(livingEntity.getLocation().add(direction), PlayerTeleportEvent.TeleportCause.PLUGIN);
-            if (livingEntity instanceof Player && getProtectionSet().isLocationValid(player.getLocation(), livingEntity.getLocation()) && !getPartyManager().isPlayerAllied(player, (Player) livingEntity)) {
+            if (livingEntity instanceof Player && getProtectionSet().isLocationValid(player.getLocation(), livingEntity.getLocation()) && !getPartySet().isPlayerAllied(player, (Player) livingEntity)) {
                 livingEntity.damage(getDamage(), player);
 
                 new BleedTask(livingEntity, player, maxProcs, getDamage()).runTaskTimer(getPlugin(), 11, (long) interval * 20L);

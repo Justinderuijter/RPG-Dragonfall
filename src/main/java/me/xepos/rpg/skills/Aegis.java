@@ -51,7 +51,7 @@ public class Aegis extends XRPGPassiveSkill {
             final double yRange = getSkillVariables().getDouble("y-range", 5);
             final double zRange = getSkillVariables().getDouble("z-range", xRange);
 
-            List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), xRange, yRange, zRange, p -> p instanceof Player && getPartyManager().isPlayerAllied(player, (Player) p)));
+            List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), xRange, yRange, zRange, p -> p instanceof Player && getPartySet().isPlayerAllied(player, (Player) p)));
             for (Player target : nearbyPlayers) {
                 if (!canApplyBuffToFriendly(target)) continue;
 

@@ -3,28 +3,39 @@ package me.xepos.rpg.dependencies.combat.parties;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.utils.DependencyUtils;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import static org.bukkit.Bukkit.getServer;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PartyManagerFactory {
+    private final static List<String> configPartyManagers = JavaPlugin.getPlugin(XRPG.class).getConfig().getStringList("party-managers");
 
-    private final static String configPartyManager = JavaPlugin.getPlugin(XRPG.class).getConfig().getString("Party Manager Type", "Factions");
-
-    public static IPartyManager getPartyManager() {
-
-        if (configPartyManager != null) {
-            Plugin plugin = getServer().getPluginManager().getPlugin(configPartyManager);
-            if (plugin != null && plugin.isEnabled()) {
-                if (configPartyManager.equalsIgnoreCase("Parties"))
-                    return new PartiesManager();
-
-                else if (configPartyManager.equalsIgnoreCase("factions"))
-                    return checkFactions();
+    public static Set<IPartyManager> getPartyManager() {
+        final Set<IPartyManager> managers = new HashSet<>();
+        for (String managerName:configPartyManagers) {
+            if (Bukkit.getPluginManager().getPlugin(managerName) != null){
+                switch (managerName.toLowerCase()){
+                    case "factions":
+                        managers.add(checkFactions());
+                        break;
+                    case "mcmmo":
+                        managers.add(new McMMOPartyManager());
+                        break;
+                    case "parties":
+                        managers.add(new PartiesManager());
+                        break;
+                    case "towny":
+                        managers.add(new TownyAdvancedManager());
+                        break;
+                }
             }
         }
-        return new DefaultManager();
+        if (managers.isEmpty()) managers.add(new DefaultManager());
+
+        return managers;
     }
 
     @SuppressWarnings("unused")
