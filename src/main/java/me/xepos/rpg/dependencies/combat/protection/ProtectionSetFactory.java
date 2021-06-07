@@ -1,7 +1,7 @@
-package me.xepos.rpg.dependencies.protection;
+package me.xepos.rpg.dependencies.combat.protection;
 
-import me.xepos.rpg.utils.DependencyUtils;
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.utils.DependencyUtils;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 

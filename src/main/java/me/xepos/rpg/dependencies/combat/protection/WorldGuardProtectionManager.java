@@ -1,4 +1,4 @@
-package me.xepos.rpg.dependencies.protection;
+package me.xepos.rpg.dependencies.combat.protection;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;

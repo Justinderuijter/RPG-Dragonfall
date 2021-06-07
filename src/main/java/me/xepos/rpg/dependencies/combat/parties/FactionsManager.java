@@ -1,8 +1,8 @@
-package me.xepos.rpg.dependencies.parties;
+package me.xepos.rpg.dependencies.combat.parties;
 
 import com.massivecraft.factions.Rel;
-import com.massivecraft.factions.entity.*;
-
+import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.MPlayer;
 import org.bukkit.entity.Player;
 
 public class FactionsManager implements IPartyManager {

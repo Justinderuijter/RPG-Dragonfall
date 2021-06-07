@@ -1,4 +1,4 @@
-package me.xepos.rpg.dependencies.parties;
+package me.xepos.rpg.dependencies.combat.parties;
 
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;

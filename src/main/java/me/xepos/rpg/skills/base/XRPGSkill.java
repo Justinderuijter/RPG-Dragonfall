@@ -2,8 +2,8 @@ package me.xepos.rpg.skills.base;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.dependencies.parties.IPartyManager;
-import me.xepos.rpg.dependencies.protection.ProtectionSet;
+import me.xepos.rpg.dependencies.combat.parties.IPartyManager;
+import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

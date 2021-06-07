@@ -2,8 +2,8 @@ package me.xepos.rpg.tasks;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.dependencies.parties.IPartyManager;
-import me.xepos.rpg.dependencies.protection.ProtectionSet;
+import me.xepos.rpg.dependencies.combat.parties.IPartyManager;
+import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.events.XRPGDamageTakenRemovedEvent;

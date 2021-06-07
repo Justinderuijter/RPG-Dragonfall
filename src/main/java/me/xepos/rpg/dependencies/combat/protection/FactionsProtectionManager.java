@@ -1,4 +1,4 @@
-package me.xepos.rpg.dependencies.protection;
+package me.xepos.rpg.dependencies.combat.protection;
 
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;

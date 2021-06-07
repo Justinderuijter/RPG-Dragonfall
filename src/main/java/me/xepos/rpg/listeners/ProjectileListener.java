@@ -4,7 +4,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.datatypes.BaseProjectileData;
 import me.xepos.rpg.datatypes.ExplosiveProjectileData;
 import me.xepos.rpg.datatypes.ProjectileData;
-import me.xepos.rpg.dependencies.protection.ProtectionSet;
+import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

@@ -1,4 +1,4 @@
-package me.xepos.rpg.dependencies.protection;
+package me.xepos.rpg.dependencies.combat.protection;
 
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;

@@ -1,7 +1,7 @@
 package me.xepos.rpg.tasks;
 
-import me.xepos.rpg.dependencies.parties.IPartyManager;
-import me.xepos.rpg.dependencies.protection.ProtectionSet;
+import me.xepos.rpg.dependencies.combat.parties.IPartyManager;
+import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

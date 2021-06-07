@@ -1,4 +1,4 @@
-package me.xepos.rpg.dependencies.protection;
+package me.xepos.rpg.dependencies.combat.protection;
 
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
