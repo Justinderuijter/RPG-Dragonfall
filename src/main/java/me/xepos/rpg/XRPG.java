@@ -71,6 +71,7 @@ public final class XRPG extends JavaPlugin {
     public void onEnable() {
 
         Plugin mcMMO = Bukkit.getPluginManager().getPlugin("mcMMO");
+
         //Load classes
         this.saveDefaultConfig();
 
