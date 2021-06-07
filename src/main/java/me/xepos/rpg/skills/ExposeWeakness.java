@@ -10,6 +10,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -40,10 +41,10 @@ public class ExposeWeakness extends XRPGBowSkill {
 
         } else if(event instanceof EntityDamageByEntityEvent){
             if (isActive) {
-                isActive = false;
                 EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-
                 LivingEntity target = (LivingEntity) e.getEntity();
+
+                if (target instanceof Player && isTargetAllied((Player) target)) return;
 
                 Utils.decreaseHealth(target, calculateDamage(target));
 
@@ -52,6 +53,7 @@ public class ExposeWeakness extends XRPGBowSkill {
                     bowHandler.setActiveBowSkill(null);
                 }
 
+                isActive = false;
                 setRemainingCooldown(getCooldown());
             }
 

@@ -75,6 +75,14 @@ public abstract class XRPGSkill {
         return (List<Player>) new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), x, y, z, p -> p instanceof Player && p != caster && partyManager.isPlayerAllied(caster, (Player) p)));
     }
 
+    protected boolean canApplyBuffToFriendly(Player target){
+        return partyManager.isPlayerAllied(xrpgPlayer.getPlayer(), target) && protectionSet.isPvPTypeSame(xrpgPlayer.getPlayer().getLocation(), target.getLocation());
+    }
+
+    protected boolean isTargetAllied(Player target){
+        return !partyManager.isPlayerAllied(xrpgPlayer.getPlayer(), target);
+    }
+
     public XRPGPlayer getXRPGPlayer() {
         return xrpgPlayer;
     }

@@ -61,7 +61,7 @@ public class ShieldBash extends XRPGActiveSkill {
 
             if (result.getHitEntity() instanceof Player){
                 XRPGPlayer xrpgPlayer = getPlugin().getXRPGPlayer(result.getHitEntity().getUniqueId(), true);
-                if (xrpgPlayer != null && xrpgPlayer.canBeStunned())
+                if (xrpgPlayer != null && xrpgPlayer.canBeStunned() && !isTargetAllied((Player) result.getHitEntity()))
                     new ApplyStunTask(xrpgPlayer, AttributeModifierManager.getInstance().get(ModifierType.NEGATIVE, "SHIELD_BASH").getAttributeModifier(), (long) duration * 20, getPlugin()).runTaskLater(getPlugin(), (long) castDelay * 20);
                 else
                     player.sendMessage(ChatColor.RED + result.getHitEntity().getName() + " cannot be stunned for " + xrpgPlayer.getStunblockDuration() + " seconds!");

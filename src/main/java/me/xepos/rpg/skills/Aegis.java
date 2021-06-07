@@ -53,7 +53,8 @@ public class Aegis extends XRPGPassiveSkill {
 
             List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), xRange, yRange, zRange, p -> p instanceof Player && getPartyManager().isPlayerAllied(player, (Player) p)));
             for (Player target : nearbyPlayers) {
-                //Applying the DTModifier if event is cancelled
+                if (!canApplyBuffToFriendly(target)) continue;
+
                 XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, this, getDamageMultiplier());
                 Bukkit.getServer().getPluginManager().callEvent(event);
                 XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(target, true);
