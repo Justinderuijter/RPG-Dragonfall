@@ -3,9 +3,8 @@ display:
   name: "Sentinel"
   icon: SHIELD
   description:
-    - "A tanky melee class focused on survivability"
-    - "Call upon Aegis' to protect you and your allies"
-    - "Draw the attention of nearby mobs with your attacks"
-    - "medium damage, low mobility, high defense"
+    - "A Magic based class that can focus on"
+    - "either healing and supporting yourself and allies"
+    - "or mercilessly burning your enemies."
 
 base-mana: 20

@@ -3,9 +3,7 @@ display:
   name: "Scholar"
   icon: GOLDEN_APPLE
   description:
-    - "A tanky melee class focused on survivability"
-    - "Call upon Aegis' to protect you and your allies"
-    - "Draw the attention of nearby mobs with your attacks"
-    - "medium damage, low mobility, high defense"
+    - "A Ranged class with deadly aim and impressive mobility."
+    - "The sneaky explorer also has quite a few tricks up their sleeve."
 
 base-mana: 20

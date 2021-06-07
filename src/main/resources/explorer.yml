@@ -3,9 +3,7 @@ display:
   name: "Explorer"
   icon: MAP
   description:
-    - "A tanky melee class focused on survivability"
-    - "Call upon Aegis' to protect you and your allies"
-    - "Draw the attention of nearby mobs with your attacks"
-    - "medium damage, low mobility, high defense"
+    - "A Melee focused class that has a variety of offensive and defensive abilities."
+    - "Useful for dishing out tons of damage or protecting others."
 
 base-mana: 20
