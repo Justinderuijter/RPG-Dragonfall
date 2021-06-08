@@ -1,3 +1,4 @@
 name: "Blessed"
 multiplier: 1.25
-mana-increase: 5
+base-mana-increase: 1
+mana-per-level: 2

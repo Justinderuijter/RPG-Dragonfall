@@ -1,0 +1,5 @@
+name: "Short Fuse"
+icon: "TNT"
+base-explosion-yield: 3.0
+yield-per-level: 1
+cooldown: 20

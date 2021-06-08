@@ -7,8 +7,20 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class HotHead extends XRPGPassiveSkill {
+    private static Set<EntityDamageEvent.DamageCause> causes = new HashSet<EntityDamageEvent.DamageCause>(){{
+        add(EntityDamageEvent.DamageCause.FIRE);
+        add(EntityDamageEvent.DamageCause.FIRE_TICK);
+        add(EntityDamageEvent.DamageCause.HOT_FLOOR);
+        add(EntityDamageEvent.DamageCause.LAVA);
+    }};
+
     public HotHead(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
@@ -17,12 +29,20 @@ public class HotHead extends XRPGPassiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof EntityDamageByEntityEvent)) return;
-        EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+        if (event instanceof EntityDamageByEntityEvent) {
+            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 
-        //TODO: RNG proc
-        if (e.getDamager() instanceof LivingEntity){
-            e.getDamager().setFireTicks(100);
+            if (ThreadLocalRandom.current().nextInt(100) < 25){
+                if (e.getDamager() instanceof LivingEntity) {
+                    e.getDamager().setFireTicks(100);
+                }
+            }
+        }else if(event instanceof EntityDamageEvent){
+            EntityDamageEvent e = (EntityDamageEvent) event;
+
+            if (causes.contains(e.getCause())){
+                e.setDamage(e.getDamage() / getSkillVariables().getDouble("fire-damage-taken-multiplier", 0.5));
+            }
         }
     }
 
