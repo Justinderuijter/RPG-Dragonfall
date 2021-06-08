@@ -36,7 +36,9 @@ public class ShortFuse extends XRPGSkill {
         setRemainingCooldown(getCooldown());
 
         Location location = player.getLocation();
-        location.getWorld().playSound(location, Sound.ENTITY_CREEPER_PRIMED, 1F, 1F);
+        if (location.getWorld() == null) return;
+
+        location.getWorld().playSound(location, Sound.ENTITY_CREEPER_PRIMED, 1.5F, 1F);
         location.getWorld().playEffect(location, Effect.SMOKE, 1);
 
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
