@@ -8,10 +8,15 @@ import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.util.BlockIterator;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Shockwave extends XRPGActiveSkill {
     public Shockwave(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
@@ -32,6 +37,9 @@ public class Shockwave extends XRPGActiveSkill {
                 return;
             }
 
+            final Set<Entity> entitiesToDamage = new HashSet<>();
+            final double damage = getDamage();
+
             BlockIterator iter = new BlockIterator(player.getWorld(), player.getLocation().toVector(), player.getLocation().getDirection().setY(0), -1, 16);
             Block lastBlock;
             while (iter.hasNext()) {
@@ -44,7 +52,19 @@ public class Shockwave extends XRPGActiveSkill {
                         break;
                     }
                 }
+                entitiesToDamage.addAll(lastBlock.getWorld().getNearbyEntities(lastBlock.getLocation(), 1, 2, 1, p -> p instanceof LivingEntity)) ;
                 lastBlock.getWorld().playEffect(lastBlock.getLocation(), Effect.MOBSPAWNER_FLAMES, 2);
+
+                for (Entity entity:entitiesToDamage) {
+                    if (entity instanceof Player){
+                        Player target = (Player) entity;
+                        if (canHurtTarget(target)){
+                            target.damage(damage, player);
+                        }
+                    }else{
+                        ((LivingEntity)entity).damage(damage, player);
+                    }
+                }
             }
             setRemainingCooldown(getCooldown());
         }

@@ -1,7 +1,5 @@
-required-items:
-  - AXE
 name: "Rage"
-icon: BLAZE_POWDER
+icon: "BLAZE_POWDER"
 range: 3
 rage-on-hit: 5
 bonus-rage-on-kill: 5
@@ -9,4 +7,3 @@ atk-spd-multiplier: 1.65
 rage-one-multiplier: 1.10
 rage-two-multiplier: 1.20
 rage-three-multiplier: 1.30
-rage-four-multiplier: 1.30

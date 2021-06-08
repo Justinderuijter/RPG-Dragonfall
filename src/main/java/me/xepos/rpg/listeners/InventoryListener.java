@@ -16,6 +16,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDispenseArmorEvent;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -240,14 +241,18 @@ public class InventoryListener implements Listener {
         }
     }
 
-/*    @EventHandler
+    @EventHandler
     public void onBlockDispenseArmor(BlockDispenseArmorEvent e) {
-        if (e.getTargetEntity() instanceof Player && e.getItem().getType() == Material.SHIELD) {
-            if (!plugin.getXRPGPlayer(e.getTargetEntity().getUniqueId()).isShieldAllowed()) {
-                e.setCancelled(true);
+        if (e.getTargetEntity() instanceof Player) {
+            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getTargetEntity().getUniqueId());
+            if (xrpgPlayer != null){
+                if (xrpgPlayer.getPassiveHandlerList().containsKey("ARMOR_DISPENSE")){
+                    xrpgPlayer.getPassiveEventHandler("ARMOR_DISPENSE").invoke(e);
+                }
             }
         }
-    }*/
+    }
+
     @EventHandler
     public void onPrepareEnchant(final PrepareItemEnchantEvent e){
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getEnchanter());

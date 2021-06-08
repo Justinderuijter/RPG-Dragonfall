@@ -32,7 +32,10 @@ public class Whirlwind extends XRPGActiveSkill {
         }
 
         Player caster = e.getPlayer();
-        List<LivingEntity> targets = new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), 10, 3, 10, p -> p instanceof LivingEntity && p != caster));
+        final double horizontalRange = getSkillVariables().getDouble("horizontal-range", 5);
+        final double verticalRange = getSkillVariables().getDouble("vertical-range", 2);
+
+        List<LivingEntity> targets = new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), horizontalRange, verticalRange, horizontalRange, p -> p instanceof LivingEntity && p != caster));
         for (LivingEntity target:targets) {
             target.damage(getDamage(), caster);
         }
