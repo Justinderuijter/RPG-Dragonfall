@@ -60,6 +60,7 @@ public class XRPGPlayer {
 
             this.level = data.getLevel();
             this.currentExp = data.getExperience();
+            this.currentMana = data.getLastMana();
             this.baseMana = data.getBaseMana();
             this.skillUnlockPoints = data.getSkillUnlockPoints();
             this.skillUpgradePoints = data.getSkillUpgradePoints();

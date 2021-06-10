@@ -20,7 +20,6 @@ public class ClassData {
         this.level = level;
         this.experience = experience;
         this.lastMana = lastMana;
-        this.baseMana = baseMana;
         this.lastMana = levelMana;
         this.skillUpgradePoints = skillUpgradePoints;
         this.skillUnlockPoints = skillUnlockPoints;
@@ -34,7 +33,7 @@ public class ClassData {
         this.experience = 0;
         this.lastMana = -1;
         this.skillUpgradePoints = 0;
-        this.skillUnlockPoints = 0;
+        this.skillUnlockPoints = 1;
 
         this.skills = new HashMap<>();
         this.keybindOrder = new ArrayList<>();

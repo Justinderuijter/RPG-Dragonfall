@@ -1,4 +1,5 @@
 name: "Trail of Flames"
 icon: "FLINT_AND_STEEL"
+ignore-villagers: true
 duration: 5.0
 cooldown: 12.0
