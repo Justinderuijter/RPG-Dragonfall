@@ -26,12 +26,12 @@ protection-managers:
 #  - "WorldGuard"
 #  - "Towny"
 
-use-pvp-toggle: true
+use-pvp-toggle: false
 
 mana:
-  enabled: false
-  recovery-delay: 5
-  recovery-amount: 5
+  enabled: true
+  recovery-delay: 2
+  recovery-amount: 2
 
 items:
   spellbook:

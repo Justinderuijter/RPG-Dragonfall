@@ -1,12 +1,10 @@
 package me.xepos.rpg.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
-import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
-import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.utils.SpellmodeUtils;
 import me.xepos.rpg.utils.Utils;
@@ -96,8 +94,7 @@ public class PlayerListener implements Listener {
         }
 
         if (xrpgPlayer != null && xrpgPlayer.getPlayer() != null) {
-            //Adds modifiers specified in the class config
-            addClassModifiers(xrpgPlayer);
+            xrpgPlayer.addQueuedModifiers();
             if (!StringUtils.isEmpty(xrpgPlayer.getClassId())){
                 player.sendMessage("You are now " + xrpgPlayer.getClassId());
             }
@@ -153,15 +150,14 @@ public class PlayerListener implements Listener {
             ItemStack item = e.getItem();
             //Cancel using shield if not allowed
             if (item != null){
-/*                if (item.getType() == Material.SHIELD && !xrpgPlayer.isShieldAllowed()) {
-                    player.sendMessage(ChatColor.RED + "You can't use shields!");
-                    player.sendMessage(ChatColor.RED + "Attempting to use it slowed you down!");
-                    player.sendMessage(ChatColor.RED + "Yet you don't seem to be blocking anything at all...");
-                    e.setCancelled(true);
-                    return;
-                }else */
+
                 if(item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(plugin.getKey("spellbook"), PersistentDataType.BYTE)){
-                    SpellmodeUtils.enterSpellmode(xrpgPlayer);
+                    if (xrpgPlayer.isSpellCastModeEnabled()){
+                        SpellmodeUtils.disableSpellmode(xrpgPlayer);
+                    }else{
+                        SpellmodeUtils.enterSpellmode(xrpgPlayer);
+                    }
+
                 }
             }
 
@@ -239,8 +235,6 @@ public class PlayerListener implements Listener {
                 if (e.getNewSlot() < xrpgPlayer.getSpellKeybinds().size()) {
                     xrpgPlayer.getActiveHandler().invoke(e);
                     e.setCancelled(true);
-                }else if (e.getNewSlot() == 8){
-                    SpellmodeUtils.disableSpellmode(xrpgPlayer);
                 }
             }
         }
@@ -260,16 +254,6 @@ public class PlayerListener implements Listener {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()){
             e.setCancelled(true);
-        }
-    }
-
-    private void addClassModifiers(XRPGPlayer xrpgPlayer){
-        AttributeModifierManager manager = AttributeModifierManager.getInstance();
-        for (String id: manager.getModifiers(ModifierType.POSITIVE).keySet()) {
-            if (id.startsWith(xrpgPlayer.getClassId().toUpperCase())){
-                Utils.addUniqueModifier(xrpgPlayer.getPlayer(), manager.get(ModifierType.POSITIVE, id));
-                xrpgPlayer.getPlayer().sendMessage("Added " + id);
-            }
         }
     }
 }

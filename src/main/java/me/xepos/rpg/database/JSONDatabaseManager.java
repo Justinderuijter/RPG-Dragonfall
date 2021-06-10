@@ -85,8 +85,6 @@ public class JSONDatabaseManager implements IDatabaseManager {
             PlayerData dataToReturn;
 
             if (StringUtils.isNotBlank(data)) {
-                Bukkit.getLogger().info("Data not blank: ");
-                Bukkit.getLogger().info(data);
                 PlayerData savedData = gson.fromJson(data, PlayerData.class);
 
                 //This looks confusing so to clear it up:
@@ -96,10 +94,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
                 final String classId = extractedData.getClassId();
                 savedData.setClassId(classId);
 
-                Bukkit.getLogger().info("ClassId is: " + classId);
-
                 if (StringUtils.isNotBlank(classId)) {
-                    Bukkit.getLogger().info("Ey waddup I saved " + classId + ":");
                     savedData.addClassData(classId, extractedData.getClassData(classId));
                 }
 
@@ -108,13 +103,11 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
                 dataToReturn = savedData;
             } else {
-                Bukkit.getLogger().info("Created new file with the following information:");
                 //Just save the extracted data if nothing exists.
                 dataToSave = gson.toJson(extractedData);
 
                 dataToReturn = extractedData;
             }
-            Bukkit.getLogger().info(dataToSave);
             saveWriter.write(dataToSave);
             saveWriter.close();
 

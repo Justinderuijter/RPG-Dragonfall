@@ -1,5 +1,6 @@
 package me.xepos.rpg.listeners;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
@@ -56,7 +57,7 @@ public class InventoryListener implements Listener {
         }
 
         if (e.getView().getTitle().equalsIgnoreCase("Spellbook")) {
-            if (xrpgPlayer == null){
+            if (xrpgPlayer == null || e.getClick() == ClickType.NUMBER_KEY){
                 e.setCancelled(true);
                 return;
             }
@@ -250,6 +251,14 @@ public class InventoryListener implements Listener {
                     xrpgPlayer.getPassiveEventHandler("ARMOR_DISPENSE").invoke(e);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onArmorChange(PlayerArmorChangeEvent e){
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
+        if (xrpgPlayer != null && xrpgPlayer.getPassiveHandlerList().containsKey("ARMOR_CHANGE")){
+            xrpgPlayer.getPassiveEventHandler("ARMOR_CHANGE").invoke(e);
         }
     }
 

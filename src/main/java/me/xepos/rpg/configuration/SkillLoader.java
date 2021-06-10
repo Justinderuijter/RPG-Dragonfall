@@ -52,7 +52,7 @@ public class SkillLoader extends XRPGLoader{
             //data.addClassData(data.getClassId(), new ClassData());
             classData = new ClassData();
         }
-        Bukkit.getLogger().info("Base mana for " + data.getClassId() + ": " + getPlugin().getClassInfo(data.getClassId()).getBaseMana());
+
         classData.setBaseMana(getPlugin().getClassInfo(data.getClassId()).getBaseMana());
 
         data.getClasses().put(data.getClassId(), classData);

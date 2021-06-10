@@ -8,7 +8,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 
 public class Blessed extends XRPGPassiveSkill {
-    private static int baseMana = 1;
     private static int manaPerLevel = -1;
 
     public Blessed(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
@@ -21,10 +20,12 @@ public class Blessed extends XRPGPassiveSkill {
         xrpgPlayer.getPassiveEventHandler("ATTRIBUTE").addSkill(this.getClass().getSimpleName(), this);
 
 
-        baseMana = getSkillVariables().getInt("base-mana-increase", 1);
-        manaPerLevel = getSkillVariables().getInt("mana-per-level", 2);
+        final int baseMana = getSkillVariables().getInt("base-mana-increase", 1);
 
-        final int manaIncrease = baseMana + (manaPerLevel * skillLevel -1);
+        if (manaPerLevel == -1)
+            manaPerLevel = getSkillVariables().getInt("mana-per-level", 2);
+
+        final int manaIncrease = baseMana + manaPerLevel * (skillLevel -1);
 
         xrpgPlayer.setBaseMana(plugin.getClassInfo(xrpgPlayer.getClassId()).getBaseMana() + manaIncrease);
     }

@@ -19,4 +19,9 @@ public class AttributeModifierData {
     public AttributeModifier getAttributeModifier() {
         return attributeModifier;
     }
+
+    @Override
+    public String toString(){
+        return attribute.name() + ": " + attributeModifier.getName() + " " + attributeModifier.getOperation() + ": " + attributeModifier.getAmount();
+    }
 }

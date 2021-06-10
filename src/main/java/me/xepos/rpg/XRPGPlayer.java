@@ -1,5 +1,6 @@
 package me.xepos.rpg;
 
+import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.handlers.ActiveEventHandler;
@@ -7,17 +8,14 @@ import me.xepos.rpg.handlers.BowEventHandler;
 import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.IMessenger;
 import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class XRPGPlayer {
@@ -44,6 +42,9 @@ public class XRPGPlayer {
     private transient boolean isStunned = false;
     private transient long lastStunTime = 0;
 
+    //This will ever only be called when joining
+    private List<AttributeModifierData> modifiersToApply = new ArrayList<>();
+
     public XRPGPlayer(UUID playerId, PlayerData playerData) {
         this.player = null;
         this.playerId = playerId;
@@ -54,7 +55,7 @@ public class XRPGPlayer {
         this.spellKeybinds.clear();
 
         //New players won't have a classId
-        if (!StringUtils.isBlank(this.classId)){
+        if (!StringUtils.isBlank(this.classId)) {
             final ClassData data = playerData.getClassData(this.classId);
 
             this.level = data.getLevel();
@@ -182,23 +183,21 @@ public class XRPGPlayer {
     public void resetPlayerDataForClassChange(PlayerData playerData, String classDisplayName) {
         if (StringUtils.isBlank(playerData.getClassId())) return;
 
-        Bukkit.getLogger().info("Base mana for " + playerData.getClassId() + ": " + playerData.getClassData(playerData.getClassId()).getBaseMana());
-
         this.classId = playerData.getClassId();
         this.classDisplay = classDisplayName;
         this.isClassEnabled = playerData.isClassEnabled();
         this.lastClassChangeTime = playerData.getLastClassChange();
         this.lastBookReceivedTime = playerData.getLastBookReceived();
         ClassData classData = playerData.getClassData(playerData.getClassId());
-        if (classData != null){
+        if (classData != null) {
             this.level = classData.getLevel();
             this.currentExp = classData.getExperience();
             this.currentMana = classData.getLastMana();
             this.baseMana = classData.getBaseMana();
-            if (classData.getLastMana() == -1){
+            if (classData.getLastMana() == -1) {
                 this.currentMana = baseMana;
             }
-            this.skillUpgradePoints = classData.getSkillUpgradePoints();;
+            this.skillUpgradePoints = classData.getSkillUpgradePoints();
             this.skillUnlockPoints = classData.getSkillUnlockPoints();
         }
 
@@ -265,6 +264,17 @@ public class XRPGPlayer {
         this.damageTakenMultiplier = base;
     }
 
+    public void addModifiersToApplyOnJoin(List<AttributeModifierData> modifierData) {
+        modifiersToApply.addAll(modifierData);
+    }
+
+    public void addQueuedModifiers() {
+        for (AttributeModifierData mod : modifiersToApply) {
+            Utils.addUniqueModifier(player, mod);
+        }
+        modifiersToApply = Collections.emptyList();
+    }
+
     public long getLastClassChangeTime() {
         return lastClassChangeTime;
     }
@@ -281,7 +291,7 @@ public class XRPGPlayer {
         this.spellCastModeEnabled = spellCastModeEnabled;
     }
 
-    public String getSkillForSlot(int slotId){
+    public String getSkillForSlot(int slotId) {
         return spellKeybinds.get(slotId);
     }
 
@@ -291,18 +301,18 @@ public class XRPGPlayer {
 
     public void setClassEnabled(boolean classEnabled) {
         isClassEnabled = classEnabled;
-        if (!classEnabled){
+        if (!classEnabled) {
             spellCastModeEnabled = false;
         }
     }
-    
-    public void sendActionBarMessage(){
+
+    public void sendActionBarMessage() {
         StringBuilder message = new StringBuilder();
-        for (IMessenger messenger:this.messengerSkills) {
+        for (IMessenger messenger : this.messengerSkills) {
             message.append(messenger.getMessage()).append(ChatColor.WHITE).append(" | ");
         }
         message.append("Mana: ").append(ChatColor.BLUE).append(currentMana).append(ChatColor.WHITE).append("/").append(ChatColor.BLUE).append(baseMana + levelMana);
-        
+
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.toString()));
     }
 
@@ -350,14 +360,14 @@ public class XRPGPlayer {
     private void tryLevelUp() {
         final double requiredExp = getRequiredExpToLevel(this.level);
 
-        if (this.currentExp >= requiredExp){
+        if (this.currentExp >= requiredExp) {
             this.level++;
             this.currentExp -= requiredExp;
             this.player.sendMessage(ChatColor.GREEN + "You leveled up!");
-            if (level % 5 == 0){
+            if (level % 5 == 0) {
                 skillUnlockPoints++;
                 this.player.sendMessage(ChatColor.GREEN + "You gained an unlock point!");
-            }else if (level % 2 == 0){
+            } else if (level % 2 == 0) {
                 skillUpgradePoints++;
                 this.player.sendMessage(ChatColor.GREEN + "You gained an upgrade point!");
             }
@@ -386,11 +396,11 @@ public class XRPGPlayer {
         this.skillUpgradePoints = skillUpgradePoints;
     }
 
-    public void reduceSkillUpgradePoints(){
+    public void reduceSkillUpgradePoints() {
         this.skillUpgradePoints--;
     }
 
-    public void reduceSkillUnlockPoints(){
+    public void reduceSkillUnlockPoints() {
         this.skillUnlockPoints--;
     }
 
@@ -422,15 +432,15 @@ public class XRPGPlayer {
     //                              //
     //////////////////////////////////
 
-    public HashMap<String, XRPGSkill> getAllLearnedSkills(){
+    public HashMap<String, XRPGSkill> getAllLearnedSkills() {
         HashMap<String, XRPGSkill> skills = new HashMap<>();
         for (PassiveEventHandler handler : handlerList.values()) {
-            for (String skillId:handler.getSkills().keySet()) {
+            for (String skillId : handler.getSkills().keySet()) {
                 skills.put(skillId, handler.getSkills().get(skillId));
             }
         }
 
-        for (String skillId:activeHandler.getSkills().keySet()){
+        for (String skillId : activeHandler.getSkills().keySet()) {
 
             skills.put(skillId, activeHandler.getSkills().get(skillId));
         }
@@ -442,12 +452,12 @@ public class XRPGPlayer {
         HashMap<String, Integer> skills = new HashMap<>();
         HashMap<String, XRPGSkill> learnedSkills = getAllLearnedSkills();
 
-        for (String skillId:learnedSkills.keySet()) {
+        for (String skillId : learnedSkills.keySet()) {
             skills.put(skillId, learnedSkills.get(skillId).getSkillLevel());
         }
 
         PlayerData playerData = new PlayerData(this.classId, this.lastClassChangeTime, this.lastBookReceivedTime, this.isClassEnabled);
-        if (StringUtils.isNotBlank(this.classId)){
+        if (StringUtils.isNotBlank(this.classId)) {
             playerData.addClassData(this.classId, new ClassData(this.level, this.currentExp, (byte) this.currentMana, this.levelMana, this.skillUpgradePoints, this.skillUnlockPoints, skills, this.spellKeybinds));
         }
 

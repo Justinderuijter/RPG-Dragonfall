@@ -34,6 +34,8 @@ public abstract class XRPGSkill {
 
         if (this instanceof IMessenger) {
             xrpgPlayer.getMessengerSkills().add((IMessenger) this);
+        }else if (this instanceof IAttributable && xrpgPlayer.getPlayer() == null){
+            xrpgPlayer.addModifiersToApplyOnJoin(((IAttributable)this).getModifiersToApply());
         }
     }
 
