@@ -76,7 +76,6 @@ public class ShortFuse extends XRPGActiveSkill {
             for (int i = 0; i < reductionLevel; i++) {
                 cooldown = cooldown * 0.666;
             }
-
             return (long)cooldown * 20;
         }
         return (long)baseCooldown * 20;
