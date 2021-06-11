@@ -7,20 +7,22 @@ import java.util.List;
 public class ClassData {
     private final int level;
     private final double experience;
-    private int lastMana;
-    private int baseMana;
-    private int levelMana;
+    private final int lastMana;
+    private transient int baseMana;
+    private int manaLevel;
+    private int healthLevel;
     private final byte skillUpgradePoints;
     private final byte skillUnlockPoints;
 
     private final HashMap<String, Integer> skills;
     private final List<String> keybindOrder;
 
-    public ClassData(int level, double experience, int lastMana, int levelMana, byte skillUpgradePoints, byte skillUnlockPoints, HashMap<String, Integer> skills, List<String> keybindOrder) {
+    public ClassData(int level, double experience, int lastMana, int manaLevel, int healthLevel, byte skillUpgradePoints, byte skillUnlockPoints, HashMap<String, Integer> skills, List<String> keybindOrder) {
         this.level = level;
         this.experience = experience;
         this.lastMana = lastMana;
-        this.lastMana = levelMana;
+        this.manaLevel = manaLevel;
+        this.healthLevel = healthLevel;
         this.skillUpgradePoints = skillUpgradePoints;
         this.skillUnlockPoints = skillUnlockPoints;
 
@@ -73,6 +75,14 @@ public class ClassData {
 
     public void setBaseMana(int baseMana) {
         this.baseMana = baseMana;
+    }
+
+    public int getManaLevel() {
+        return manaLevel;
+    }
+
+    public int getHealthLevel() {
+        return healthLevel;
     }
 
     @Override

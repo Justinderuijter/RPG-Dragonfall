@@ -33,6 +33,11 @@ mana:
   recovery-delay: 2
   recovery-amount: 2
 
+leveling:
+  max-level: 30
+  upgrade-point-interval: 1
+  unlock-point-interval: 5
+
 items:
   spellbook:
     lore:

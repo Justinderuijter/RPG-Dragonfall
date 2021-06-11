@@ -38,6 +38,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings("all")
 public final class XRPG extends JavaPlugin {
 
+    private static XRPG instance;
+
     private List<ItemStack> GUIBaseItems;
     private SkillLoader skillLoader;
     private TreeLoader treeLoader;
@@ -72,6 +74,7 @@ public final class XRPG extends JavaPlugin {
 
     @Override // Plugin startup logic
     public void onEnable() {
+        instance = this;
 
         Plugin mcMMO = Bukkit.getPluginManager().getPlugin("mcMMO");
         Plugin pvpToggle = Bukkit.getPluginManager().getPlugin("mcMMO");
@@ -97,7 +100,7 @@ public final class XRPG extends JavaPlugin {
         this.treeView = new HashMap<>();
 
 
-        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook", "requires", "level", "maxLevel"};
+        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook", "requires", "level", "maxLevel", "attribute"};
 
         for (String name:keyNames) {
             this.keyRegistry.put(name, new NamespacedKey(this, name));
@@ -184,6 +187,9 @@ public final class XRPG extends JavaPlugin {
         }
     }*/
 
+    public static XRPG getInstance(){
+        return instance;
+    }
 
     private void initEventListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(this, databaseManager), this);

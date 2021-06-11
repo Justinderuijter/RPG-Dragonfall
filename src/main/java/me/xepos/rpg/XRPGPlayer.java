@@ -19,6 +19,10 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class XRPGPlayer {
+    private static final int MAX_LEVEL = XRPG.getInstance().getConfig().getInt("leveling.max-level", 30);
+    private static final int UPGRADE_INTERVAL = XRPG.getInstance().getConfig().getInt("leveling.upgrade-point-interval", 5);
+    private static final int UNLOCK_INTERVAL = XRPG.getInstance().getConfig().getInt("leveling.unlock-point-interval", 1);
+
     private transient UUID playerId;
     private transient Player player;
     private transient String classDisplay;
@@ -26,6 +30,7 @@ public class XRPGPlayer {
     private int currentMana;
     private int baseMana;
     private int levelMana;
+    private int healthLevel;
     private long lastBookReceivedTime;
     private long lastClassChangeTime;
     private String classId;
@@ -46,6 +51,8 @@ public class XRPGPlayer {
     private List<AttributeModifierData> modifiersToApply = new ArrayList<>();
 
     public XRPGPlayer(UUID playerId, PlayerData playerData) {
+        XRPG plugin = XRPG.getInstance();
+
         this.player = null;
         this.playerId = playerId;
         this.isClassEnabled = playerData.isClassEnabled();
@@ -58,14 +65,17 @@ public class XRPGPlayer {
         if (!StringUtils.isBlank(this.classId)) {
             final ClassData data = playerData.getClassData(this.classId);
 
+            this.classDisplay = plugin.getClassInfo(classId).getDisplayName();
             this.level = data.getLevel();
             this.currentExp = data.getExperience();
             this.currentMana = data.getLastMana();
-            this.baseMana = data.getBaseMana();
+            this.baseMana = plugin.getClassInfo(classId).getBaseMana();
+            this.healthLevel = data.getHealthLevel();
             this.skillUnlockPoints = data.getSkillUnlockPoints();
             this.skillUpgradePoints = data.getSkillUpgradePoints();
 
             this.spellKeybinds.addAll(data.getKeybindOrder());
+
         }
 
         if (handlerList.isEmpty())
@@ -194,6 +204,8 @@ public class XRPGPlayer {
             this.level = classData.getLevel();
             this.currentExp = classData.getExperience();
             this.currentMana = classData.getLastMana();
+            this.levelMana = classData.getManaLevel();
+            this.healthLevel = classData.getHealthLevel();
             this.baseMana = classData.getBaseMana();
             if (classData.getLastMana() == -1) {
                 this.currentMana = baseMana;
@@ -210,6 +222,8 @@ public class XRPGPlayer {
         for (PassiveEventHandler handler : handlerList.values()) {
             handler.clear();
         }
+
+        AttributeModifierManager.getInstance().reapplyHealthAttribute(player, healthLevel);
     }
 
     public int getCurrentMana() {
@@ -273,6 +287,7 @@ public class XRPGPlayer {
         for (AttributeModifierData mod : modifiersToApply) {
             Utils.addUniqueModifier(player, mod);
         }
+        AttributeModifierManager.getInstance().reapplyHealthAttribute(player, healthLevel);
         modifiersToApply = Collections.emptyList();
     }
 
@@ -315,6 +330,22 @@ public class XRPGPlayer {
         message.append("Mana: ").append(ChatColor.BLUE).append(currentMana).append(ChatColor.WHITE).append("/").append(ChatColor.BLUE).append(baseMana + levelMana);
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message.toString()));
+    }
+
+    public int getManaLevel() {
+        return levelMana;
+    }
+
+    public void setManaLevel(int manaLevel) {
+        this.levelMana = manaLevel;
+    }
+
+    public int getHealthLevel() {
+        return healthLevel;
+    }
+
+    public void setHealthLevel(int healthLevel) {
+        this.healthLevel = healthLevel;
     }
 
     //////////////////////////////////
@@ -361,19 +392,21 @@ public class XRPGPlayer {
     private void tryLevelUp() {
         final double requiredExp = getRequiredExpToLevel(this.level);
 
-        if (this.currentExp >= requiredExp) {
-            this.level++;
-            this.currentExp -= requiredExp;
-            this.player.sendMessage(ChatColor.GREEN + "You leveled up!");
-            if (level % 5 == 0) {
-                skillUnlockPoints++;
-                this.player.sendMessage(ChatColor.GREEN + "You gained an unlock point!");
-            } else if (level % 2 == 0) {
-                skillUpgradePoints++;
-                this.player.sendMessage(ChatColor.GREEN + "You gained an upgrade point!");
-            }
+        if (this.level < MAX_LEVEL) {
+            if (this.currentExp >= requiredExp) {
+                this.level++;
+                this.currentExp -= requiredExp;
+                this.player.sendMessage(ChatColor.GREEN + "You leveled up!");
+                if (level % UNLOCK_INTERVAL == 0) {
+                    skillUnlockPoints++;
+                    this.player.sendMessage(ChatColor.GREEN + "You gained an unlock point!");
+                } else if (level % UPGRADE_INTERVAL == 0) {
+                    skillUpgradePoints++;
+                    this.player.sendMessage(ChatColor.GREEN + "You gained an upgrade point!");
+                }
 
-            tryLevelUp();
+                tryLevelUp();
+            }
         }
     }
 
@@ -404,6 +437,8 @@ public class XRPGPlayer {
     public void reduceSkillUnlockPoints() {
         this.skillUnlockPoints--;
     }
+
+
 
     //////////////////////////////////
     //                              //
@@ -459,7 +494,7 @@ public class XRPGPlayer {
 
         PlayerData playerData = new PlayerData(this.classId, this.lastClassChangeTime, this.lastBookReceivedTime, this.isClassEnabled);
         if (StringUtils.isNotBlank(this.classId)) {
-            playerData.addClassData(this.classId, new ClassData(this.level, this.currentExp, (byte) this.currentMana, this.levelMana, this.skillUpgradePoints, this.skillUnlockPoints, skills, this.spellKeybinds));
+            playerData.addClassData(this.classId, new ClassData(this.level, this.currentExp, (byte) this.currentMana, this.levelMana, this.healthLevel, this.skillUpgradePoints, this.skillUnlockPoints, skills, this.spellKeybinds));
         }
 
         return playerData;

@@ -60,7 +60,9 @@ public class SkillLoader extends XRPGLoader{
         String displayName = classInfo.getDisplayName();
 
         //data needs to hold the data for the class you're about to become
-        xrpgPlayer.resetPlayerDataForClassChange(data, displayName);
+        if (xrpgPlayer.getPlayer() != null) {
+            xrpgPlayer.resetPlayerDataForClassChange(data, displayName);
+        }
 
 
         for (String skillId : classData.getSkills().keySet()) {

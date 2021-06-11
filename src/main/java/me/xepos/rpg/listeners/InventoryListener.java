@@ -139,12 +139,11 @@ public class InventoryListener implements Listener {
             e.setCancelled(true);
             if (xrpgPlayer == null) return;
 
+            TreeData data = plugin.getTreeView(player.getUniqueId());
             if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta() != null) {
                 if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("skillId"), PersistentDataType.STRING)) {
                     final String skillId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("skillId"), PersistentDataType.STRING);
-                    //Set<String> learnedSkills = xrpgPlayer.getAllLearnedSkills().keySet();
-                    TreeData data = plugin.getTreeView(player.getUniqueId());
-                    //Backing out of the inventory will remove the object from the HashMap
+
                     if (e.getClick() == ClickType.LEFT) {
                         if (e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("level"), PersistentDataType.INTEGER)) {
                             int level = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("level"), PersistentDataType.INTEGER);
@@ -153,32 +152,40 @@ public class InventoryListener implements Listener {
                             if (level == 0) {
                                 if (xrpgPlayer.getSkillUnlockPoints() > 0 && data.hasUnlockPoints() && data.hasRequired(skillId, true)){
 
-                                    data.addLevel(skillId);
+                                    data.addSkillLevel(skillId);
                                     //Update icon
                                     data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), 1);
                                 }
                             } else {
                                 if (xrpgPlayer.getSkillUpgradePoints() > 0 && data.hasUpgradePoints() && data.isNotMaxed(skillId)){
-                                    data.addLevel(skillId);
+                                    data.addSkillLevel(skillId);
 
                                     //Update icon
                                     data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), data.getCurrentSkillLevel(skillId));
                                 }
                             }
+                        }else if(e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("attribute"), PersistentDataType.STRING)){
+                            final String attributeId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("attribute"), PersistentDataType.STRING);
+
+                            data.addAttributeLevel(attributeId);
                         }
                     } else if (e.getClick() == ClickType.RIGHT) {
                         data.revertSkill(skillId, false);
-                        /*SkillRefundType refundType = data.revertSkill(skillId);
-                        if (refundType == SkillRefundType.REFUND_UNLOCK_POINT){
-                            xrpgPlayer.setSkillUnlockPoints(xrpgPlayer.getSkillUnlockPoints() + 1);
-                        }else if(refundType == SkillRefundType.REFUND_UPGRADE_POINT){
-                            xrpgPlayer.setSkillUpgradePoints(xrpgPlayer.getSkillUpgradePoints() + 1);
-                        }*/
+
                         data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), data.getCurrentSkillLevel(skillId));
+                    }
+                }else if(e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("attribute"), PersistentDataType.STRING)){
+                    final String attributeId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("attribute"), PersistentDataType.STRING);
+
+                    if (e.getClick() == ClickType.LEFT){
+                        data.addAttributeLevel(attributeId);
+                        data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), data.getCurrentAttributeLevel(attributeId));
+                    }else if (e.getClick() == ClickType.RIGHT){
+                        data.removeAttributeLevel(attributeId);
+                        data.updateClickedIcon(e.getClickedInventory(), e.getSlot(), e.getCurrentItem(), data.getCurrentAttributeLevel(attributeId));
                     }
                 }else if(e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("separator"), PersistentDataType.BYTE) && e.getCurrentItem().getType() == Material.WRITABLE_BOOK){
                     // save logic
-                    TreeData data = plugin.getTreeView(player.getUniqueId());
                     data.applyChanges(skillLoader);
 
                     new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);

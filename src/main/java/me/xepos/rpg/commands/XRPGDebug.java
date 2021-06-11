@@ -9,6 +9,7 @@ import me.xepos.rpg.skills.Nimble;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -94,6 +95,14 @@ public class XRPGDebug implements CommandExecutor {
 
                     new Nimble(xrpgPlayer, plugin.getSkillData("Nimble"), plugin, 1);
                 }
+            }else{
+                Bukkit.getLogger().info("Player count: " + plugin.getRPGPlayers().size());
+                for (UUID id : plugin.getRPGPlayers().keySet()) {
+                    XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(id, true);
+
+                    Bukkit.getLogger().info(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getClassId());
+                }
+                return true;
             }
 
         }

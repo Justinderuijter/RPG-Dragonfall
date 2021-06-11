@@ -1,5 +1,6 @@
 package me.xepos.rpg.datatypes;
 
+import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
@@ -28,6 +29,8 @@ public class TreeData {
     private SkillTree currentTree;
     private int spentUpgradePoints;
     private int spentUnlockPoints;
+    private int healthProgression;
+    private int manaProgression;
     private final WeakReference<XRPGPlayer> xrpgPlayer;
     private final HashMap<String, XRPGSkill> skills;
     private final HashMap<String, Integer> progression;
@@ -39,6 +42,8 @@ public class TreeData {
 
         this.spentUnlockPoints = 0;
         this.spentUpgradePoints = 0;
+        this.healthProgression = 0;
+        this.manaProgression = 0;
         this.xrpgPlayer = new WeakReference<>(xrpgPlayer);
         this.currentTree = currentTree;
         this.plugin = plugin;
@@ -53,7 +58,7 @@ public class TreeData {
     /**
      * Checks if a skill is max level or not
      *
-     * @param skillId:      The unique identifier for the skill that will be checked
+     * @param skillId: The unique identifier for the skill that will be checked
      * @return true if the skill is not the maximum level, otherwise false.
      */
     public boolean isNotMaxed(String skillId) {
@@ -74,7 +79,7 @@ public class TreeData {
      * Gets the level of the skill.
      * This combines the level of the cached data and the level of the learned skill.
      *
-     * @param skillId:      The unique identifier for the skill that will be checked
+     * @param skillId: The unique identifier for the skill that will be checked
      * @return the level of the skill
      */
     public int getCurrentSkillLevel(String skillId) {
@@ -89,17 +94,26 @@ public class TreeData {
         }
     }
 
+    public int getCurrentAttributeLevel(String attributeId){
+        XRPGPlayer xrpgPlayer = this.xrpgPlayer.get();
+        if (xrpgPlayer != null) {
+            if (attributeId.equalsIgnoreCase("health")) {
+                return healthProgression + xrpgPlayer.getHealthLevel();
+            } else if (attributeId.equalsIgnoreCase("mana")) {
+                return manaProgression + xrpgPlayer.getManaLevel();
+            }
+        }
+        return 0;
+    }
+
     /**
      * Unlevels the specified skill and the skills that require this skill (if any)
      *
-     * @param skillId The unique identifier for the skill that will be unleveled
+     * @param skillId   The unique identifier for the skill that will be unleveled
      * @param revertAll if the skill should be fully unleveled, false means only 1 level will be removed
      */
     public void revertSkill(String skillId, final boolean revertAll) {
-        if (progression.containsKey(skillId) && progression.get(skillId) > 0){
-
-            final XRPGPlayer player = xrpgPlayer.get();
-            if (player == null) return;
+        if (progression.containsKey(skillId) && progression.get(skillId) > 0) {
 
             final int level = progression.get(skillId);
             if (revertAll) {
@@ -109,17 +123,21 @@ public class TreeData {
 
             } else {
                 progression.put(skillId, level - 1);
-                if (level - 1 <= 0){
+                if (level - 1 <= 0) {
                     progression.remove(skillId);
                     spentUnlockPoints--;
-                }else {
+                } else {
                     spentUpgradePoints--;
                 }
             }
 
-            if (progression.getOrDefault(skillId, 0) <= 0){
-                for (String unlock:currentTree.getUnlocks(skillId)) {
-                    final Inventory inventory = player.getPlayer().getOpenInventory().getTopInventory();
+            if (progression.getOrDefault(skillId, 0) <= 0) {
+                final XRPGPlayer player = xrpgPlayer.get();
+                if (player == null) return;
+
+                final Inventory inventory = player.getPlayer().getOpenInventory().getTopInventory();
+
+                for (String unlock : currentTree.getUnlocks(skillId)) {
                     final int slot = currentTree.getSlotForSkill(unlock);
 
                     if (!hasRequired(unlock, false)) {
@@ -137,15 +155,15 @@ public class TreeData {
      *
      * @param skillId The unique identifier for the skill that will be leveled
      */
-    public void addLevel(String skillId) {
-        if (hasRequired(skillId, false)){
-            if (isNotMaxed(skillId)){
-                if (progression.containsKey(skillId)){
+    public void addSkillLevel(String skillId) {
+        if (hasRequired(skillId, false)) {
+            if (isNotMaxed(skillId)) {
+                if (progression.containsKey(skillId)) {
                     final int level = progression.get(skillId);
                     progression.put(skillId, level + 1);
 
                     spentUpgradePoints++;
-                }else{
+                } else {
                     progression.put(skillId, 1);
 
                     spentUnlockPoints++;
@@ -154,8 +172,32 @@ public class TreeData {
         }
     }
 
+    public void addAttributeLevel(String attributeId) {
+        if (hasUpgradePoints()) {
+            if (attributeId.equalsIgnoreCase("health")) {
+                healthProgression++;
+                spentUpgradePoints++;
+            } else if (attributeId.equalsIgnoreCase("mana")) {
+                manaProgression++;
+                spentUpgradePoints++;
+            }
+        }
+    }
+
+    public void removeAttributeLevel(String attributeId) {
+        if (attributeId.equalsIgnoreCase("health") && healthProgression > 0) {
+            healthProgression--;
+            spentUpgradePoints--;
+        } else if (attributeId.equalsIgnoreCase("mana") && manaProgression > 0) {
+            manaProgression--;
+            spentUpgradePoints--;
+        }
+
+    }
+
     /**
      * Checks if the player has enough points to unlock a skill
+     *
      * @return true if the player has enough points to unlock a skill, else false.
      */
     public boolean hasUnlockPoints() {
@@ -168,7 +210,7 @@ public class TreeData {
             player.getPlayer().sendMessage(ChatColor.RED + "Please forward this to your administrator.");
             Bukkit.getLogger().warning(ChatColor.RED + player.getPlayer().getName() + ": spentUnlockPoints in TreeData is negative");
         }
-        if (spentUnlockPoints < player.getSkillUnlockPoints()){
+        if (spentUnlockPoints < player.getSkillUnlockPoints()) {
             return true;
         }
         player.getPlayer().sendMessage(ChatColor.RED + "You do not have enough unlock points");
@@ -177,6 +219,7 @@ public class TreeData {
 
     /**
      * Checks if the player has enough points to upgrade a skill
+     *
      * @return true if the player has enough points to upgrade a skill, else false.
      */
     public boolean hasUpgradePoints() {
@@ -189,7 +232,7 @@ public class TreeData {
             player.getPlayer().sendMessage(ChatColor.RED + "Please forward this to your administrator.");
             Bukkit.getLogger().warning(ChatColor.RED + player.getPlayer().getName() + ": spentUpgradePoints in TreeData is negative");
         }
-        if (spentUpgradePoints < player.getSkillUpgradePoints()){
+        if (spentUpgradePoints < player.getSkillUpgradePoints()) {
             return true;
         }
         player.getPlayer().sendMessage(ChatColor.RED + "You do not have enough upgrade points");
@@ -217,7 +260,7 @@ public class TreeData {
                 return true;
             }
         }
-        if (player != null && sendMessage){
+        if (player != null && sendMessage) {
             player.getPlayer().sendMessage(ChatColor.RED + "You do not have the prerequisite skill required for this skill!");
         }
         return false;
@@ -243,11 +286,20 @@ public class TreeData {
 
         XRPGPlayer player = xrpgPlayer.get();
         if (player != null) {
+            //Skills
             for (String skillId : progression.keySet()) {
                 skillLoader.addSkillToPlayer(skillId, player, progression.get(skillId));
             }
-            player.setSkillUpgradePoints((byte)(player.getSkillUpgradePoints() - spentUpgradePoints));
-            player.setSkillUnlockPoints((byte)(player.getSkillUnlockPoints() - spentUnlockPoints));
+            //Health
+            final int level = getCurrentAttributeLevel("health");
+            player.setHealthLevel(level);
+            AttributeModifierManager.getInstance().reapplyHealthAttribute(player.getPlayer(), level);
+
+            //Mana
+            player.setManaLevel(getCurrentAttributeLevel("mana"));
+
+            player.setSkillUpgradePoints((byte) (player.getSkillUpgradePoints() - spentUpgradePoints));
+            player.setSkillUnlockPoints((byte) (player.getSkillUnlockPoints() - spentUnlockPoints));
         }
 
     }
@@ -257,33 +309,37 @@ public class TreeData {
      * such as skill level and progression to the player.
      *
      * @param inventory the inventory that will be checked
-     * @param slotId the inventory slot that will be updated
-     * @param item the item that will be updated
-     * @param newLevel the new level that should be displayed
+     * @param slotId    the inventory slot that will be updated
+     * @param item      the item that will be updated
+     * @param newLevel  the new level that should be displayed
      */
     @SuppressWarnings("ConstantConditions")
     public void updateClickedIcon(Inventory inventory, int slotId, ItemStack item, int newLevel) {
         ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.getPersistentDataContainer().remove(plugin.getKey("level"));
-        int maxLevel = itemMeta.getPersistentDataContainer().get(plugin.getKey("maxLevel"), PersistentDataType.INTEGER);
-        Material material;
-        if (newLevel == 0) {
-            material = Material.RED_WOOL;
-        } else if (newLevel == maxLevel) {
-            material = Material.GREEN_WOOL;
-        } else {
-            material = Material.ORANGE_WOOL;
+        if (itemMeta.getPersistentDataContainer().has(plugin.getKey("skillId"), PersistentDataType.STRING)) {
+            itemMeta.getPersistentDataContainer().remove(plugin.getKey("level"));
+            int maxLevel = itemMeta.getPersistentDataContainer().get(plugin.getKey("maxLevel"), PersistentDataType.INTEGER);
+            Material material;
+            if (newLevel == 0) {
+                material = Material.RED_WOOL;
+            } else if (newLevel == maxLevel) {
+                material = Material.GREEN_WOOL;
+            } else {
+                material = Material.ORANGE_WOOL;
+            }
+
+            String name = itemMeta.getDisplayName().substring(0, itemMeta.getDisplayName().indexOf("("));
+            name += "(" + newLevel + "/" + maxLevel + ")";
+            itemMeta.setDisplayName(name);
+
+            itemMeta.getPersistentDataContainer().set(plugin.getKey("level"), PersistentDataType.INTEGER, newLevel);
+            ItemStack newItem = new ItemStack(material);
+            newItem.setItemMeta(itemMeta);
+
+            inventory.setItem(slotId, newItem);
+        }else if(itemMeta.getPersistentDataContainer().has(plugin.getKey("attribute"), PersistentDataType.STRING)){
+            item.setAmount(newLevel + 1);
         }
-
-        String name = itemMeta.getDisplayName().substring(0, itemMeta.getDisplayName().indexOf("("));
-        name += "(" + newLevel + "/" + maxLevel + ")";
-        itemMeta.setDisplayName(name);
-
-        itemMeta.getPersistentDataContainer().set(plugin.getKey("level"), PersistentDataType.INTEGER, newLevel);
-        ItemStack newItem = new ItemStack(material);
-        newItem.setItemMeta(itemMeta);
-
-        inventory.setItem(slotId, newItem);
     }
 
 

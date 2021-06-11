@@ -1,8 +1,6 @@
 package me.xepos.rpg.handlers;
 
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.XRPGActiveSkill;
-import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.event.Event;
 
@@ -32,8 +30,6 @@ public abstract class EventHandler {
     public void addSkill(String skillId, XRPGSkill skill) {
         if (!skills.containsKey(skillId)) {
             skills.put(skillId, skill);
-            if((skill instanceof XRPGActiveSkill || skill instanceof XRPGBowSkill) && xrpgPlayer != null)
-                xrpgPlayer.getSpellKeybinds().add(skillId);
         }
     }
 

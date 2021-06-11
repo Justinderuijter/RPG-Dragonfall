@@ -2,13 +2,18 @@ package me.xepos.rpg;
 
 import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.enums.ModifierType;
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class AttributeModifierManager {
     private static AttributeModifierManager instance;
+    public final static String HEALTH_LEVEL_MODIFIER_NAME = "XRPG_HEALTH_LEVEL";
 
     private final HashMap<String, AttributeModifierData> positiveModifiers = new HashMap<>();
     private final HashMap<String, AttributeModifierData> negativeModifiers = new HashMap<>();
@@ -43,6 +48,26 @@ public class AttributeModifierManager {
             return negativeModifiers.get(identifier);
         } else {
             return positiveModifiers.get(identifier);
+        }
+    }
+
+    public void reapplyHealthAttribute(Player player, int level){
+        removeHealthLevelModifier(player);
+
+        if (level > 0) {
+            AttributeModifier modifier = new AttributeModifier(UUID.randomUUID(), HEALTH_LEVEL_MODIFIER_NAME, level * 2, AttributeModifier.Operation.ADD_NUMBER);
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).addModifier(modifier);
+            Bukkit.getLogger().info("Added " + HEALTH_LEVEL_MODIFIER_NAME + ", value: " + modifier.getAmount());
+        }
+    }
+
+    public void removeHealthLevelModifier(Player player){
+        Collection<AttributeModifier> modifierCollection = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getModifiers();
+        for (AttributeModifier modifier:modifierCollection) {
+            if (modifier.getName().equalsIgnoreCase(HEALTH_LEVEL_MODIFIER_NAME)){
+                Bukkit.getLogger().info("Removed " + HEALTH_LEVEL_MODIFIER_NAME + ", value: " + modifier.getAmount());
+                player.getAttribute(Attribute.GENERIC_MAX_HEALTH).removeModifier(modifier);
+            }
         }
     }
 

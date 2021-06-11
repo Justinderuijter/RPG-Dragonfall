@@ -201,7 +201,25 @@ public class SkillTree {
             saveBook.setItemMeta(meta);
         }
 
-        inventory.setItem(inventory.getSize() - 1, saveBook);
+        final ItemStack health = Utils.buildItemStack(Material.RED_WOOL, "Increase Health", null);
+        final ItemMeta healthMeta = health.getItemMeta();
+        if (healthMeta != null) {
+            healthMeta.getPersistentDataContainer().set(plugin.getKey("attribute"), PersistentDataType.STRING, "health");
+            health.setItemMeta(healthMeta);
+        }
+
+        final ItemStack mana = Utils.buildItemStack(Material.BLUE_WOOL, "Increase Mana", null);
+        final ItemMeta manaMeta = mana.getItemMeta();
+        if (manaMeta != null) {
+            manaMeta.getPersistentDataContainer().set(plugin.getKey("attribute"), PersistentDataType.STRING, "mana");
+            mana.setItemMeta(manaMeta);
+        }
+
+        final int size = inventory.getSize();
+        inventory.setItem(8, saveBook);
+        inventory.setItem(size - 1, mana);
+        inventory.setItem(size - 9, health);
+
     }
 
     private void setRequiredMeta(ConfigurationSection section, ItemStack item, String skillId, int level, int maxLevel) {
