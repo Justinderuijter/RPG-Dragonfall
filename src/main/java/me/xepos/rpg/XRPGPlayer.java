@@ -223,6 +223,7 @@ public class XRPGPlayer {
             handler.clear();
         }
 
+        Utils.removeAllModifiers(player);
         AttributeModifierManager.getInstance().reapplyHealthAttribute(player, healthLevel);
     }
 
