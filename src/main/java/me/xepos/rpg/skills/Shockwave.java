@@ -52,7 +52,7 @@ public class Shockwave extends XRPGActiveSkill {
                         break;
                     }
                 }
-                entitiesToDamage.addAll(lastBlock.getWorld().getNearbyEntities(lastBlock.getLocation(), 1, 2, 1, p -> p instanceof LivingEntity)) ;
+                entitiesToDamage.addAll(lastBlock.getWorld().getNearbyEntities(lastBlock.getLocation(), 1, 2, 1, p -> p instanceof LivingEntity && p != player)) ;
                 lastBlock.getWorld().playEffect(lastBlock.getLocation(), Effect.MOBSPAWNER_FLAMES, 2);
 
                 for (Entity entity:entitiesToDamage) {
