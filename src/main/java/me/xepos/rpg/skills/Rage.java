@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public class Rage extends XRPGPassiveSkill implements IMessenger {
     private byte currentRage = 0;
-    private final byte maxRage = 100;
+    private static final byte maxRage = 100;
     private byte rageLevel = 0;
     BukkitTask rageTask = null;
 

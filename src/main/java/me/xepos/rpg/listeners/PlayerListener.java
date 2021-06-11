@@ -37,41 +37,41 @@ public class PlayerListener implements Listener {
 
     //Giving other plugins more opportunity to cancel this event
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onDamage(EntityDamageEvent event){
-        if (event.getEntity() instanceof Player){
-            if (event instanceof EntityDamageByEntityEvent){
+    public void onDamage(EntityDamageEvent event) {
+        if (event instanceof EntityDamageByEntityEvent) {
+            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+            if (e.getDamager() instanceof Player && e.getEntity() instanceof LivingEntity) {
+                XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer((Player) e.getDamager(), true);
+                if (xrpgPlayer != null) {
+                    if (xrpgPlayer.isStunned())
+                        e.setCancelled(true);
+                    else if (xrpgPlayer.isClassEnabled())
+                        xrpgPlayer.getPassiveEventHandler("DAMAGE_DEALT").invoke(e);
+                }
+            }
 
-                EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-                if (e.getDamager() instanceof Player && e.getEntity() instanceof LivingEntity) {
-                    XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer((Player) e.getDamager(), true);
-                    if (xrpgPlayer != null) {
-                        if (xrpgPlayer.isStunned())
-                            e.setCancelled(true);
-                        else if(xrpgPlayer.isClassEnabled())
-                            xrpgPlayer.getPassiveEventHandler("DAMAGE_DEALT").invoke(e);
-                    }
+            if (e.getEntity() instanceof Player) {
+                Player player = (Player) e.getEntity();
+                XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
+                if (xrpgPlayer != null) {
+                    e.setDamage(e.getDamage() * xrpgPlayer.getDamageTakenMultiplier());
+
+                    xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").invoke(e);
                 }
 
-                if (e.getEntity() instanceof Player) {
-                    Player player = (Player) e.getEntity();
-                    XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
-                    if (xrpgPlayer != null) {
-                        e.setDamage(e.getDamage() * xrpgPlayer.getDamageTakenMultiplier());
+            }
 
-                        xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").invoke(e);
-                    }
-
-                }
-
-            }else{
+        } else {
+            if(event.getEntity() instanceof Player) {
                 Player player = (Player) event.getEntity();
                 XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
 
-                if (xrpgPlayer != null){
+                if (xrpgPlayer != null) {
                     xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN_ENVIRONMENTAL").invoke(event);
                 }
             }
         }
+
     }
 
     @EventHandler
@@ -88,14 +88,14 @@ public class PlayerListener implements Listener {
 
         if (plugin.getRPGPlayers().containsKey(player.getUniqueId())) {
             xrpgPlayer = plugin.getXRPGPlayer(player, true);
-            if (xrpgPlayer != null){
+            if (xrpgPlayer != null) {
                 xrpgPlayer.setPlayer(player);
             }
         }
 
         if (xrpgPlayer != null && xrpgPlayer.getPlayer() != null) {
             xrpgPlayer.addQueuedModifiers();
-            if (!StringUtils.isEmpty(xrpgPlayer.getClassId())){
+            if (!StringUtils.isEmpty(xrpgPlayer.getClassId())) {
                 player.sendMessage("You are now " + xrpgPlayer.getClassId());
             }
 
@@ -104,7 +104,7 @@ public class PlayerListener implements Listener {
             player.kickPlayer("Something went wrong while loading XRPG data.");
         }
 
-        if (!player.hasPlayedBefore()){
+        if (!player.hasPlayedBefore()) {
             player.getInventory().addItem(plugin.getSpellbookItem());
         }
     }
@@ -123,7 +123,7 @@ public class PlayerListener implements Listener {
     public void onPlayerConsumeItem(PlayerItemConsumeEvent e) {
         Player player = e.getPlayer();
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
-        if (xrpgPlayer != null){
+        if (xrpgPlayer != null) {
             xrpgPlayer.getPassiveEventHandler("CONSUME_ITEM");
         }
     }
@@ -137,7 +137,7 @@ public class PlayerListener implements Listener {
         if (xrpgPlayer == null) return;
 
 
-        if(xrpgPlayer.isSpellCastModeEnabled()){
+        if (xrpgPlayer.isSpellCastModeEnabled()) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
             if (player.getInventory().getHeldItemSlot() < xrpgPlayer.getSpellKeybinds().size()) {
                 e.setCancelled(true);
@@ -149,12 +149,12 @@ public class PlayerListener implements Listener {
 
             ItemStack item = e.getItem();
             //Cancel using shield if not allowed
-            if (item != null){
+            if (item != null) {
 
-                if(item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(plugin.getKey("spellbook"), PersistentDataType.BYTE)){
-                    if (xrpgPlayer.isSpellCastModeEnabled()){
+                if (item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(plugin.getKey("spellbook"), PersistentDataType.BYTE)) {
+                    if (xrpgPlayer.isSpellCastModeEnabled()) {
                         SpellmodeUtils.disableSpellmode(xrpgPlayer);
-                    }else{
+                    } else {
                         SpellmodeUtils.enterSpellmode(xrpgPlayer);
                     }
 
@@ -180,10 +180,10 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onHealthRegen(EntityRegainHealthEvent e){
+    public void onHealthRegen(EntityRegainHealthEvent e) {
         if (!(e.getEntity() instanceof Player)) return;
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getEntity().getUniqueId());
-        if (xrpgPlayer != null){
+        if (xrpgPlayer != null) {
             xrpgPlayer.getPassiveEventHandler("HEALTH_REGEN").invoke(e);
         }
     }
@@ -211,27 +211,27 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onToggleSprint(PlayerToggleSprintEvent e){
+    public void onToggleSprint(PlayerToggleSprintEvent e) {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
-        if (xrpgPlayer != null){
+        if (xrpgPlayer != null) {
             xrpgPlayer.getPassiveEventHandler("SPRINT").invoke(e);
         }
     }
 
     @EventHandler
-    public void onToggleSneak(PlayerToggleSneakEvent e){
+    public void onToggleSneak(PlayerToggleSneakEvent e) {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
-        if (xrpgPlayer != null){
+        if (xrpgPlayer != null) {
             xrpgPlayer.getPassiveEventHandler("SNEAK").invoke(e);
         }
     }
 
     @EventHandler
-    public void onSwapHeldItem(PlayerItemHeldEvent e){
+    public void onSwapHeldItem(PlayerItemHeldEvent e) {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
 
-        if (xrpgPlayer != null){
-            if (xrpgPlayer.isSpellCastModeEnabled()){
+        if (xrpgPlayer != null) {
+            if (xrpgPlayer.isSpellCastModeEnabled()) {
                 if (e.getNewSlot() < xrpgPlayer.getSpellKeybinds().size()) {
                     xrpgPlayer.getActiveHandler().invoke(e);
                     e.setCancelled(true);
@@ -242,17 +242,17 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJump(PlayerJumpEvent e){
+    public void onPlayerJump(PlayerJumpEvent e) {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
-        if (xrpgPlayer != null){
+        if (xrpgPlayer != null) {
             xrpgPlayer.getPassiveEventHandler("JUMP").invoke(e);
         }
     }
 
     @EventHandler
-    public void onPlayerDropItem(PlayerDropItemEvent e){
+    public void onPlayerDropItem(PlayerDropItemEvent e) {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
-        if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()){
+        if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()) {
             e.setCancelled(true);
         }
     }
