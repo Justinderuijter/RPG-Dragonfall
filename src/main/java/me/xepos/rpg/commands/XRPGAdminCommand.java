@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class XRPGAdminCommand implements TabExecutor {
@@ -94,7 +95,7 @@ public class XRPGAdminCommand implements TabExecutor {
                     return result;
                 }
         }
-        return null;
+        return Collections.emptyList();
     }
 
     private boolean subCommandAdd(CommandSender sender, XRPGPlayer xrpgTarget, String[] strings){
