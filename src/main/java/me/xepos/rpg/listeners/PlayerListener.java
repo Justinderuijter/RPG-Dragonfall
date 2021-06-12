@@ -114,6 +114,7 @@ public class PlayerListener implements Listener {
         Player player = e.getPlayer();
         Utils.removeAllModifiers(player);
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
+        xrpgPlayer.clearAllPermanentPotionEffects();
         new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
         plugin.removeXRPGPlayer(player);
     }
@@ -136,15 +137,6 @@ public class PlayerListener implements Listener {
 
         if (xrpgPlayer == null) return;
 
-
-        if (xrpgPlayer.isSpellCastModeEnabled()) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
-            if (player.getInventory().getHeldItemSlot() < xrpgPlayer.getSpellKeybinds().size()) {
-                e.setCancelled(true);
-                return;
-            }
-        }
-
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
             ItemStack item = e.getItem();
@@ -157,6 +149,7 @@ public class PlayerListener implements Listener {
                     } else {
                         SpellmodeUtils.enterSpellmode(xrpgPlayer);
                     }
+                    return;
 
                 }
             }
@@ -174,6 +167,13 @@ public class PlayerListener implements Listener {
                 xrpgPlayer.getPassiveEventHandler("SNEAK_LEFT_CLICK").invoke(e);
             } else {
                 xrpgPlayer.getPassiveEventHandler("LEFT_CLICK").invoke(e);
+            }
+        }
+
+        if (xrpgPlayer.isSpellCastModeEnabled()) {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
+            if (player.getInventory().getHeldItemSlot() < xrpgPlayer.getSpellKeybinds().size()) {
+                e.setCancelled(true);
             }
         }
 

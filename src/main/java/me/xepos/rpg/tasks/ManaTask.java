@@ -20,7 +20,7 @@ public class ManaTask extends BukkitRunnable {
     public void run() {
         for (UUID uuid : players.keySet()) {
             XRPGPlayer player = players.get(uuid);
-            if (player == null) continue;
+            if (player == null || player.getPlayer() == null) continue;
             player.addMana(mana);
             player.sendActionBarMessage();
         }

@@ -7,6 +7,7 @@ import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.datatypes.TreeData;
 import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.tree.SkillTree;
+import me.xepos.rpg.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -25,7 +26,7 @@ public class TreeCommand implements TabExecutor {
     private final IDatabaseManager databaseManager;
     private final List<String> completions = new ArrayList<String>(){{
         add("open");
-        add("get");
+        add("reset");
     }};
 
     public TreeCommand(XRPG plugin, IDatabaseManager manager){
@@ -81,6 +82,18 @@ public class TreeCommand implements TabExecutor {
         byte upgradePointsToRefund = 0;
         byte unlockPointsToRefund = 0;
 
+        for (String skillId :xrpgPlayer.getActiveHandler().getSkills().keySet()) {
+            final int skillLevel = xrpgPlayer.getActiveHandler().getSkills().get(skillId).getSkillLevel();
+
+            if (skillLevel > 1){
+                upgradePointsToRefund += skillLevel -1;
+                unlockPointsToRefund++;
+            }else if (skillLevel == 1){
+                unlockPointsToRefund++;
+            }
+        }
+        xrpgPlayer.getActiveHandler().clear();
+
         for (String handlerName :xrpgPlayer.getPassiveHandlerList().keySet()) {
             PassiveEventHandler handler = xrpgPlayer.getPassiveEventHandler(handlerName);
             for (String skillId:handler.getSkills().keySet()) {
@@ -105,6 +118,8 @@ public class TreeCommand implements TabExecutor {
 
         xrpgPlayer.addSkillUpgradePoints(upgradePointsToRefund);
         xrpgPlayer.addSkillUnlockPoints(unlockPointsToRefund);
+
+        Utils.removeAllModifiers(player);
 
         new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
 

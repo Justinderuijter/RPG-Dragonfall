@@ -64,6 +64,7 @@ public class Shockwave extends XRPGActiveSkill {
                     }else{
                         ((LivingEntity)entity).damage(damage, player);
                     }
+                    entity.setVelocity(entity.getVelocity().setY(1));
                 }
             }
             setRemainingCooldown(getCooldown());

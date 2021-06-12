@@ -50,7 +50,7 @@ public class InventoryListener implements Listener {
 
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
-            if (e.getSlot() < xrpgPlayer.getSpellKeybinds().size() && e.getClickedInventory() instanceof PlayerInventory) {
+            if (e.getSlot() >= 0 && e.getSlot() < xrpgPlayer.getSpellKeybinds().size() && e.getClickedInventory() instanceof PlayerInventory) {
                 e.setCancelled(true);
                 return;
             }

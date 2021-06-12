@@ -421,7 +421,8 @@ public class XRPGPlayer {
                 if (level % UNLOCK_INTERVAL == 0) {
                     skillUnlockPoints++;
                     this.player.sendMessage(ChatColor.GREEN + "You gained an unlock point!");
-                } else if (level % UPGRADE_INTERVAL == 0) {
+                }
+                if (level % UPGRADE_INTERVAL == 0) {
                     skillUpgradePoints++;
                     this.player.sendMessage(ChatColor.GREEN + "You gained an upgrade point!");
                 }
@@ -444,7 +445,7 @@ public class XRPGPlayer {
     }
 
     public void addSkillUnlockPoints(byte skillUnlockPoints){
-        this.skillUpgradePoints += skillUnlockPoints;
+        this.skillUnlockPoints += skillUnlockPoints;
     }
 
     public int getSkillUpgradePoints() {

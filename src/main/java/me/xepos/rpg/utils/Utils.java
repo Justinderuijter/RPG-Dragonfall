@@ -321,6 +321,7 @@ public final class Utils {
         for (String identifier : manager.getModifiers(ModifierType.NEGATIVE).keySet()) {
             removeUniqueModifier(player, manager.get(ModifierType.NEGATIVE, identifier));
         }
+        manager.removeHealthLevelModifier(player);
     }
 
     public static void addDTModifier(XRPGPlayer xrpgPlayer, String sourceName, double amount) {
