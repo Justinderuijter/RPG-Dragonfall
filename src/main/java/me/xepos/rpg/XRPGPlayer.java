@@ -14,6 +14,8 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,6 +51,7 @@ public class XRPGPlayer {
 
     //This will ever only be called when joining
     private List<AttributeModifierData> modifiersToApply = new ArrayList<>();
+    private final Set<PotionEffectType> permanentEffects = new HashSet<>();
 
     public XRPGPlayer(UUID playerId, PlayerData playerData) {
         XRPG plugin = XRPG.getInstance();
@@ -224,6 +227,7 @@ public class XRPGPlayer {
         }
 
         Utils.removeAllModifiers(player);
+        clearAllPermanentPotionEffects();
         AttributeModifierManager.getInstance().reapplyHealthAttribute(player, healthLevel);
     }
 
@@ -349,6 +353,22 @@ public class XRPGPlayer {
         this.healthLevel = healthLevel;
     }
 
+    public void addPermanentPotionEffect(PotionEffectType potionEffectType, int amplifier){
+        this.permanentEffects.add(potionEffectType);
+        player.addPotionEffect(new PotionEffect(potionEffectType, Integer.MAX_VALUE, amplifier, false, false, true));
+    }
+
+    public void removePermanentPotionEffect(PotionEffectType potionEffectType){
+        this.permanentEffects.remove(potionEffectType);
+        player.removePotionEffect(potionEffectType);
+    }
+
+    public void clearAllPermanentPotionEffects(){
+        for (PotionEffectType potionEffectType:this.permanentEffects) {
+            removePermanentPotionEffect(potionEffectType);
+        }
+    }
+
     //////////////////////////////////
     //                              //
     //            Levels            //
@@ -423,6 +443,10 @@ public class XRPGPlayer {
         this.skillUnlockPoints = skillUnlockPoints;
     }
 
+    public void addSkillUnlockPoints(byte skillUnlockPoints){
+        this.skillUpgradePoints += skillUnlockPoints;
+    }
+
     public int getSkillUpgradePoints() {
         return skillUpgradePoints;
     }
@@ -431,12 +455,8 @@ public class XRPGPlayer {
         this.skillUpgradePoints = skillUpgradePoints;
     }
 
-    public void reduceSkillUpgradePoints() {
-        this.skillUpgradePoints--;
-    }
-
-    public void reduceSkillUnlockPoints() {
-        this.skillUnlockPoints--;
+    public void addSkillUpgradePoints(byte skillUpgradePoints){
+        this.skillUpgradePoints += skillUpgradePoints;
     }
 
 

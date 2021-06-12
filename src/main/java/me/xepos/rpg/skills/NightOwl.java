@@ -7,7 +7,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class NightOwl extends XRPGActiveSkill {
@@ -24,12 +23,9 @@ public class NightOwl extends XRPGActiveSkill {
         Player caster = e.getPlayer();
 
         if (caster.hasPotionEffect(PotionEffectType.NIGHT_VISION)){
-            caster.removePotionEffect(PotionEffectType.NIGHT_VISION);
+            getXRPGPlayer().removePermanentPotionEffect(PotionEffectType.NIGHT_VISION);
         }else{
-            int duration = getSkillVariables().getInt("duration", -1);
-            if (duration == -1) duration = Integer.MAX_VALUE;
-
-            caster.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, duration, 0, false, false, false));
+            getXRPGPlayer().addPermanentPotionEffect(PotionEffectType.NIGHT_VISION, 9);
         }
 
     }
