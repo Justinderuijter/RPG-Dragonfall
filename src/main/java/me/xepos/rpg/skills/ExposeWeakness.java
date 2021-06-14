@@ -36,6 +36,9 @@ public class ExposeWeakness extends XRPGBowSkill {
             if (!isSkillReady()){
                 e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 return;
+            }else if(!hasRequiredMana()){
+                sendNotEnoughManaMessage();
+                return;
             }
             isActive = true;
 
@@ -55,6 +58,7 @@ public class ExposeWeakness extends XRPGBowSkill {
 
                 isActive = false;
                 setRemainingCooldown(getCooldown());
+                updatedCasterMana();
             }
 
         } else if(event instanceof EntityShootBowEvent){
@@ -73,6 +77,7 @@ public class ExposeWeakness extends XRPGBowSkill {
                 }
 
                 setRemainingCooldown(getCooldown());
+                updatedCasterMana();
             }
         }
 

@@ -26,7 +26,11 @@ public class LightningArrow extends XRPGBowSkill {
         if (!isSkillReady()) {
             e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
+
         Arrow arrow = (Arrow) e.getProjectile();
 
         ProjectileData data = new ProjectileData(arrow, 20);
@@ -35,6 +39,7 @@ public class LightningArrow extends XRPGBowSkill {
         getPlugin().projectiles.put(arrow.getUniqueId(), data);
 
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
     }
 
     @Override

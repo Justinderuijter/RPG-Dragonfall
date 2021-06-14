@@ -64,11 +64,22 @@ public class InnerStrength extends XRPGActiveSkill {
     }
 
     private void useInnerStrength(Player player) {
+        if (!isSkillReady()){
+            player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
+            return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
+        }
+
         final double healAmount = getSkillVariables().getDouble("heal", 3.0);
 
         applyTriggerEffect(player);
         Utils.healLivingEntity(player, healAmount);
         player.sendMessage("Inner Strength healed you for " + healAmount);
+
+        setRemainingCooldown(getCooldown());
+        updatedCasterMana();
     }
 
     private void applyTriggerEffect(Player player) {

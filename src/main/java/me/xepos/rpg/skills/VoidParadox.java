@@ -40,7 +40,11 @@ public class VoidParadox extends XRPGActiveSkill {
         if (!isSkillReady()) {
             caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
+
         double range = getSkillVariables().getDouble("range", 16);
 
         RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
@@ -62,6 +66,7 @@ public class VoidParadox extends XRPGActiveSkill {
             }
 
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
         }
     }
 }

@@ -28,6 +28,9 @@ public class Intervention extends XRPGActiveSkill {
         if (!isSkillReady()){
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         RayTraceResult result = Utils.rayTrace(e.getPlayer(), 16, FluidCollisionMode.NEVER);
@@ -45,6 +48,7 @@ public class Intervention extends XRPGActiveSkill {
             entity.setVelocity(velocity);
 
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
         }
 
     }

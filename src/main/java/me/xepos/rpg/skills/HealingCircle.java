@@ -29,6 +29,9 @@ public class HealingCircle extends XRPGActiveSkill {
         if (!isSkillReady()) {
             caster.sendMessage(getCooldownMessage());
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         final double xRange = getSkillVariables().getDouble("x-range", 10);
@@ -42,6 +45,7 @@ public class HealingCircle extends XRPGActiveSkill {
         }
 
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
     }
 
     @Override

@@ -46,9 +46,13 @@ public class TrailOfFlames extends XRPGActiveSkill {
         if (!isSkillReady()) {
             caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
 
         final double duration = getSkillVariables().getDouble("duration", 5.0);
         final long delay = 2;

@@ -77,6 +77,9 @@ public class ShadowStep extends XRPGActiveSkill {
             if (!isSkillReady()) {
                 player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 return;
+            }else if(!hasRequiredMana()){
+                sendNotEnoughManaMessage();
+                return;
             }
 
             //Creating armorstand at player's location and setting the right properties
@@ -93,6 +96,7 @@ public class ShadowStep extends XRPGActiveSkill {
 
             substitute = armorStand;
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
 
             new BukkitRunnable() {
                 @Override

@@ -44,7 +44,11 @@ public class Meteor extends XRPGActiveSkill {
         if (!isSkillReady()) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
+
         int range = getSkillVariables().getInt("range", 32);
         final float explosionYield = (float) getSkillVariables().getDouble("explosion-yield", 2.0);
         final boolean setFire = getSkillVariables().getBoolean("explosion-fire", false);
@@ -72,5 +76,6 @@ public class Meteor extends XRPGActiveSkill {
 
 
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
     }
 }

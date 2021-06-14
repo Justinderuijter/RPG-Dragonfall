@@ -4,6 +4,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.AbstractArrow;
@@ -24,6 +25,14 @@ public class RapidFire extends XRPGBowSkill {
         if (!(event instanceof EntityShootBowEvent)) return;
         EntityShootBowEvent e = (EntityShootBowEvent) event;
 
+        if (!isSkillReady()) {
+            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
+            return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
+        }
+
         Arrow arrow = (Arrow) e.getProjectile();
         double damage = arrow.getDamage();
         final Vector velocity = arrow.getVelocity();
@@ -32,6 +41,9 @@ public class RapidFire extends XRPGBowSkill {
 
         ProjectileData data = new ProjectileData(arrow, damage, 20);
         getPlugin().projectiles.put(arrow.getUniqueId(), data);
+
+        setRemainingCooldown(getCooldown());
+        updatedCasterMana();
 
         for (int i = 0; i < getSkillVariables().getInt("extra-arrows"); i++) {
             Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {

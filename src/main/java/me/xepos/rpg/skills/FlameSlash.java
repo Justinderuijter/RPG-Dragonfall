@@ -36,6 +36,9 @@ public class FlameSlash extends XRPGActiveSkill {
         if (!isSkillReady()) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
@@ -48,6 +51,6 @@ public class FlameSlash extends XRPGActiveSkill {
         }
 
         setRemainingCooldown(getCooldown());
-
+        updatedCasterMana();
     }
 }

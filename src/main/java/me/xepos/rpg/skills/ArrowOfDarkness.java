@@ -29,6 +29,9 @@ public class ArrowOfDarkness extends XRPGBowSkill {
         if (!isSkillReady()) {
             e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
         Arrow arrow = (Arrow) e.getProjectile();
 
@@ -42,6 +45,7 @@ public class ArrowOfDarkness extends XRPGBowSkill {
         getPlugin().projectiles.put(arrow.getUniqueId(), data);
 
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
     }
 
     @Override

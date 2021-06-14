@@ -57,6 +57,9 @@ public class BloodPurification extends XRPGActiveSkill {
         if (!isSkillReady()) {
             caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         final double xRange = getSkillVariables().getDouble("x-range", 10.0);
@@ -81,6 +84,7 @@ public class BloodPurification extends XRPGActiveSkill {
         }
 
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
     }
 
     private void cleanseBadPotionEffects(LivingEntity livingTarget) {

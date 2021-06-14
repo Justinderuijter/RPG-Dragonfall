@@ -4,6 +4,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
@@ -21,6 +22,12 @@ public class DisengagingShot extends XRPGBowSkill {
     public void activate(Event event) {
         if (!(event instanceof EntityShootBowEvent)) return;
         EntityShootBowEvent e = (EntityShootBowEvent) event;
+        if (!isSkillReady()){
+            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
+        }
 
         if (e.getProjectile() instanceof Arrow) {
             Arrow arrow = (Arrow) e.getProjectile();
@@ -28,6 +35,9 @@ public class DisengagingShot extends XRPGBowSkill {
             ProjectileData data = new ProjectileData(arrow, 10);
             data.setDisengage(true);
             getPlugin().projectiles.put(e.getProjectile().getUniqueId(), data);
+
+            setRemainingCooldown(getCooldown());
+            updatedCasterMana();
 
             Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
                 getPlugin().projectiles.remove(arrow.getUniqueId());

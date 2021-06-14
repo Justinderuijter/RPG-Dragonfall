@@ -4,6 +4,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.dependencies.combat.parties.PartySet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -107,6 +108,19 @@ public abstract class XRPGSkill {
         }
 
         return 0;
+    }
+
+    public boolean hasRequiredMana(){
+        return getRequiredMana() <= xrpgPlayer.getCurrentMana();
+    }
+
+    public void updatedCasterMana(){
+        xrpgPlayer.setCurrentMana(xrpgPlayer.getCurrentMana() - skillVariables.getInt("mana", 0));
+        xrpgPlayer.sendActionBarMessage();
+    }
+
+    public void sendNotEnoughManaMessage(){
+        xrpgPlayer.getPlayer().sendMessage(ChatColor.RED + "You do not have enough mana to cast " + getSkillName() + "!");
     }
 
     public ConfigurationSection getSkillVariables() {

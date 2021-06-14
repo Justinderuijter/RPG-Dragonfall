@@ -30,6 +30,9 @@ public class ArrowOfHunger extends XRPGBowSkill {
         if (!isSkillReady()) {
             e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
         Arrow arrow = (Arrow) e.getProjectile();
 
@@ -37,6 +40,7 @@ public class ArrowOfHunger extends XRPGBowSkill {
         arrow.addCustomEffect(hungerEffect, false);
 
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
     }
 
     @Override

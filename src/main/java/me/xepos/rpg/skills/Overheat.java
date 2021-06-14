@@ -39,6 +39,9 @@ public class Overheat extends XRPGActiveSkill {
         if (!isSkillReady()) {
             caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         double range = getSkillVariables().getDouble("range", 16.0);
@@ -51,6 +54,7 @@ public class Overheat extends XRPGActiveSkill {
             //Utils.rayTrace only returns livingEntities so no need to check
             new OverheatTask((LivingEntity) result.getHitEntity(), getDamage(), getSkillVariables().getDouble("damage-per-armor", 0.5)).runTaskLater(getPlugin(), (long) delay * 20L);
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
         }
     }
 

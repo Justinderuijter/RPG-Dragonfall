@@ -39,11 +39,17 @@ public class GoldenAppleAoE extends XRPGPassiveSkill {
                 e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), Math.max(GAppleAoE.getRemainingCooldown(), getRemainingCooldown())));
                 e.setCancelled(true);
                 return;
+            }else if(!hasRequiredMana()){
+                sendNotEnoughManaMessage();
+                return;
             }
         } else {
             if (!isSkillReady()) {
                 e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 e.setCancelled(true);
+                return;
+            }else if(!hasRequiredMana()){
+                sendNotEnoughManaMessage();
                 return;
             }
         }
@@ -60,7 +66,7 @@ public class GoldenAppleAoE extends XRPGPassiveSkill {
         Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), xRange, yRange, zRange), potionEffects);
 
         setRemainingCooldown(getCooldown());
-
+        updatedCasterMana();
     }
 
     @Override

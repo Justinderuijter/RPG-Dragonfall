@@ -29,6 +29,9 @@ public class Whirlwind extends XRPGActiveSkill {
         if (!isSkillReady()){
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         Player caster = e.getPlayer();
@@ -39,6 +42,9 @@ public class Whirlwind extends XRPGActiveSkill {
         for (LivingEntity target:targets) {
             target.damage(getDamage(), caster);
         }
+
+        setRemainingCooldown(getCooldown());
+        updatedCasterMana();
     }
 
     @Override

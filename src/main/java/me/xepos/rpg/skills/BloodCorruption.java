@@ -39,6 +39,9 @@ public class BloodCorruption extends XRPGActiveSkill {
         if (!isSkillReady()) {
             caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         double range = getSkillVariables().getDouble("range", 16.0);
@@ -52,6 +55,7 @@ public class BloodCorruption extends XRPGActiveSkill {
             LivingEntity target = (LivingEntity) result.getHitEntity();
             new BloodCorruptionTask(caster, target, damage).runTaskLater(getPlugin(), (long) duration * 20L);
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
         }
     }
 

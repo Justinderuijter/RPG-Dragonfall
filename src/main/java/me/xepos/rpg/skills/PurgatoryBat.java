@@ -40,6 +40,9 @@ public class PurgatoryBat extends XRPGActiveSkill {
         if (!isSkillReady()) {
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         final double range = getSkillVariables().getDouble("range", 16.0);
@@ -65,6 +68,7 @@ public class PurgatoryBat extends XRPGActiveSkill {
                     .runTaskTimer(getPlugin(), 10, (long) interval * 20L);
 
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
         }
     }
 }

@@ -30,6 +30,9 @@ public class PotionAoE extends XRPGPassiveSkill {
         if (!isSkillReady()) {
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         final double xRange = getSkillVariables().getDouble("x-range", 10.0);
@@ -43,6 +46,7 @@ public class PotionAoE extends XRPGPassiveSkill {
         Utils.addPotionEffects(getNearbyAlliedPlayers(player, xRange, yRange, zRange), potionEffects);
 
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
     }
 
     @Override

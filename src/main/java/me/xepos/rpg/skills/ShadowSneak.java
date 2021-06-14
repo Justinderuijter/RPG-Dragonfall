@@ -46,6 +46,9 @@ public class ShadowSneak extends XRPGActiveSkill {
         if (!isSkillReady()) {
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER, true, 0.3, p -> p instanceof LivingEntity && p != player);
@@ -67,6 +70,7 @@ public class ShadowSneak extends XRPGActiveSkill {
                 new BleedTask(livingEntity, player, maxProcs, getDamage()).runTaskTimer(getPlugin(), 11, (long) interval * 20L);
             }
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
         }
     }
 

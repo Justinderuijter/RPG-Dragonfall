@@ -26,7 +26,11 @@ public class SoulShot extends XRPGActiveSkill {
         if (!isSkillReady()) {
             e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
+
         Arrow arrow = (Arrow) e.getProjectile();
         arrow.setDamage(0);
 
@@ -34,6 +38,7 @@ public class SoulShot extends XRPGActiveSkill {
 
         getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, damageMultiplier, 20));
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
     }
 
     @Override

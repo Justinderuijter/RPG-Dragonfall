@@ -29,6 +29,9 @@ public class EnchantedGoldenAppleAoE extends XRPGPassiveSkill {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             e.setCancelled(true);
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         final double xRange = getSkillVariables().getDouble("x-range", 10.0);
@@ -45,6 +48,7 @@ public class EnchantedGoldenAppleAoE extends XRPGPassiveSkill {
         Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), xRange, yRange, zRange), potionEffects);
 
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
 
     }
 

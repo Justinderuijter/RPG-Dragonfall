@@ -52,6 +52,9 @@ public class Smokebomb extends XRPGActiveSkill {
             if (!isSkillReady()) {
                 e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 return;
+            }else if(!hasRequiredMana()){
+                sendNotEnoughManaMessage();
+                return;
             }
 
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_AIR) {
@@ -78,6 +81,7 @@ public class Smokebomb extends XRPGActiveSkill {
                 }
 
                 setRemainingCooldown(getCooldown());
+                updatedCasterMana();
                 new EndInvisibilityTask(e.getPlayer(), affectedPlayers).runTaskLater(getPlugin(), smokebombDuration * 20L);
             }
         } else if (event instanceof EntityDamageByEntityEvent) {

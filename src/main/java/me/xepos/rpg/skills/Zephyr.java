@@ -47,6 +47,9 @@ public class Zephyr extends XRPGActiveSkill {
         if (!isSkillReady()) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
         //WizardConfig wizardConfig = WizardConfig.getInstance();
 
@@ -73,5 +76,6 @@ public class Zephyr extends XRPGActiveSkill {
             }
         }
         setRemainingCooldown(getCooldown() - fireBallStacks);
+        updatedCasterMana();
     }
 }

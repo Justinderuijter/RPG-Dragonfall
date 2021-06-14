@@ -35,6 +35,9 @@ public class Shockwave extends XRPGActiveSkill {
             if (!isSkillReady()){
                 player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 return;
+            }else if(!hasRequiredMana()){
+                sendNotEnoughManaMessage();
+                return;
             }
 
             final Set<Entity> entitiesToDamage = new HashSet<>();
@@ -68,6 +71,7 @@ public class Shockwave extends XRPGActiveSkill {
                 }
             }
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
         }
     }
 

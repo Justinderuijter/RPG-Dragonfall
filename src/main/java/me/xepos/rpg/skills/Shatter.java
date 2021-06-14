@@ -52,6 +52,9 @@ public class Shatter extends XRPGActiveSkill {
         if (!isSkillReady()) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         Location loc = Utils.getTargetBlock(e.getPlayer(), 32).getLocation();
@@ -67,6 +70,7 @@ public class Shatter extends XRPGActiveSkill {
         }
 
         setRemainingCooldown(getCooldown() - fireBallStacks);
+        updatedCasterMana();
     }
 
     public void shatterLogic(PlayerItemHeldEvent e, LivingEntity livingEntity) {

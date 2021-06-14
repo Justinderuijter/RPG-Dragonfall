@@ -43,6 +43,9 @@ public class Fireball extends XRPGActiveSkill {
         if (!isSkillReady()) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         if (lastStackGained + getCooldown() * 2000L < System.currentTimeMillis() && fireBallStacks != 0) {
@@ -67,6 +70,7 @@ public class Fireball extends XRPGActiveSkill {
         this.incrementFireBallStacks(this.maxFireballStacks);
         this.lastStackGained = System.currentTimeMillis();
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
 
         TextComponent text = new TextComponent("You now have " + this.fireBallStacks + " " + getSkillName() + " stacks");
         text.setColor(ChatColor.DARK_GREEN.asBungee());

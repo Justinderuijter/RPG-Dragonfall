@@ -30,15 +30,20 @@ public class ShortFuse extends XRPGActiveSkill {
         if (!isSkillReady()){
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
+
         final float baseYield = (float)getSkillVariables().getDouble("explosion-base-yield", 3.0) - 1;
         final boolean setFire = getSkillVariables().getBoolean("explosion-set-fire", false);
         final boolean breakBlocks = getSkillVariables().getBoolean("explosion-break-blocks", false);
 
-        setRemainingCooldown(getCooldown());
-
         Location location = player.getLocation();
         if (location.getWorld() == null) return;
+
+        setRemainingCooldown(getCooldown());
+        updatedCasterMana();
 
         location.getWorld().playSound(location, Sound.ENTITY_CREEPER_PRIMED, 1.5F, 1F);
         location.getWorld().playEffect(location, Effect.SMOKE, 1);

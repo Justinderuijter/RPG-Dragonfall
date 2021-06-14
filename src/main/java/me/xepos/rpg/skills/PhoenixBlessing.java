@@ -34,6 +34,9 @@ public class PhoenixBlessing extends XRPGActiveSkill {
         if (!isSkillReady()) {
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 16, FluidCollisionMode.NEVER, true, 0.3, p -> p instanceof LivingEntity && p != player);
@@ -59,6 +62,7 @@ public class PhoenixBlessing extends XRPGActiveSkill {
             }
 
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
         }
 
 

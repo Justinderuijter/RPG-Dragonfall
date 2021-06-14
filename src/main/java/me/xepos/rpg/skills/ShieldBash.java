@@ -51,6 +51,9 @@ public class ShieldBash extends XRPGActiveSkill {
         if (!isSkillReady()){
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         RayTraceResult result = Utils.rayTrace(player, 8, FluidCollisionMode.NEVER);
@@ -70,6 +73,7 @@ public class ShieldBash extends XRPGActiveSkill {
             }
 
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
         }
 
 /*        if (e.getEntity() instanceof Player && player.getInventory().getItemInOffHand().getType() == Material.SHIELD) {

@@ -28,6 +28,9 @@ public class StaggeringPush extends XRPGActiveSkill {
         if (!isSkillReady()) {
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
 
         RayTraceResult result = Utils.rayTrace(player, 6, FluidCollisionMode.NEVER);
@@ -40,6 +43,7 @@ public class StaggeringPush extends XRPGActiveSkill {
             target.damage(getDamage(), player);
 
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
         }
     }
 

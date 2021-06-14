@@ -55,13 +55,18 @@ public class TrueDefender extends XRPGActiveSkill {
             if (!isSkillReady()){
                 e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 return;
+            }else if(!hasRequiredMana()){
+                sendNotEnoughManaMessage();
+                return;
             }
+
             this.isActive = true;
 
             int duration = (int)(getSkillVariables().getDouble("duration", 3.0) * 20);
             Bukkit.getScheduler().runTaskLaterAsynchronously(getPlugin(), () -> this.isActive = false, duration);
 
             setRemainingCooldown(getCooldown());
+            updatedCasterMana();
         }
     }
 

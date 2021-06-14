@@ -26,7 +26,11 @@ public class ExplosiveShot extends XRPGActiveSkill {
         if (!isSkillReady()) {
             e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
+        }else if(!hasRequiredMana()){
+            sendNotEnoughManaMessage();
+            return;
         }
+
         Arrow arrow = (Arrow) e.getProjectile();
         final float yield = (float) getSkillVariables().getDouble("explosion-yield", 2.0);
         final boolean setFire = getSkillVariables().getBoolean("explosion-fire", false);
@@ -38,6 +42,7 @@ public class ExplosiveShot extends XRPGActiveSkill {
 
         getPlugin().projectiles.put(arrow.getUniqueId(), data);
         setRemainingCooldown(getCooldown());
+        updatedCasterMana();
     }
 
     @Override
