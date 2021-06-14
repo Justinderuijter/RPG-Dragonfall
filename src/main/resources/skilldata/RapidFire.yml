@@ -1,3 +1,4 @@
 name: "Rapid Fire"
 icon: "BLUE_DYE"
 extra-arrows: 2
+cooldown: 10
