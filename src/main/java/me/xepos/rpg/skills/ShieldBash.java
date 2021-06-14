@@ -75,20 +75,5 @@ public class ShieldBash extends XRPGActiveSkill {
             setRemainingCooldown(getCooldown());
             updatedCasterMana();
         }
-
-/*        if (e.getEntity() instanceof Player && player.getInventory().getItemInOffHand().getType() == Material.SHIELD) {
-            Player target = (Player) e.getEntity();
-            //Check if the location is valid and player isn't allied before casting shield Bash
-            if (getProtectionSet().isLocationValid(player.getLocation(), target.getLocation()) && !getPartyManager().isPlayerAllied(player, target)) {
-                if (!isSkillReady()) {
-                    player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
-                    return;
-                }
-
-
-
-                setRemainingCooldown(getCooldown());
-            }
-        }*/
     }
 }
