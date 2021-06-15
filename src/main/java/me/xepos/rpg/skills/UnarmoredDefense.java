@@ -53,7 +53,7 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
             manager.put(ModifierType.POSITIVE, attackSpeedMod.getName(), attackSpeedMod, Attribute.GENERIC_ATTACK_SPEED);
         }
         if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(MVSPD_MOD_NAME)) {
-            final double moveSpeedMultiplier = getSkillVariables().getDouble("move-speed-multiplier", 1.5) - 1;
+            final double moveSpeedMultiplier = getSkillVariables().getDouble("move-speed-multiplier", 1.3) - 1;
             final AttributeModifier moveSpeedMod = new AttributeModifier(UUID.randomUUID(), MVSPD_MOD_NAME, moveSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
             manager.put(ModifierType.POSITIVE, moveSpeedMod.getName(), moveSpeedMod, Attribute.GENERIC_MOVEMENT_SPEED);

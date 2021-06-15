@@ -3,8 +3,10 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
+import me.xepos.rpg.tasks.RemoveBlocklistTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -12,6 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.util.RayTraceResult;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class StoneDefense extends XRPGActiveSkill {
     public StoneDefense(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
@@ -74,6 +79,8 @@ public class StoneDefense extends XRPGActiveSkill {
     }
 
     private void createNorthWall(Block targetBlock){
+        Set<Location> replacedBlocksLocation = new HashSet<>();
+
         final int offset = calculateOffset();
         Block bottomLeft = targetBlock.getLocation().add(0, 1, offset * -1).getBlock();
 
@@ -81,14 +88,19 @@ public class StoneDefense extends XRPGActiveSkill {
             for (int z = 0; z < 3 + offset; z++) {
                 Block block = bottomLeft.getRelative(0, y, z);
                 if (block.getType() == Material.AIR){
-                    //add to global list
+                    getPlugin().getTemporaryBlocks().put(block.getLocation(), block.getType());
+                    replacedBlocksLocation.add(block.getLocation());
                     block.setType(Material.STONE);
                 }
             }
         }
+
+        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble("duration", 5) * 20));
     }
 
     private void createEastWall(Block targetBlock){
+        Set<Location> replacedBlocksLocation = new HashSet<>();
+
         final int offset = calculateOffset();
         Block bottomLeft = targetBlock.getLocation().add(offset, 1, 0).getBlock();
 
@@ -96,14 +108,19 @@ public class StoneDefense extends XRPGActiveSkill {
             for (int x = 0; x < 3 + offset; x++) {
                 Block block = bottomLeft.getRelative(x, y, 0);
                 if (block.getType() == Material.AIR){
-                    //add to global list
+                    getPlugin().getTemporaryBlocks().put(block.getLocation(), block.getType());
+                    replacedBlocksLocation.add(block.getLocation());
                     block.setType(Material.STONE);
                 }
             }
         }
+
+        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble("duration", 5) * 20));
     }
 
     private void createSouthWall(Block targetBlock){
+        Set<Location> replacedBlocksLocation = new HashSet<>();
+
         final int offset = calculateOffset();
         Block bottomLeft = targetBlock.getLocation().add(0, 1, offset).getBlock();
 
@@ -111,14 +128,19 @@ public class StoneDefense extends XRPGActiveSkill {
             for (int z = 0; z < 3 + offset; z++) {
                 Block block = bottomLeft.getRelative(0, y, -z);
                 if (block.getType() == Material.AIR){
-                    //add to global list
+                    getPlugin().getTemporaryBlocks().put(block.getLocation(), block.getType());
+                    replacedBlocksLocation.add(block.getLocation());
                     block.setType(Material.STONE);
                 }
             }
         }
+
+        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble("duration", 5) * 20));
     }
 
     private void createWestWall(Block targetBlock){
+        Set<Location> replacedBlocksLocation = new HashSet<>();
+
         final int offset = calculateOffset();
         Block bottomLeft = targetBlock.getLocation().add(offset * -1, 1, 0).getBlock();
 
@@ -126,11 +148,14 @@ public class StoneDefense extends XRPGActiveSkill {
             for (int x = 0; x < 3 + offset; x++) {
                 Block block = bottomLeft.getRelative(x, y, 0);
                 if (block.getType() == Material.AIR){
-                    //add to global list
+                    getPlugin().getTemporaryBlocks().put(block.getLocation(), block.getType());
+                    replacedBlocksLocation.add(block.getLocation());
                     block.setType(Material.STONE);
                 }
             }
         }
+
+        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble("duration", 5) * 20));
     }
 
     private int calculateOffset(){

@@ -18,9 +18,11 @@ import me.xepos.rpg.dependencies.combat.pvptoggle.PvPToggleFactory;
 import me.xepos.rpg.listeners.*;
 import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.tasks.ManaTask;
+import me.xepos.rpg.tasks.RemoveBlocklistTask;
 import me.xepos.rpg.tree.SkillTree;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -68,6 +70,8 @@ public final class XRPG extends JavaPlugin {
     private static HashMap<UUID, TreeData> treeView;
     //Custom projectiles
     public final ConcurrentHashMap<UUID, BaseProjectileData> projectiles = new ConcurrentHashMap<>();
+    //
+    private final HashMap<Location, Material> temporaryBlocks = new HashMap<>();
 
     //Keys
     private static final HashMap<String, NamespacedKey> keyRegistry = new HashMap<>();
@@ -163,6 +167,7 @@ public final class XRPG extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        new RemoveBlocklistTask(temporaryBlocks.keySet(), this).run();
         for (UUID uuid : RPGPlayers.keySet()) {
             XRPGPlayer xrpgPlayer = RPGPlayers.get(uuid);
             Utils.removeAllModifiers(xrpgPlayer.getPlayer());
@@ -300,6 +305,10 @@ public final class XRPG extends JavaPlugin {
     }
 
     public HashMap<String, SkillTree> getTreeData(){ return treeData; }
+
+    public HashMap<Location, Material> getTemporaryBlocks() {
+        return temporaryBlocks;
+    }
 
     public NamespacedKey getKey(String keyName){
         return keyRegistry.get(keyName);

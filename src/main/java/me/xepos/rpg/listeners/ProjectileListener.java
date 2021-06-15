@@ -110,6 +110,13 @@ public class ProjectileListener implements Listener {
                 if (projectileData.shouldTeleport()) {
                     projectileData.getShooter().teleport(e.getHitBlock().getLocation().add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 }
+
+                if (projectileData.shouldDisengage()) {
+                    Player shooter = (Player) projectile.getShooter();
+                    Vector unitVector = shooter.getLocation().toVector().subtract(e.getHitBlock().getLocation().toVector()).normalize();
+
+                    shooter.setVelocity(unitVector.multiply(1.5));
+                }
             }
 
         } else if (pData instanceof ExplosiveProjectileData) {

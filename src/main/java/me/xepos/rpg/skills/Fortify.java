@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Fortify extends XRPGPassiveSkill {
     public Fortify(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
@@ -23,7 +25,7 @@ public class Fortify extends XRPGPassiveSkill {
         EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
         Player player = (Player) e.getEntity();
 
-        if (player.isBlocking()){
+        if (player.isBlocking() && getSkillVariables().getInt("trigger-chance", 20) < ThreadLocalRandom.current().nextInt(100)){
             Utils.healLivingEntity(player, getSkillVariables().getDouble("heal", 1.0));
         }
     }

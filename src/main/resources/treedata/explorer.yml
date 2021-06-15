@@ -68,4 +68,4 @@ interface:
     w:
       skill: ExposeWeakness
     '#':
-      path-item: CYAN_STAINED_GLASS_PANE
+      path-item: BLUE_STAINED_GLASS_PANE

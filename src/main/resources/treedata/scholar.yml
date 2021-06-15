@@ -67,4 +67,4 @@ interface:
     s:
       skill: InnerStrength
     '#':
-      path-item: CYAN_STAINED_GLASS_PANE
+      path-item: BLUE_STAINED_GLASS_PANE

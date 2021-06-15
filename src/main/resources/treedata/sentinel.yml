@@ -67,4 +67,4 @@ interface:
     w:
       skill: Whirlwind
     '#':
-      path-item: CYAN_STAINED_GLASS_PANE
+      path-item: BLUE_STAINED_GLASS_PANE

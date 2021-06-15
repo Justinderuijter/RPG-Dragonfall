@@ -24,6 +24,8 @@ public class AceUpMySleeve extends XRPGPassiveSkill {
         if (!(event instanceof EntityShootBowEvent)) return;
         EntityShootBowEvent e = (EntityShootBowEvent) event;
 
+        if (getSkillVariables().getInt("trigger-chance", 30) >= ThreadLocalRandom.current().nextInt(100)) return;
+
         if (e.getProjectile() instanceof Arrow){
             Arrow arrow = (Arrow) e.getProjectile();
 

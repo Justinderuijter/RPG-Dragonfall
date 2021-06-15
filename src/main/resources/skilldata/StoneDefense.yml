@@ -1,3 +1,5 @@
 name: "Stone Defense"
-cooldown: 5
+icon: "STONE"
+duration: 10
+cooldown: 10
 mana: 10
