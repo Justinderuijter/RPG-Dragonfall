@@ -7,9 +7,9 @@ skills:
   Aegis:
     max-level: 3
     requires: [ ShieldBash, Fortify ]
-  StaggeringPush:
-    max-level: 3
-    requires: [ HealthBoost, ShieldBash, ShieldBash ]
+  StoneDefense:
+    max-level: 2
+    requires: [ HealthBoost, ShieldBash, Fortify ]
   Fortify:
     max-level: 3
     requires: [ StaggeringPush, ShieldBash ]
@@ -30,16 +30,16 @@ skills:
     requires: [ SoaringSlash, Shockwave ]
   Shockwave:
     max-level: 3
-    requires: [ UnarmoredDefense, Rage ]
+    requires: [ Whirlwind ]
   Whirlwind:
     max-level: 3
-    requires: [ Shockwave ]
+    requires: [ UnarmoredDefense, Rage ]
 
 interface:
   order:
-    - "xxwxxxtxx"
+    - "xxcxxxtxx"
     - "xx#xxx#xx"
-    - "xxcxxxaxx"
+    - "xxwxxxaxx"
     - "xu#r#b#fx"
     - "xxoxxxsxx"
     - "xx##h##xx"
@@ -47,7 +47,7 @@ interface:
     h:
       skill: HealthBoost
     s:
-      skill: StaggeringPush
+      skill: StoneDefense
     b:
       skill: ShieldBash
     f:

@@ -9,10 +9,10 @@ skills:
     requires: [ Blessed ]
   HotHead:
     max-level: 3
-    requires: [ Fireball, TrailOfFlames ]
+    requires: [ MasterEnchanter, Fireball]
   ShortFuse:
     max-level: 3
-    requires: [ MasterEnchanter, Fireball, HotHead ]
+    requires: [ Fireball, TrailOfFlames ]
   TrailOfFlames:
     max-level: 3
     requires: [ ShortFuse, HotHead ]
@@ -40,7 +40,7 @@ interface:
     - "xxsxxxoxx"
     - "xx#xxx#xx"
     - "xxixxxtxx"
-    - "xe#m#r#hx"
+    - "xe#m#h#rx"
     - "xxcxxxfxx"
     - "xx##b##xx"
   legend:

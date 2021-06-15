@@ -9,6 +9,7 @@ import me.xepos.rpg.tasks.ApplyStunTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,6 +20,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
@@ -48,7 +50,10 @@ public class ShieldBash extends XRPGActiveSkill {
     }
 
     private void doShieldBash(PlayerItemHeldEvent e, Player player) {
-        if (!isSkillReady()){
+        if  (player.getInventory().getItemInOffHand().getType() != Material.SHIELD){
+            player.sendMessage( ChatColor.RED + "You must have a shield equipped in your off hand to cast this ability!");
+            return;
+        }else if (!isSkillReady()){
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }else if(!hasRequiredMana()){
@@ -56,11 +61,12 @@ public class ShieldBash extends XRPGActiveSkill {
             return;
         }
 
-        RayTraceResult result = Utils.rayTrace(player, 8, FluidCollisionMode.NEVER);
+        RayTraceResult result = Utils.rayTrace(player, 4, FluidCollisionMode.NEVER);
 
         if (result != null && result.getHitEntity() != null){
             final double castDelay = getSkillVariables().getDouble("cast-delay", 0.25);
             final double duration = getSkillVariables().getDouble("duration", 1.0);
+            final double pushStrength = getSkillVariables().getDouble("push-strength", 1.5);
 
             if (result.getHitEntity() instanceof Player){
                 XRPGPlayer xrpgPlayer = getPlugin().getXRPGPlayer(result.getHitEntity().getUniqueId(), true);
@@ -71,6 +77,12 @@ public class ShieldBash extends XRPGActiveSkill {
             }else {
                 ((LivingEntity)result.getHitEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 6, false, false, false));
             }
+
+            LivingEntity target = (LivingEntity) result.getHitEntity();
+            Vector unitVector = target.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
+
+            target.setVelocity(unitVector.multiply(pushStrength));
+            target.damage(getDamage(), player);
 
             setRemainingCooldown(getCooldown());
             updatedCasterMana();

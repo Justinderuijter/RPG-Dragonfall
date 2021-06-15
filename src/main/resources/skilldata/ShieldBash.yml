@@ -1,4 +1,5 @@
 name: "Shield Bash"
+push-strength: 1.5
 cast-delay: 0.25
 duration: 2.0
 cooldown: 10
