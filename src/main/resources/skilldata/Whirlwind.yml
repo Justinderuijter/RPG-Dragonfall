@@ -4,3 +4,6 @@ damage: 8.0
 horizontal-range: 5.0
 vertical-range: 2.0
 cooldown: 5.0
+description:
+  - "You do a whirling slash around yourself"
+  - "dealing %damage% damage to all nearby enemies."

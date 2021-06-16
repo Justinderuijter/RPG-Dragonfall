@@ -5,3 +5,7 @@ x-range: 8.0
 y-range: 5.0
 z-range: 8.0
 cooldown: 20.0
+description:
+  - "Getting attacked activates Aegis' protection"
+  - "reducing their damage taken for the next %duration% seconds"
+  - "by %damage-multiplier% percent"

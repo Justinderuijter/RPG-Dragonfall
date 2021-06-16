@@ -2,3 +2,7 @@ name: "Shockwave"
 icon: "TNT"
 damage: 10.0
 cooldown: 10.0
+description:
+  - "Erupt the earth in a line in front of you"
+  - "dealing %damage% damage to all enemies hit"
+  - "and knocking them up."

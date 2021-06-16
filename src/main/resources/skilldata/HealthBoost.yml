@@ -1,1 +1,4 @@
 name: "Armored"
+description:
+  - "Increases your armor and maximum health"
+  - "by 2 points per level."

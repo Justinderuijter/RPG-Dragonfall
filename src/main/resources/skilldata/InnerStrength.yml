@@ -3,3 +3,7 @@ required-items:
   - AIR
 duration: 8
 heal: 8.0
+cooldown: 10.0
+description:
+  - "Focus your energies inward, recovering %heal% health"
+  - "and granting yourself a random defensive potion effect."

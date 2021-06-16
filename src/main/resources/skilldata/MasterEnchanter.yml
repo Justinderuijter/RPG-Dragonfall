@@ -1,1 +1,5 @@
 name: "Master Enchanter"
+description:
+  - "Thanks to your knowledge of the Standard Galactic Alphabet"
+  - "you require %reduction% percent less EXP to"
+  - "enchant your items."

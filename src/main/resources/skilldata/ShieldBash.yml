@@ -3,3 +3,7 @@ push-strength: 1.5
 cast-delay: 0.25
 duration: 2.0
 cooldown: 10
+description:
+  - "Wave the heavy shield to bash the target."
+  - "Stuns the target with a strong shock"
+  - "and pushes them back."

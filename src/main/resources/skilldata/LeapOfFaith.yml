@@ -1,3 +1,7 @@
 name: "Leap of Faith"
 velocity: 5
 cooldown: 15
+description:
+  - "Close your eyes and spurt forwards"
+  - "Casting this while jumping can significantly"
+  - "increase the distance traveled."

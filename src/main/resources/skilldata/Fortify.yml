@@ -1,2 +1,5 @@
 name: "Fortify"
 heal: 1.0
+description:
+  - "You strengthen your defenses."
+  - "Blocking an attack heals you for %heal% health"

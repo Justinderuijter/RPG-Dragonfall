@@ -2,3 +2,7 @@ name: "Nimble"
 vertical-velocity-multiplier: 2.1
 horizontal-velocity-multiplier: 1.8
 fall-damage-reduction: 50.0
+description:
+  - "PLACEHOLDER"
+  - "Increase your movespeed and jump height."
+  - "Also reduces damage taken by falling."

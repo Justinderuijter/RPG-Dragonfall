@@ -1,2 +1,6 @@
 name: "Bottomless Quiver"
-tipped-arrows: true
+description:
+  - "Your quiver seems to be filled"
+  - "with an infinite amount of arrows."
+  - "Unlike the infinity enchantment, this effect"
+  - "stacks with the mending enchantment!"

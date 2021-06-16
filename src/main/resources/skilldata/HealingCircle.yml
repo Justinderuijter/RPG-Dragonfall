@@ -6,3 +6,8 @@ x-range: 10.0
 y-range: 5.0
 z-range: 10.0
 cooldown: 15
+description:
+  - "Chant a powerful healing mantra that"
+  - "activates the body's latent regenerative ability,"
+  - "healing your nearby allies for %heal% per second"
+  - "for a duration of %duration% seconds"

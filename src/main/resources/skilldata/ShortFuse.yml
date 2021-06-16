@@ -3,3 +3,6 @@ icon: "TNT"
 base-explosion-yield: 3.0
 yield-per-level: 1
 cooldown: 20
+description:
+  - "After a short delay of %delay% seconds"
+  - "You explode with a explosion power of %yield%."

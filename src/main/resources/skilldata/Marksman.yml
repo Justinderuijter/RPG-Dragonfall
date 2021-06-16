@@ -2,3 +2,8 @@ name: "Marksman"
 headshot-multiplier: 1.5
 pierce: 1
 cooldown: 6.0
+description:
+  - "Fully charged shots from your bow make your arrows"
+  - "slash through the air with exceptional speed,"
+  - "removing all drop-off and granting them pierce"
+  - "Headshot deal bonus damage"

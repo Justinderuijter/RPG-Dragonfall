@@ -1,5 +1,8 @@
 name: "Stone Defense"
 icon: "STONE"
-duration: 10
+duration: 5
 cooldown: 10
 mana: 10
+description:
+  - "Create a wall of stone in front of you."
+  - "The wall disappears after %duration% seconds."

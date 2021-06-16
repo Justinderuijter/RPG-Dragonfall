@@ -1,3 +1,7 @@
 name: "Blink Shot"
 icon: "ENDER_PEARL"
 cooldown: 20.0
+description:
+  - "Load an arrow infused with the power of The End"
+  - "into your bow, making you teleport to the arrows location"
+  - "when it hits something"

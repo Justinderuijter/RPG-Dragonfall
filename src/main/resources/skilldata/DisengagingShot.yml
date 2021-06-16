@@ -1,3 +1,6 @@
 name: "Disengaging Shot"
 icon: "FEATHER"
 max-travel-time: 1.0
+cooldown: 10
+description:
+  - "Social distancing"

@@ -3,3 +3,6 @@ required-items:
   - AXE
 damage: 8.0
 cooldown: 15
+description:
+  - "Jump into the air, slamming down on nearby enemies"
+  - "deals %damage% damage and slows them."

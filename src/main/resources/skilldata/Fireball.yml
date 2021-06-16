@@ -4,3 +4,6 @@ damage: 10.0
 fire-duration: 3.0
 max-stacks: 2
 cooldown: 3.0
+description:
+  - "Gather fire energy in your hands, then send it hurtling toward the enemy."
+  - "deals %damage% the first enemy hit."

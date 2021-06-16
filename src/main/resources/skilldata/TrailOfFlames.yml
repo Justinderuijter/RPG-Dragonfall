@@ -3,3 +3,7 @@ icon: "FLINT_AND_STEEL"
 ignore-villagers: true
 duration: 5.0
 cooldown: 12.0
+description:
+  - "You leave a trail of fire behind you"
+  - "that sets anyone that steps inside it"
+  - "on fire for %duration% seconds"
