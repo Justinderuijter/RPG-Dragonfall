@@ -59,18 +59,23 @@ public class StoneDefense extends XRPGActiveSkill {
             if (0 <= rotation && rotation < 45) {
                 //North
                 createNorthWall(result.getHitBlock());
+                caster.sendMessage("North");
             } else if (45 <= rotation && rotation < 135) {
                 //East
                 createEastWall(result.getHitBlock());
+                caster.sendMessage("East");
             } else if (135 <= rotation && rotation < 225) {
                 //South
                 createSouthWall(result.getHitBlock());
+                caster.sendMessage("South");
             } else if (225 <= rotation && rotation < 315) {
                 //West
                 createWestWall(result.getHitBlock());
+                caster.sendMessage("West");
             } else if (315 <= rotation && rotation < 360.0) {
                 //North
                 createNorthWall(result.getHitBlock());
+                caster.sendMessage("North");
             }
 
             setRemainingCooldown(getCooldown());
@@ -83,9 +88,10 @@ public class StoneDefense extends XRPGActiveSkill {
 
         final int offset = calculateOffset();
         Block bottomLeft = targetBlock.getLocation().add(0, 1, offset * -1).getBlock();
+        getXRPGPlayer().getPlayer().sendMessage("Bottom left: " + bottomLeft.getLocation().getZ());
 
         for (int y = 0; y < 3; y++) {
-            for (int z = 0; z < 3 + offset; z++) {
+            for (int z = 0; z < 3 + offset - 1; z++) {
                 Block block = bottomLeft.getRelative(0, y, z);
                 if (block.getType() == Material.AIR){
                     getPlugin().getTemporaryBlocks().put(block.getLocation(), block.getType());
@@ -102,10 +108,12 @@ public class StoneDefense extends XRPGActiveSkill {
         Set<Location> replacedBlocksLocation = new HashSet<>();
 
         final int offset = calculateOffset();
-        Block bottomLeft = targetBlock.getLocation().add(offset, 1, 0).getBlock();
+        Block bottomLeft = targetBlock.getLocation().add(offset * -1, 1, 0).getBlock();
+        getXRPGPlayer().getPlayer().sendMessage("Bottom left: " + bottomLeft.getLocation().getX());
+
 
         for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3 + offset; x++) {
+            for (int x = 0; x < 3 + offset -1; x++) {
                 Block block = bottomLeft.getRelative(x, y, 0);
                 if (block.getType() == Material.AIR){
                     getPlugin().getTemporaryBlocks().put(block.getLocation(), block.getType());
@@ -123,9 +131,10 @@ public class StoneDefense extends XRPGActiveSkill {
 
         final int offset = calculateOffset();
         Block bottomLeft = targetBlock.getLocation().add(0, 1, offset).getBlock();
+        getXRPGPlayer().getPlayer().sendMessage("Bottom left: " + bottomLeft.getLocation().getZ());
 
         for (int y = 0; y < 3; y++) {
-            for (int z = 0; z < 3 + offset; z++) {
+            for (int z = 0; z < 3 + offset -1; z++) {
                 Block block = bottomLeft.getRelative(0, y, -z);
                 if (block.getType() == Material.AIR){
                     getPlugin().getTemporaryBlocks().put(block.getLocation(), block.getType());
@@ -143,9 +152,10 @@ public class StoneDefense extends XRPGActiveSkill {
 
         final int offset = calculateOffset();
         Block bottomLeft = targetBlock.getLocation().add(offset * -1, 1, 0).getBlock();
+        getXRPGPlayer().getPlayer().sendMessage("Bottom left: " + bottomLeft.getLocation().getX());
 
         for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3 + offset; x++) {
+            for (int x = 0; x < 3 + offset -1; x++) {
                 Block block = bottomLeft.getRelative(x, y, 0);
                 if (block.getType() == Material.AIR){
                     getPlugin().getTemporaryBlocks().put(block.getLocation(), block.getType());

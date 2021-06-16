@@ -4,6 +4,8 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.HealOverTimeTask;
+import me.xepos.rpg.tasks.particles.ParticleSpiralEffectTask;
+import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -36,10 +38,10 @@ public class HealingCircle extends XRPGActiveSkill {
 
         final double xRange = getSkillVariables().getDouble("x-range", 10);
         final double yRange = getSkillVariables().getDouble("y-range", 5);
-        final double zRange = getSkillVariables().getDouble("z-range", xRange);
 
-        List<Player> nearbyPlayers = getNearbyAlliedPlayers(caster, xRange, yRange, zRange);
+        List<Player> nearbyPlayers = getNearbyAlliedPlayers(caster, xRange, yRange, xRange);
         nearbyPlayers.removeIf(p -> !canApplyBuffToFriendly(p));
+        new ParticleSpiralEffectTask(Particle.HEART, caster, xRange/2, 2,2).runTaskTimer(getPlugin(), 0, 1);
         for (Player nearbyPlayer : nearbyPlayers) {
             new HealOverTimeTask(nearbyPlayer, getSkillVariables().getDouble("heal-per-proc", 1.0), getSkillVariables().getInt("max-procs", 10)).runTaskTimer(getPlugin(), 1L, (long) getSkillVariables().getDouble("interval", 1.0) * 20L);
         }

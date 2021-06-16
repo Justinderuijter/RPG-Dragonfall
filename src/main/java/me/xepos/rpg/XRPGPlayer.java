@@ -203,6 +203,10 @@ public class XRPGPlayer {
         this.lastClassChangeTime = playerData.getLastClassChange();
         this.lastBookReceivedTime = playerData.getLastBookReceived();
         ClassData classData = playerData.getClassData(playerData.getClassId());
+
+        //Clearing keybinds
+        spellKeybinds.clear();
+
         if (classData != null) {
             this.level = classData.getLevel();
             this.currentExp = classData.getExperience();
@@ -215,10 +219,9 @@ public class XRPGPlayer {
             }
             this.skillUpgradePoints = classData.getSkillUpgradePoints();
             this.skillUnlockPoints = classData.getSkillUnlockPoints();
-        }
 
-        //Clearing keybinds
-        spellKeybinds.clear();
+            spellKeybinds.addAll(classData.getKeybindOrder());
+        }
 
         //Clearing skills
         activeHandler.getSkills().clear();

@@ -75,7 +75,7 @@ public abstract class XRPGSkill {
 
     @SuppressWarnings("all")
     protected List<Player> getNearbyAlliedPlayers(Player caster, double x, double y, double z) {
-        return (List<Player>) new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), x, y, z, p -> p instanceof Player && p != caster && partySet.isPlayerAllied(caster, (Player) p)));
+        return (List<Player>) new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), x, y, z, p -> p instanceof Player && partySet.isPlayerAllied(caster, (Player) p)));
     }
 
     protected boolean canApplyBuffToFriendly(Player target){

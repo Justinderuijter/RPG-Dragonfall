@@ -2,6 +2,10 @@ package me.xepos.rpg.tasks;
 
 import me.xepos.rpg.dependencies.combat.parties.PartySet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
+import org.bukkit.Effect;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -33,20 +37,32 @@ public class RavagerLandTask extends BukkitRunnable {
             return;
         }
 
-        if (!player.isFlying() && player.getLocation().subtract(0, 0.1, 0).getBlock().getType().isSolid())
+        if (!player.isFlying())
         {
-            List<Entity> entities =  new ArrayList<>(player.getLocation().getWorld().getNearbyEntities(player.getLocation(), 4, 2, 4, p -> p instanceof LivingEntity && p != player));
-            for (Entity entity:entities) {
-                LivingEntity livingEntity = (LivingEntity) entity;
-                if (livingEntity instanceof Player) {
-                    if (protectionSet.isLocationValid(player.getLocation(), livingEntity.getLocation()) && !partyManager.isPlayerAllied(player, (Player) livingEntity)) {
+            Block block = player.getLocation().subtract(0, 0.1, 0).getBlock().getRelative(2, 0, -2);
+            if(block.getType().isSolid()) {
+                World world = player.getWorld();
+                for (int x = 0; x < 5; x++) {
+                    for (int z = 0; z < 5; z++) {
+                        world.playEffect(block.getRelative(x * -1, 0, z).getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
+                    }
+                }
+
+                List<Entity> entities = new ArrayList<>(player.getLocation().getWorld().getNearbyEntities(player.getLocation(), 4, 2, 4, p -> p instanceof LivingEntity && p != player));
+                for (Entity entity : entities) {
+                    LivingEntity livingEntity = (LivingEntity) entity;
+                    if (livingEntity instanceof Player) {
+                        if (protectionSet.isLocationValid(player.getLocation(), livingEntity.getLocation()) && !partyManager.isPlayerAllied(player, (Player) livingEntity)) {
+                            damageAndSlowTarget(livingEntity);
+                        }
+                    } else {
                         damageAndSlowTarget(livingEntity);
                     }
-                } else {
-                    damageAndSlowTarget(livingEntity);
                 }
+                this.cancel();
+            }else if (block.getType() == Material.WATER || block.getType() == Material.LAVA){
+                this.cancel();
             }
-            this.cancel();
         }
     }
 

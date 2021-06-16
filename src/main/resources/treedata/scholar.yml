@@ -25,7 +25,7 @@ skills:
   MasterEnchanter:
     max-level: 3
     requires: [ Intervention, ShortFuse, HealingCircle ]
-  Healer:
+  LeapOfFaith:
     max-level: 3
     requires: [ Intervention, HealingCircle ]
   Intervention:
@@ -40,7 +40,7 @@ interface:
     - "xxsxxxoxx"
     - "xx#xxx#xx"
     - "xxixxxtxx"
-    - "xe#m#h#rx"
+    - "xl#m#h#rx"
     - "xxcxxxfxx"
     - "xx##b##xx"
   legend:
@@ -60,8 +60,8 @@ interface:
       skill: HealingCircle
     m:
       skill: MasterEnchanter
-    e:
-      skill: Healer
+    l:
+      skill: LeapOfFaith
     i:
       skill: Intervention
     s:

@@ -12,7 +12,7 @@ skills:
     requires: [ HealthBoost, ShieldBash, Fortify ]
   Fortify:
     max-level: 3
-    requires: [ StaggeringPush, ShieldBash ]
+    requires: [ Aegis, StoneDefense ]
   ShieldBash:
     max-level: 3
     requires: [ Aegis, Rage, StaggeringPush ]
