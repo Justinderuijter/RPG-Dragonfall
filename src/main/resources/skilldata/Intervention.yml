@@ -1,6 +1,14 @@
 name: "Intervention"
 icon: "LEAD"
-pull-force: 1.5
-cooldown: 6.0
-description:
-  - "Pull your target towards you"
+
+levels:
+  static:
+    cooldown: 6.0
+    description:
+      - "Pull your target towards you with a force of %pull-force%"
+  1:
+    pull-force: 1.5
+  2:
+    pull-force: 2.0
+  3:
+    pull-force: 3.5

@@ -2,11 +2,11 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -14,7 +14,7 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 public class Intervention extends XRPGActiveSkill {
-    public Intervention(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public Intervention(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -39,7 +39,7 @@ public class Intervention extends XRPGActiveSkill {
             LivingEntity entity = (LivingEntity) result.getHitEntity();
             Location loc = entity.getLocation();
             Location targetLoc = e.getPlayer().getLocation();
-            double pullForce = getSkillVariables().getDouble("pull-force", 1.0);
+            double pullForce = getSkillVariables().getDouble(getSkillLevel(), "pull-force", 1.0);
 
             double x = loc.getX() - targetLoc.getX();
             double y = loc.getY() - targetLoc.getY();

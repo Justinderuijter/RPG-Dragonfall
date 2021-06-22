@@ -2,12 +2,12 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,13 +20,13 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.*;
 
 public class LotusStrike extends XRPGPassiveSkill {
-    public LotusStrike(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public LotusStrike(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getPassiveEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
     }
 
-    private final double potionDuration = getSkillVariables().getDouble("duration", 6);
+    private final double potionDuration = getSkillVariables().getDouble(getSkillLevel(), "duration", 6);
     private int hitCount = 0;
 
     private final List<PotionEffect> dmgEffects = new ArrayList<PotionEffect>() {{
@@ -107,7 +107,7 @@ public class LotusStrike extends XRPGPassiveSkill {
 
     @SuppressWarnings("all")
     private boolean isCrit(int enchantLevel) {
-        final double enchantToCritRatio = getSkillVariables().getDouble("enchant-to-crit-ratio", 3.125);
+        final double enchantToCritRatio = getSkillVariables().getDouble(getSkillLevel(), "enchant-to-crit-ratio", 3.125);
         Random rand = new Random();
 
         if (rand.nextInt(100) + 1 <= enchantLevel * enchantToCritRatio) //0-100
@@ -121,7 +121,7 @@ public class LotusStrike extends XRPGPassiveSkill {
         if (enchantLevel > 0 && e.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) e.getEntity();
             if (entity.getFireTicks() <= -1) {
-                final int enchantToFireTicks = getSkillVariables().getInt("enchant-to-fire-ticks", 15);
+                final int enchantToFireTicks = getSkillVariables().getInt(getSkillLevel(), "enchant-to-fire-ticks", 15);
 
                 entity.setFireTicks(enchantLevel * enchantToFireTicks);
             }
@@ -129,7 +129,7 @@ public class LotusStrike extends XRPGPassiveSkill {
     }
 
     private void doLotusHaste(int enchantLevel) {
-        final double enchantToLotusHaste = getSkillVariables().getDouble("enchant-to-lotus-haste-ratio", 2.0);
+        final double enchantToLotusHaste = getSkillVariables().getDouble(getSkillLevel(), "enchant-to-lotus-haste-ratio", 2.0);
         Random rand = new Random();
 
         if (rand.nextInt(100) + 1 <= enchantLevel * enchantToLotusHaste) {

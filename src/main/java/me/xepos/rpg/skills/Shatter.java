@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
@@ -10,7 +11,6 @@ import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -24,7 +24,7 @@ import java.util.List;
 public class Shatter extends XRPGActiveSkill {
     private Fireball fireball;
 
-    public Shatter(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public Shatter(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
@@ -75,7 +75,7 @@ public class Shatter extends XRPGActiveSkill {
 
     public void shatterLogic(PlayerItemHeldEvent e, LivingEntity livingEntity) {
 
-        final double duration = getSkillVariables().getDouble("duration", 4);
+        final double duration = getSkillVariables().getDouble(getSkillLevel(), "duration", 4);
         PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, (int) (duration * 20), 1, false, false, false);
 
         if (livingEntity instanceof Player) {
@@ -83,8 +83,8 @@ public class Shatter extends XRPGActiveSkill {
             //Check if the target is valid
             if (getProtectionSet().isLocationValid(e.getPlayer().getLocation(), targetPlayer.getLocation())) {
 
-                final double shatterDTAmount = getSkillVariables().getDouble("dt-amount", 1.2);
-                final double shatterDTDuration = getSkillVariables().getDouble("dt-duration", 4.0);
+                final double shatterDTAmount = getSkillVariables().getDouble(getSkillLevel(), "dt-amount", 1.2);
+                final double shatterDTDuration = getSkillVariables().getDouble(getSkillLevel(), "dt-duration", 4.0);
                 //Add potion effect and fire event
                 targetPlayer.addPotionEffect(potionEffect);
                 targetPlayer.damage(getDamage(), e.getPlayer());

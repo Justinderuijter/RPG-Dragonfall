@@ -2,9 +2,9 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Whirlwind extends XRPGActiveSkill {
-    public Whirlwind(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public Whirlwind(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -35,8 +35,8 @@ public class Whirlwind extends XRPGActiveSkill {
         }
 
         Player caster = e.getPlayer();
-        final double horizontalRange = getSkillVariables().getDouble("horizontal-range", 5);
-        final double verticalRange = getSkillVariables().getDouble("vertical-range", 2);
+        final double horizontalRange = getSkillVariables().getDouble(getSkillLevel(), "horizontal-range", 5);
+        final double verticalRange = getSkillVariables().getDouble(getSkillLevel(), "vertical-range", 2);
 
         List<LivingEntity> targets = new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), horizontalRange, verticalRange, horizontalRange, p -> p instanceof LivingEntity && p != caster));
         for (LivingEntity target:targets) {

@@ -4,6 +4,7 @@ import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.AttributeModifierData;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.IAttributable;
@@ -11,7 +12,6 @@ import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
@@ -26,11 +26,11 @@ public class HealthBoost extends XRPGPassiveSkill implements IAttributable {
     private static double healthPerLevel = -1;
     private static double armorPerLevel = -1;
 
-    public HealthBoost(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public HealthBoost(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
-        if (armorPerLevel == -1) armorPerLevel = skillVariables.getDouble("armor-per-level", 2);
-        if (healthPerLevel == -1) healthPerLevel = skillVariables.getDouble("health-per-level", 2);
+        if (armorPerLevel == -1) armorPerLevel = skillVariables.getDouble(getSkillLevel(),"armor-per-level", 2);
+        if (healthPerLevel == -1) healthPerLevel = skillVariables.getDouble(getSkillLevel(), "health-per-level", 2);
 
         final AttributeModifierManager manager = AttributeModifierManager.getInstance();
 

@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.entities.type.FollowerZombie;
 import me.xepos.rpg.entities.type.FollowerZombieVillager;
@@ -12,7 +13,6 @@ import net.minecraft.server.v1_16_R3.EntityLiving;
 import net.minecraft.server.v1_16_R3.EntityTypes;
 import net.minecraft.server.v1_16_R3.WorldServer;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftLivingEntity;
@@ -29,7 +29,7 @@ import java.util.List;
 public class ArmyOfTheUndead extends XRPGPassiveSkill implements IFollowerContainer {
     private final List<Follower> followers = new ArrayList<>();
 
-    public ArmyOfTheUndead(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public ArmyOfTheUndead(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getPassiveEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
@@ -43,7 +43,7 @@ public class ArmyOfTheUndead extends XRPGPassiveSkill implements IFollowerContai
         if (!(e.getEntity() instanceof LivingEntity)) return;
         LivingEntity livingEntity = (LivingEntity) e.getEntity();
 
-        if (livingEntity.getHealth() <= e.getFinalDamage() && followers.size() < getSkillVariables().getInt("max-followers", 3)) {
+        if (livingEntity.getHealth() <= e.getFinalDamage() && followers.size() < getSkillVariables().getInt(getSkillLevel(), "max-followers", 3)) {
             recruitFollower(e);
             return; //Code below doesn't need to get executed when the target dies.
         }

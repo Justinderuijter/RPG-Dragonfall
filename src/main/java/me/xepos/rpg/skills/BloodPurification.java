@@ -4,10 +4,10 @@ import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.AttributeModifierData;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -32,7 +32,7 @@ public class BloodPurification extends XRPGActiveSkill {
         add(PotionEffectType.BLINDNESS);
     }};
 
-    public BloodPurification(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public BloodPurification(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -62,9 +62,9 @@ public class BloodPurification extends XRPGActiveSkill {
             return;
         }
 
-        final double xRange = getSkillVariables().getDouble("x-range", 10.0);
-        final double yRange = getSkillVariables().getDouble("y-range", 5.0);
-        final double zRange = getSkillVariables().getDouble("z-range", xRange);
+        final double xRange = getSkillVariables().getDouble(getSkillLevel(), "x-range", 10.0);
+        final double yRange = getSkillVariables().getDouble(getSkillLevel(), "y-range", 5.0);
+        final double zRange = getSkillVariables().getDouble(getSkillLevel(), "z-range", xRange);
 
         final List<LivingEntity> livingEntities = new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), xRange, yRange, zRange, p -> p instanceof LivingEntity));
         final HashMap<String, AttributeModifierData> modifierData = AttributeModifierManager.getInstance().getModifiers(ModifierType.NEGATIVE);

@@ -2,10 +2,10 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.util.RayTraceResult;
 
 public class Souldraw extends XRPGActiveSkill {
-    public Souldraw(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public Souldraw(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -35,11 +35,11 @@ public class Souldraw extends XRPGActiveSkill {
 
     private void doSouldraw(Player caster) {
         if (isSkillReady()) {
-            double range = getSkillVariables().getDouble("range", 16);
+            double range = getSkillVariables().getDouble(getSkillLevel(), "range", 16);
 
             RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
             if (result != null && result.getHitEntity() != null) {
-                double healRatio = getSkillVariables().getDouble("heal-per-damage", 0.5);
+                double healRatio = getSkillVariables().getDouble(getSkillLevel(), "heal-per-damage", 0.5);
 
                 LivingEntity target = (LivingEntity) result.getHitEntity();
                 target.damage(getDamage(), caster);

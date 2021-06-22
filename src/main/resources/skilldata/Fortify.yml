@@ -1,5 +1,14 @@
 name: "Fortify"
-heal: 1.0
-description:
-  - "You strengthen your defenses."
-  - "Blocking an attack heals you for %heal% health"
+
+levels:
+  statics:
+    heal: 1.0
+    description:
+      - "You strengthen your defenses."
+      - "Blocking an attack heals you for %heal% health"
+  1:
+    trigger-chance: 5
+  2:
+    trigger-chance: 10
+  3:
+    trigger-chance: 20

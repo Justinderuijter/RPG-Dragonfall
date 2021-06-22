@@ -3,11 +3,11 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.handlers.BowEventHandler;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ public class ExposeWeakness extends XRPGBowSkill {
     private boolean isActive = false;
     private final BowEventHandler bowHandler;
 
-    public ExposeWeakness(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public ExposeWeakness(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         bowHandler = (BowEventHandler) getXRPGPlayer().getPassiveEventHandler("SHOOT_BOW");
@@ -96,6 +96,6 @@ public class ExposeWeakness extends XRPGBowSkill {
     }
 
     private double getMaxHealthDamage(){
-        return getSkillVariables().getDouble("max-health-damage", 25);
+        return getSkillVariables().getDouble(getSkillLevel(), "max-health-damage", 25);
     }
 }

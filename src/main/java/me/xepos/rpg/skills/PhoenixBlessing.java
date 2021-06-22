@@ -2,11 +2,11 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class PhoenixBlessing extends XRPGActiveSkill {
 
-    public PhoenixBlessing(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public PhoenixBlessing(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
@@ -42,7 +42,7 @@ public class PhoenixBlessing extends XRPGActiveSkill {
         RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 16, FluidCollisionMode.NEVER, true, 0.3, p -> p instanceof LivingEntity && p != player);
         if (result != null && result.getHitEntity() != null) {
 
-            final int duration = getSkillVariables().getInt("duration", 5);
+            final int duration = getSkillVariables().getInt(getSkillLevel(), "duration", 5);
 
             LivingEntity entity = (LivingEntity) result.getHitEntity();
 

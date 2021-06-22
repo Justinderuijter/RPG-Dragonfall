@@ -1,5 +1,7 @@
 name: "Souldraw"
-range: 16
-heal-per-damage: 0.5
-damage: 3
-cooldown: 1
+levels:
+  statics:
+    range: 16
+    heal-per-damage: 0.5
+    damage: 3
+    cooldown: 1

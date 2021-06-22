@@ -2,15 +2,15 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.util.Vector;
 
 public class LeapOfFaith extends XRPGActiveSkill {
-    public LeapOfFaith(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public LeapOfFaith(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
@@ -29,7 +29,7 @@ public class LeapOfFaith extends XRPGActiveSkill {
             return;
         }
 
-        final int velocity = getSkillVariables().getInt("velocity", 5);
+        final int velocity = getSkillVariables().getInt(getSkillLevel(), "velocity", 5);
 
         e.getPlayer().setVelocity(e.getPlayer().getEyeLocation().getDirection().multiply(new Vector(velocity, 0, velocity)));
 

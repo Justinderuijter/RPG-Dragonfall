@@ -2,11 +2,11 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.BleedTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -23,7 +23,7 @@ import java.util.List;
 
 public class ShadowSneak extends XRPGActiveSkill {
 
-    public ShadowSneak(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public ShadowSneak(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -55,9 +55,9 @@ public class ShadowSneak extends XRPGActiveSkill {
         if (result != null && result.getHitEntity() != null) {
             LivingEntity livingEntity = (LivingEntity) result.getHitEntity();
 
-            final double batDespawnDelay = getSkillVariables().getDouble("despawn-delay", 3.0);
-            final byte maxProcs = (byte) getSkillVariables().getInt("max-procs", 3);
-            final double interval = getSkillVariables().getDouble("interval", 1.0);
+            final double batDespawnDelay = getSkillVariables().getDouble(getSkillLevel(), "despawn-delay", 3.0);
+            final byte maxProcs = (byte) getSkillVariables().getInt(getSkillLevel(), "max-procs", 3);
+            final double interval = getSkillVariables().getDouble(getSkillLevel(), "interval", 1.0);
 
             List<Bat> bats = summonBats(player);
             removeBats(bats, getPlugin(), (long) batDespawnDelay * 20);

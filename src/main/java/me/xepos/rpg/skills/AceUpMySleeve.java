@@ -2,8 +2,9 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -13,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class AceUpMySleeve extends XRPGPassiveSkill {
 
-    public AceUpMySleeve(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public AceUpMySleeve(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getPassiveEventHandler("SHOOT_BOW").addSkill(this.getClass().getSimpleName() ,this);
@@ -24,12 +25,12 @@ public class AceUpMySleeve extends XRPGPassiveSkill {
         if (!(event instanceof EntityShootBowEvent)) return;
         EntityShootBowEvent e = (EntityShootBowEvent) event;
 
-        if (getSkillVariables().getInt("trigger-chance", 30) >= ThreadLocalRandom.current().nextInt(100)) return;
+        if (getSkillVariables().getInt(getSkillLevel(), "trigger-chance") >= ThreadLocalRandom.current().nextInt(100)) return;
 
         if (e.getProjectile() instanceof Arrow){
             Arrow arrow = (Arrow) e.getProjectile();
 
-            List<String> enchants = getSkillVariables().getStringList("enchantments");
+            List<String> enchants = getSkillVariables().getStringList(getSkillLevel(), "enchantments");
             String enchant = enchants.get(ThreadLocalRandom.current().nextInt(enchants.size()));
 
             switch(enchant.toUpperCase()){
@@ -38,7 +39,8 @@ public class AceUpMySleeve extends XRPGPassiveSkill {
                     break;
                 case "FIRE":
                 case "FLAME":
-                    arrow.setFireTicks(arrow.getFireTicks() + 100);
+                    //Need to check if this does anything
+                    Bukkit.getScheduler().runTaskLater(getPlugin(), () -> arrow.setFireTicks(arrow.getFireTicks() + 100), 1);
                     break;
                 case "PUNCH":
                 case "KNOCKBACK":

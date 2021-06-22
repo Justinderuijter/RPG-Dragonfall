@@ -1,12 +1,14 @@
 name: "Overheat"
-required-tag: "flamebook"
-damage: 5.0
-damage-per-armor: 0.5
-range: 16.0
-delay: 5.0
-cooldown: 20.0
-description:
-  - "Set your target on fire, overheating them."
-  - "Deals %damage% fire damage to your target after %delay% seconds"
-  - "This damage is increase by %damage-per-armor% for every point of armor"
-  - "that your target has."
+
+levels:
+  statics:
+    damage: 5.0
+    damage-per-armor: 0.5
+    range: 16.0
+    delay: 5.0
+    cooldown: 20.0
+    description:
+      - "Set your target on fire, overheating them."
+      - "Deals %damage% fire damage to your target after %delay% seconds"
+      - "This damage is increase by %damage-per-armor% for every point of armor"
+      - "that your target has."

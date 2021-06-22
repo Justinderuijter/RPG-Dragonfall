@@ -5,7 +5,6 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.handlers.PassiveEventHandler;
-import me.xepos.rpg.skills.Nimble;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -89,11 +88,6 @@ public class XRPGDebug implements CommandExecutor {
                             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(strings[0]));
                             return false;
                     }
-                }else if(strings.length == 2){
-                    XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
-
-
-                    new Nimble(xrpgPlayer, plugin.getSkillData("Nimble"), plugin, 1);
                 }
             }else{
                 Bukkit.getLogger().info("Player count: " + plugin.getRPGPlayers().size());

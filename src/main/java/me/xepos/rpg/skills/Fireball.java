@@ -3,23 +3,23 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class Fireball extends XRPGActiveSkill {
     private byte fireBallStacks = 0;
-    private final byte maxFireballStacks = (byte) getSkillVariables().getInt("max-stacks", 2);
+    private final byte maxFireballStacks = (byte) getSkillVariables().getInt(getSkillLevel(),"max-stacks", 2);
     private long lastStackGained = System.currentTimeMillis();
 
-    public Fireball(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public Fireball(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -62,7 +62,7 @@ public class Fireball extends XRPGActiveSkill {
 
         if (!getPlugin().projectiles.containsKey(fireball.getUniqueId())) {
             //For some reason damage is halved so doubling it to get proper value
-            ProjectileData data = new ProjectileData(fireball, getDamage() * 2,20);
+            ProjectileData data = new ProjectileData(fireball, getDamage(),20);
 
             getPlugin().projectiles.put(fireball.getUniqueId(), data);
         }

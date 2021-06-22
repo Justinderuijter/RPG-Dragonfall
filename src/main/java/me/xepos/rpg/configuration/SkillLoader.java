@@ -5,6 +5,7 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.PlayerData;
+import me.xepos.rpg.datatypes.SkillData;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,18 +22,48 @@ public class SkillLoader extends XRPGLoader{
         super(plugin, "skills", "skilldata");
     }
 
-    public HashMap<String, FileConfiguration> initializeSkills() {
+    public HashMap<String, SkillData> initializeSkills() {
         extractAllSkillData();
 
-        HashMap<String, FileConfiguration> configurationHashMap = new HashMap<>();
+        final HashMap<String, SkillData> configurationHashMap = new HashMap<>();
 
         for (File file : getLoaderFolder().listFiles()) {
             if (!file.getName().endsWith(".yml")) continue;
 
             String fileName = file.getName().replace(".yml", "");
             FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
+            ConfigurationSection levelSection = fileConfiguration.getConfigurationSection("levels");
+            if (levelSection != null){
+                HashMap<String, Object> staticsMap = new HashMap<>();
+                HashMap<Integer, HashMap<String, Object>> levelMap = new HashMap<>();
+                for (String key:levelSection.getKeys(false)) {
 
-            configurationHashMap.put(fileName, fileConfiguration);
+                    //Section for values that will be used for undefined level values;
+                    if (key.equalsIgnoreCase("statics")){
+                        ConfigurationSection staticSection = levelSection.getConfigurationSection(key);
+
+                        if (staticSection == null) continue;
+
+                        for (String staticData:staticSection.getKeys(false)) {
+                            staticsMap.put(staticData, staticSection.get(staticData));
+                        }
+
+                    }else{
+                        ConfigurationSection specificLevelSection = levelSection.getConfigurationSection(key);
+                        if (specificLevelSection == null) continue;
+
+                        HashMap<String, Object> dataMap = new HashMap<>();
+
+                        for (String skillData:specificLevelSection.getKeys(false)) {
+                            dataMap.put(skillData, specificLevelSection.get(skillData));
+                        }
+
+                        levelMap.put(Integer.valueOf(key), dataMap);
+                    }
+
+                }
+                configurationHashMap.put(fileName, new SkillData(fileConfiguration.getString("name"), fileConfiguration.getString("icon"), staticsMap, levelMap));
+            }
         }
 
         return configurationHashMap;

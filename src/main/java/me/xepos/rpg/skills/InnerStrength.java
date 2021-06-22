@@ -2,10 +2,10 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -17,8 +17,10 @@ import java.util.List;
 import java.util.Random;
 
 public class InnerStrength extends XRPGActiveSkill {
+    //TODO: doesn't update potionduration
+
     private LotusStrike lotusStrike;
-    private final double potionDuration = getSkillVariables().getDouble("duration", 6.0);
+    private final double potionDuration = getSkillVariables().getDouble(getSkillLevel(), "duration", 6.0);
 
     private final List<PotionEffect> defEffects = new ArrayList<PotionEffect>() {{
         add(new PotionEffect(PotionEffectType.REGENERATION, (int) (potionDuration * 20), 1, false, false, true));
@@ -27,7 +29,7 @@ public class InnerStrength extends XRPGActiveSkill {
         add(new PotionEffect(PotionEffectType.ABSORPTION, (int) (potionDuration * 20), 0, false, false, true));
     }};
 
-    public InnerStrength(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel, LotusStrike lotusStrike) {
+    public InnerStrength(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, LotusStrike lotusStrike) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         this.lotusStrike = lotusStrike;
@@ -35,7 +37,7 @@ public class InnerStrength extends XRPGActiveSkill {
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
     }
 
-    public InnerStrength(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public InnerStrength(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
@@ -72,7 +74,7 @@ public class InnerStrength extends XRPGActiveSkill {
             return;
         }
 
-        final double healAmount = getSkillVariables().getDouble("heal", 3.0);
+        final double healAmount = getSkillVariables().getDouble(getSkillLevel(), "heal", 3.0);
 
         applyTriggerEffect(player);
         Utils.healLivingEntity(player, healAmount);

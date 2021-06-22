@@ -1,3 +1,6 @@
 name: "Soul Shot"
-percent-health-damage: 0.25
-cooldown: 15
+
+levels:
+  statics:
+    percent-health-damage: 0.25
+    cooldown: 15

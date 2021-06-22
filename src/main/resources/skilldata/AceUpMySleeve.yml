@@ -4,9 +4,14 @@ enchantments:
   - "FLAME"
   - "PUNCH"
   - "PIERCE"
-description:
-  - "Your arrows have a %trigger-chance% percent chance "
-  - "to be enchanted with a random bow enchantment."
-  - ""
-  - "These effects stack with their"
-  - "corresponding natural enchantments"
+
+levels:
+  statics:
+    description:
+      - "Your arrows have a %trigger-chance% percent chance "
+      - "to be enchanted with a random bow enchantment."
+      - ""
+      - "These effects stack with their"
+      - "corresponding natural enchantments"
+  1:
+    trigger-chance: 30

@@ -2,19 +2,19 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class ShortFuse extends XRPGActiveSkill {
-    public ShortFuse(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public ShortFuse(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -35,9 +35,9 @@ public class ShortFuse extends XRPGActiveSkill {
             return;
         }
 
-        final float baseYield = (float)getSkillVariables().getDouble("explosion-base-yield", 3.0) - 1;
-        final boolean setFire = getSkillVariables().getBoolean("explosion-set-fire", false);
-        final boolean breakBlocks = getSkillVariables().getBoolean("explosion-break-blocks", false);
+        final float yield = (float)getSkillVariables().getDouble(getSkillLevel(), "explosion-yield", 3.0);
+        final boolean setFire = getSkillVariables().getBoolean(getSkillLevel(), "explosion-set-fire", false);
+        final boolean breakBlocks = getSkillVariables().getBoolean(getSkillLevel(),"explosion-break-blocks", false);
 
         Location location = player.getLocation();
         if (location.getWorld() == null) return;
@@ -49,40 +49,13 @@ public class ShortFuse extends XRPGActiveSkill {
         location.getWorld().playEffect(location, Effect.SMOKE, 1);
 
         Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-            player.getWorld().createExplosion(player.getLocation(), calculateExplosionYield(baseYield, getSkillLevel()), setFire, breakBlocks, player);
-        }, calculateFuse(getSkillVariables().getDouble("base-fuse-time", 1.5), getSkillLevel()));
+            player.getWorld().createExplosion(player.getLocation(), yield, setFire, breakBlocks, player);
+        }, (long)getSkillVariables().getDouble(getSkillLevel(), "fuse", 1.5) * 20);
 
     }
 
     @Override
     public void initialize() {
 
-    }
-
-    private float calculateExplosionYield(float baseYield, int level){
-        final int yieldPerLevel = getSkillVariables().getInt("yield-per-level");
-
-        int power = 0;
-        for (int i = 1; i < level; i++) {
-            if (level % 3 == 0) continue;
-            power += yieldPerLevel;
-        }
-
-        return baseYield + power;
-    }
-
-    private long calculateFuse(double baseCooldown, int level){
-        //Results multiplied by 20 to convert to ticks
-
-        if (level % 3 == 0){
-            final int reductionLevel = level / 3;
-
-            double cooldown = baseCooldown;
-            for (int i = 0; i < reductionLevel; i++) {
-                cooldown = cooldown * 0.666;
-            }
-            return (long)cooldown * 20;
-        }
-        return (long)baseCooldown * 20;
     }
 }

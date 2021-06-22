@@ -1,5 +1,8 @@
 name: "Night Vision"
 icon: "POTION"
-duration: -1
-description:
-  - "Your enhanced vision allows you to see in the dark"
+
+levels:
+  statics:
+    duration: -1
+    description:
+      - "Your enhanced vision allows you to see in the dark"

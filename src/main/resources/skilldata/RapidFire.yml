@@ -1,7 +1,9 @@
 name: "Rapid Fire"
 icon: "BLUE_DYE"
 extra-arrows: 2
-cooldown: 10
-description:
-  - "You load %extra-arrows% into your bow"
-  - "All the arrows fired ignore the target's armor"
+levels:
+   statics:
+      cooldown: 10
+      description:
+        - "You load %extra-arrows% into your bow"
+        - "All the arrows fired ignore the target's armor"
