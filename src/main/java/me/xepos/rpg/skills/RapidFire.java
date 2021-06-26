@@ -3,10 +3,10 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
@@ -14,7 +14,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.util.Vector;
 
 public class RapidFire extends XRPGBowSkill {
-    public RapidFire(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public RapidFire(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -45,7 +45,7 @@ public class RapidFire extends XRPGBowSkill {
         setRemainingCooldown(getCooldown());
         updatedCasterMana();
 
-        for (int i = 0; i < getSkillVariables().getInt("extra-arrows"); i++) {
+        for (int i = 0; i < getSkillVariables().getInt(getSkillLevel(), "extra-arrows"); i++) {
             Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
                 Arrow extraArrow = e.getEntity().launchProjectile(Arrow.class, e.getProjectile().getLocation().getDirection());
                 extraArrow.setVelocity(velocity);

@@ -1,6 +1,12 @@
 name: "Blessed"
-base-mana-increase: 1
-mana-per-level: 2
-description:
-  - "Unlocking this skill increases your maximum mana by 1."
-  - "Subsequent levels give 2 mana per level."
+levels:
+  statics:
+    description:
+      - "Unlocking this skill increases your maximum mana by 1."
+      - "Subsequent levels give 2 mana per level."
+  1:
+    mana: 1
+  2:
+    mana: 3
+  3:
+    mana: 5

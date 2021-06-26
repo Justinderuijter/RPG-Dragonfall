@@ -1,7 +1,15 @@
 name: "Leap of Faith"
-velocity: 5
-cooldown: 15
-description:
-  - "Close your eyes and spurt forwards"
-  - "Casting this while jumping can significantly"
-  - "increase the distance traveled."
+
+levels:
+  statics:
+    cooldown: 15
+    description:
+      - "Close your eyes and spurt forwards"
+      - "Casting this while jumping can significantly"
+      - "increase the distance traveled."
+  1:
+    velocity: 2
+  2:
+    velocity: 4
+  3:
+    velocity: 6

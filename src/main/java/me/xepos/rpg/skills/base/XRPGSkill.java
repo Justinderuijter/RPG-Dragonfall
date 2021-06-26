@@ -2,10 +2,10 @@ package me.xepos.rpg.skills.base;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.dependencies.combat.parties.PartySet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
@@ -21,10 +21,10 @@ public abstract class XRPGSkill {
     private final PartySet partySet;
 
     //Stats
-    private final ConfigurationSection skillVariables;
+    private final SkillData skillVariables;
     private long remainingCooldown;
 
-    public XRPGSkill(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public XRPGSkill(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         this.xrpgPlayer = xrpgPlayer;
         this.plugin = plugin;
         this.skillVariables = skillVariables;
@@ -54,7 +54,7 @@ public abstract class XRPGSkill {
     }
 
     public String getSkillName() {
-        return skillVariables.getString("name", "");
+        return skillVariables.getName();
     }
 
     public boolean isSkillReady() {
@@ -91,20 +91,20 @@ public abstract class XRPGSkill {
     }
 
     public double getCooldown() {
-        return skillVariables.getDouble("cooldown", -1);
+        return skillVariables.getCooldown(getSkillLevel());
     }
 
     public double getDamage() {
-        return skillVariables.getDouble("damage", 0);
+        return skillVariables.getDamage(getSkillLevel());
     }
 
     public double getDamageMultiplier() {
-        return skillVariables.getDouble("damage-multiplier");
+        return skillVariables.getDouble(getSkillLevel(), "damage-multiplier");
     }
 
     public int getRequiredMana() {
         if (plugin.useMana()) {
-            return skillVariables.getInt("mana", 0);
+            return skillVariables.getMana(getSkillLevel());
         }
 
         return 0;
@@ -115,7 +115,7 @@ public abstract class XRPGSkill {
     }
 
     public void updatedCasterMana(){
-        xrpgPlayer.setCurrentMana(xrpgPlayer.getCurrentMana() - skillVariables.getInt("mana", 0));
+        xrpgPlayer.setCurrentMana(xrpgPlayer.getCurrentMana() - skillVariables.getMana(getSkillLevel()));
         xrpgPlayer.sendActionBarMessage();
     }
 
@@ -123,7 +123,7 @@ public abstract class XRPGSkill {
         xrpgPlayer.getPlayer().sendMessage(ChatColor.RED + "You do not have enough mana to cast " + getSkillName() + "!");
     }
 
-    public ConfigurationSection getSkillVariables() {
+    public SkillData getSkillVariables() {
         return skillVariables;
     }
 

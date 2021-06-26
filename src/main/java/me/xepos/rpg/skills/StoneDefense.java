@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.RemoveBlocklistTask;
 import me.xepos.rpg.utils.Utils;
@@ -9,7 +10,6 @@ import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class StoneDefense extends XRPGActiveSkill {
-    public StoneDefense(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public StoneDefense(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
@@ -101,7 +101,7 @@ public class StoneDefense extends XRPGActiveSkill {
             }
         }
 
-        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble("duration", 5) * 20));
+        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble(getSkillLevel(), "duration", 5) * 20));
     }
 
     private void createEastWall(Block targetBlock){
@@ -123,7 +123,7 @@ public class StoneDefense extends XRPGActiveSkill {
             }
         }
 
-        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble("duration", 5) * 20));
+        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble(getSkillLevel(), "duration", 5) * 20));
     }
 
     private void createSouthWall(Block targetBlock){
@@ -144,7 +144,7 @@ public class StoneDefense extends XRPGActiveSkill {
             }
         }
 
-        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble("duration", 5) * 20));
+        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble(getSkillLevel(), "duration", 5) * 20));
     }
 
     private void createWestWall(Block targetBlock){
@@ -165,7 +165,7 @@ public class StoneDefense extends XRPGActiveSkill {
             }
         }
 
-        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble("duration", 5) * 20));
+        new RemoveBlocklistTask(replacedBlocksLocation, getPlugin()).runTaskLater(getPlugin(), (long)(getSkillVariables().getDouble(getSkillLevel(), "duration", 5) * 20));
     }
 
     private int calculateOffset(){

@@ -2,13 +2,13 @@ package me.xepos.rpg.commands;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -89,9 +89,9 @@ public class SpellbookCommand implements TabExecutor {
         return true;
     }
 
-    private ItemStack createSpellBookItem(ConfigurationSection configurationSection){ ;
-        final String iconName = configurationSection.getString("icon", "BARRIER").toUpperCase();
-        final String skillName = configurationSection.getString("name", "Nameless Skill");
+    private ItemStack createSpellBookItem(SkillData configurationSection){ ;
+        final String iconName = configurationSection.getIcon().toUpperCase();
+        final String skillName = configurationSection.getName();
         return this.createSpellBookItem(Material.valueOf(iconName), skillName);
     }
 

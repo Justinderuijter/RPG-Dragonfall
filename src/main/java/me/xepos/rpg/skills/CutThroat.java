@@ -2,10 +2,10 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -14,7 +14,7 @@ import org.bukkit.util.Vector;
 
 public class CutThroat extends XRPGPassiveSkill {
 
-    public CutThroat(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public CutThroat(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getPassiveEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName() ,this);
@@ -32,7 +32,7 @@ public class CutThroat extends XRPGPassiveSkill {
             //determine if the dot product between the vectors is greater than 0
             //If it is, we can conclude that the attack was a backstab
             if (attackerDirection.dot(victimDirection) > 0) {
-                if (entity.getHealth() <= entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / (100 / getSkillVariables().getDouble("threshold", 25.0)) && Utils.isSkillReady(getRemainingCooldown())) {
+                if (entity.getHealth() <= entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / (100 / getSkillVariables().getDouble(getSkillLevel(), "threshold", 25.0)) && Utils.isSkillReady(getRemainingCooldown())) {
                     entity.setHealth(0.0);
                     if (entity instanceof Player) {
                         e.getDamager().getWorld().getNearbyEntities(e.getDamager().getLocation(), 10, 5, 10, p -> p instanceof Player).forEach(p -> p.sendMessage(entity.getName() + " was executed by " + e.getDamager().getName() + "!"));

@@ -1,5 +1,14 @@
 name: "Hot Head"
-description:
-  - "Attacking an enemy has a %trigger-chance% % chance"
-  - "to set them on fire."
-  - "You take %damage-multiplier% % less damage from fire."
+
+levels:
+  statics:
+    description:
+      - "Attacking an enemy has a %trigger-chance% % chance"
+      - "to set them on fire."
+      - "You take %damage-multiplier% % less damage from fire."
+  1:
+    fire-damage-reduction-multiplier: 0.175
+  2:
+    fire-damage-reduction-multiplier: 0.25
+  3:
+    fire-damage-reduction-multiplier: 0.50

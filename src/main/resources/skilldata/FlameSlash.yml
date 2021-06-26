@@ -1,6 +1,12 @@
 name: "Flame Slash"
-required-items:
-  - AXE
-damage: 7.0
-ignore-villagers: true
-cooldown: 12.0
+
+levels:
+  statics:
+    ignore-villagers: true
+    cooldown: 12.0
+  1:
+    damage: 7.0
+  2:
+    damage: 14.0
+  3:
+    damage: 28

@@ -3,11 +3,11 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ExplosiveProjectileData;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Fireball;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -16,7 +16,7 @@ import org.bukkit.util.Vector;
 public class Meteor extends XRPGActiveSkill {
     private me.xepos.rpg.skills.Fireball fireball;
 
-    public Meteor(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public Meteor(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getPassiveEventHandler("LEFT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
@@ -49,10 +49,10 @@ public class Meteor extends XRPGActiveSkill {
             return;
         }
 
-        int range = getSkillVariables().getInt("range", 32);
-        final float explosionYield = (float) getSkillVariables().getDouble("explosion-yield", 2.0);
-        final boolean setFire = getSkillVariables().getBoolean("explosion-fire", false);
-        final boolean breakBlocks = getSkillVariables().getBoolean("explosion-break-block", false);
+        int range = getSkillVariables().getInt(getSkillLevel(), "range", 32);
+        final float explosionYield = (float) getSkillVariables().getDouble(getSkillLevel(), "explosion-yield", 2.0);
+        final boolean setFire = getSkillVariables().getBoolean(getSkillLevel(), "explosion-fire", false);
+        final boolean breakBlocks = getSkillVariables().getBoolean(getSkillLevel(), "explosion-break-block", false);
 
         //Meteor Skill logic
         Location loc = Utils.getTargetBlock(e.getPlayer(), range).getLocation();

@@ -3,15 +3,15 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ExplosiveProjectileData;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class ExplosiveShot extends XRPGActiveSkill {
-    public ExplosiveShot(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public ExplosiveShot(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -32,9 +32,9 @@ public class ExplosiveShot extends XRPGActiveSkill {
         }
 
         Arrow arrow = (Arrow) e.getProjectile();
-        final float yield = (float) getSkillVariables().getDouble("explosion-yield", 2.0);
-        final boolean setFire = getSkillVariables().getBoolean("explosion-fire", false);
-        final boolean breakBlocks = getSkillVariables().getBoolean("explosion-break-block", false);
+        final float yield = (float) getSkillVariables().getDouble(getSkillLevel(), "explosion-yield", 2.0);
+        final boolean setFire = getSkillVariables().getBoolean(getSkillLevel(), "explosion-fire", false);
+        final boolean breakBlocks = getSkillVariables().getBoolean(getSkillLevel(), "explosion-break-block", false);
 
         ExplosiveProjectileData data = new ExplosiveProjectileData(arrow, yield, 20);
         data.setsFire(setFire);

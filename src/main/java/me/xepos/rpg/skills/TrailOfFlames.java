@@ -2,12 +2,12 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class TrailOfFlames extends XRPGActiveSkill {
 
-    public TrailOfFlames(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public TrailOfFlames(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -54,13 +54,13 @@ public class TrailOfFlames extends XRPGActiveSkill {
         setRemainingCooldown(getCooldown());
         updatedCasterMana();
 
-        final double duration = getSkillVariables().getDouble("duration", 5.0);
+        final double duration = getSkillVariables().getDouble(getSkillLevel(), "duration", 5.0);
         final long delay = 2;
         AtomicInteger ticks = new AtomicInteger();
 
         new BukkitRunnable() {
             final Set<Location> locations = new HashSet<>();
-            final boolean ignoreVillagers = getSkillVariables().getBoolean("ignore-villagers", true);
+            final boolean ignoreVillagers = getSkillVariables().getBoolean(getSkillLevel(), "ignore-villagers", true);
 
             @Override
             public void run() {

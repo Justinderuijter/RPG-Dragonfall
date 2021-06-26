@@ -45,6 +45,17 @@ items:
       - "to enter spellmode."
       - "Can also be used to exit spellmode."
 
+class-change:
+  #Set to -1 to disable swap cost
+  costs-after-level: 9
+  material: GOLD_INGOT
+  amount: 32
+
+exp:
+  global-multiplier: 1.0
+  source-blacklist:
+    mcmmo-skills:
+      - Acrobatics
 
 garbage-collection:
   # Time that should pass between garbage collection.

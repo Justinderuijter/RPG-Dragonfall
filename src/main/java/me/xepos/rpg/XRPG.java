@@ -8,6 +8,7 @@ import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.datatypes.BaseProjectileData;
 import me.xepos.rpg.datatypes.ClassInfo;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.datatypes.TreeData;
 import me.xepos.rpg.dependencies.combat.parties.PartyManagerFactory;
 import me.xepos.rpg.dependencies.combat.parties.PartySet;
@@ -25,7 +26,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -58,7 +58,7 @@ public final class XRPG extends JavaPlugin {
     private static HashMap<String, ClassInfo> classInfo;
 
     //Skills
-    private static HashMap<String, FileConfiguration> skillData;
+    private static HashMap<String, SkillData> skillData;
 
     //Skill trees
     private static HashMap<String, SkillTree> treeData;
@@ -318,7 +318,7 @@ public final class XRPG extends JavaPlugin {
         return this.getConfig().getBoolean("mana.enabled", false);
     }
 
-    public FileConfiguration getSkillData(String skillId){
+    public SkillData getSkillData(String skillId){
         return skillData.get(skillId);
     }
 

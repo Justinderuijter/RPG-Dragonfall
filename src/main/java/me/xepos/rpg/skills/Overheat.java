@@ -2,11 +2,11 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.OverheatTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -15,7 +15,7 @@ import org.bukkit.util.RayTraceResult;
 
 public class Overheat extends XRPGActiveSkill {
 
-    public Overheat(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public Overheat(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -44,15 +44,15 @@ public class Overheat extends XRPGActiveSkill {
             return;
         }
 
-        double range = getSkillVariables().getDouble("range", 16.0);
+        double range = getSkillVariables().getDouble(getSkillLevel(), "range", 16.0);
 
         RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
         if (result != null && result.getHitEntity() != null) {
 
-            double delay = getSkillVariables().getDouble("delay", 5.0);
+            double delay = getSkillVariables().getDouble(getSkillLevel(), "delay", 5.0);
 
             //Utils.rayTrace only returns livingEntities so no need to check
-            new OverheatTask((LivingEntity) result.getHitEntity(), getDamage(), getSkillVariables().getDouble("damage-per-armor", 0.5)).runTaskLater(getPlugin(), (long) delay * 20L);
+            new OverheatTask((LivingEntity) result.getHitEntity(), getDamage(), getSkillVariables().getDouble(getSkillLevel(),"damage-per-armor", 0.5)).runTaskLater(getPlugin(), (long) delay * 20L);
             setRemainingCooldown(getCooldown());
             updatedCasterMana();
         }

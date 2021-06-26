@@ -1,9 +1,25 @@
 name: "Marksman"
-headshot-multiplier: 1.5
-pierce: 1
-cooldown: 6.0
-description:
-  - "Fully charged shots from your bow make your arrows"
-  - "slash through the air with exceptional speed,"
-  - "removing all drop-off and granting them pierce"
-  - "Headshot deal bonus damage"
+
+levels:
+  statics:
+    pierce: 1
+  1:
+    headshot-multiplier: 1.0
+    description:
+      - "Fully charged shots from your bow make your arrows"
+      - "slash through the air with exceptional speed,"
+      - "removing all drop-off and granting them pierce"
+  2:
+    headshot-multiplier: 1.5
+    description:
+      - "Fully charged shots from your bow make your arrows"
+      - "slash through the air with exceptional speed,"
+      - "removing all drop-off and granting them pierce"
+      - "Headshot deal bonus damage"
+  3:
+    headshot-multiplier: 2.0
+    description:
+      - "Fully charged shots from your bow make your arrows"
+      - "slash through the air with exceptional speed,"
+      - "removing all drop-off and granting them pierce"
+      - "Headshot deal bonus damage"

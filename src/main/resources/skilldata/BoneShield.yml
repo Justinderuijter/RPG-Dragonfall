@@ -1,4 +1,6 @@
 name: "Bone Shield"
-threshold: 50.0
-shield-per-follower: 2.0
-cooldown: 20
+levels:
+  statics:
+    threshold: 50.0
+    shield-per-follower: 2.0
+    cooldown: 20

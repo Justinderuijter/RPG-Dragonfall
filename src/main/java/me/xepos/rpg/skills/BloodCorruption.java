@@ -2,11 +2,11 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.BloodCorruptionTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -15,7 +15,7 @@ import org.bukkit.util.RayTraceResult;
 
 public class BloodCorruption extends XRPGActiveSkill {
 
-    public BloodCorruption(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public BloodCorruption(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -44,12 +44,12 @@ public class BloodCorruption extends XRPGActiveSkill {
             return;
         }
 
-        double range = getSkillVariables().getDouble("range", 16.0);
+        double range = getSkillVariables().getDouble(getSkillLevel(), "range", 16.0);
 
         RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
         if (result.getHitEntity() != null) {
-            double duration = getSkillVariables().getDouble("duration", 4.0);
-            double damage = getSkillVariables().getDouble("damage-per-block", 1.0);
+            double duration = getSkillVariables().getDouble(getSkillLevel(), "duration", 4.0);
+            double damage = getSkillVariables().getDouble(getSkillLevel(), "damage-per-block", 1.0);
 
             caster.sendMessage("Hit " + result.getHitEntity().getName());
             LivingEntity target = (LivingEntity) result.getHitEntity();

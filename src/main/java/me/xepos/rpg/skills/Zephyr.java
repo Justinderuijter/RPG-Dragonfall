@@ -2,11 +2,11 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Sound;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -19,7 +19,7 @@ import java.util.List;
 public class Zephyr extends XRPGActiveSkill {
     private Fireball fireball;
 
-    public Zephyr(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public Zephyr(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -61,7 +61,7 @@ public class Zephyr extends XRPGActiveSkill {
             fireBallStacks = fireball.getFireBallStacks();
         }
 
-        final long duration = (long) getSkillVariables().getDouble("duration", 3.0);
+        final long duration = (long) getSkillVariables().getDouble(getSkillLevel(),"duration", 3.0);
         for (LivingEntity entity : entities) {
             if (entity != e.getPlayer()) {
                 //Subtract 1 from the count to account for user

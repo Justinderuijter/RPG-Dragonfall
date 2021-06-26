@@ -1,5 +1,13 @@
 name: "Bullseye"
-activation-chance: 30
-description:
-  - "Your precision with your bow gives you a"
-  - "%trigger-chance% % chance to critically strike."
+
+levels:
+  statics:
+    description:
+      - "Your precision with your bow gives you a"
+      - "%trigger-chance% % chance to critically strike."
+  1:
+    activation-chance: 25
+  2:
+    activation-chance: 50
+  3:
+    activation-chance: 100

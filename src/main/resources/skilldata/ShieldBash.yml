@@ -1,9 +1,24 @@
 name: "Shield Bash"
-push-strength: 1.5
-cast-delay: 0.25
-duration: 2.0
-cooldown: 10
-description:
-  - "Wave the heavy shield to bash the target."
-  - "Stuns the target with a strong shock"
-  - "and pushes them back."
+icon: SHIELD
+levels:
+  statics:
+    cooldown: 10
+    description:
+      - "Wave the heavy shield to bash the target."
+      - "Stuns the target with a strong shock"
+      - "and pushes them back."
+  1:
+    push-strength: 1.0
+    cast-delay: 0.25
+    duration: 1.0
+    damage: 2.0
+  2:
+    push-strength: 2
+    cast-delay: 0.30
+    duration: 1.33
+    damage: 4.0
+  3:
+    push-strength: 4
+    cast-delay: 0.40
+    duration: 2.0
+    damage: 8.0

@@ -2,8 +2,8 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -14,14 +14,14 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class HotHead extends XRPGPassiveSkill {
-    private static Set<EntityDamageEvent.DamageCause> causes = new HashSet<EntityDamageEvent.DamageCause>(){{
+    private static final Set<EntityDamageEvent.DamageCause> causes = new HashSet<EntityDamageEvent.DamageCause>(){{
         add(EntityDamageEvent.DamageCause.FIRE);
         add(EntityDamageEvent.DamageCause.FIRE_TICK);
         add(EntityDamageEvent.DamageCause.HOT_FLOOR);
         add(EntityDamageEvent.DamageCause.LAVA);
     }};
 
-    public HotHead(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public HotHead(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName(), this);
@@ -41,7 +41,7 @@ public class HotHead extends XRPGPassiveSkill {
             EntityDamageEvent e = (EntityDamageEvent) event;
 
             if (causes.contains(e.getCause())){
-                e.setDamage(e.getDamage() / getSkillVariables().getDouble("fire-damage-taken-multiplier", 0.5));
+                e.setDamage(e.getDamage() * (1 - getSkillVariables().getDouble(getSkillLevel(), "fire-damage-reduction-multiplier", 0.5)));
             }
         }
     }

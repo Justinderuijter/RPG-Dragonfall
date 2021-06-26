@@ -1,5 +1,8 @@
 name: "Explosive Shot"
-explosion-yield: 2.0
-explosion-fire: false
-explosion-break-block: false
-cooldown: 12.0
+
+levels:
+  statics:
+    explosion-yield: 2.0
+    explosion-fire: false
+    explosion-break-block: false
+    cooldown: 12.0

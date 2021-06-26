@@ -16,10 +16,10 @@ public class ParticleSpiralEffectTask extends BukkitRunnable {
     double var = 0;
     Location loc, first, second;
 
-    public ParticleSpiralEffectTask(Particle particle, Player player, double radius, int amount, double duration){
+    public ParticleSpiralEffectTask(Particle particle, Player player, double radius, int amount, double durationInSeconds){
         this.particle = particle;
         this.player = player;
-        this.duration = (long)(duration * 20);
+        this.duration = (long)(durationInSeconds * 20);
         this.radius = radius;
         this.amount = amount;
     }
@@ -34,8 +34,8 @@ public class ParticleSpiralEffectTask extends BukkitRunnable {
             first = loc.clone().add(Math.cos(var) * radius, Math.sin(var) + 1, Math.sin(var) * radius);
             second = loc.clone().add(Math.cos(var + Math.PI) * radius, Math.sin(var) + 1, Math.sin(var + Math.PI) * radius);
 
-            player.getWorld().spawnParticle(particle, first, 0);
-            player.getWorld().spawnParticle(particle, second, 0);
+            player.getWorld().spawnParticle(particle, first, amount);
+            player.getWorld().spawnParticle(particle, second, amount);
 
             currentTicks++;
         }else{

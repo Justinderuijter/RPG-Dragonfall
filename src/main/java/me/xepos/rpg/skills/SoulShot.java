@@ -3,15 +3,15 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class SoulShot extends XRPGActiveSkill {
-    public SoulShot(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public SoulShot(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -34,7 +34,7 @@ public class SoulShot extends XRPGActiveSkill {
         Arrow arrow = (Arrow) e.getProjectile();
         arrow.setDamage(0);
 
-        double damageMultiplier = 1 - getSkillVariables().getDouble("percent-health-damage", 0.25);
+        double damageMultiplier = 1 - getSkillVariables().getDouble(getSkillLevel(), "percent-health-damage", 0.25);
 
         getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, damageMultiplier, 20));
         setRemainingCooldown(getCooldown());

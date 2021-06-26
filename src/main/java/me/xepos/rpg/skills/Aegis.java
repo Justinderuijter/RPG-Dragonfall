@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.tasks.RemoveDTModifierTask;
@@ -9,7 +10,6 @@ import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class Aegis extends XRPGPassiveSkill {
 
-    public Aegis(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public Aegis(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName(), this);
@@ -46,10 +46,10 @@ public class Aegis extends XRPGPassiveSkill {
                 return;
             }
 
-            final double duration = getSkillVariables().getDouble("duration", 4.0);
-            final double xRange = getSkillVariables().getDouble("x-range", 8);
-            final double yRange = getSkillVariables().getDouble("y-range", 5);
-            final double zRange = getSkillVariables().getDouble("z-range", xRange);
+            final double duration = getSkillVariables().getDouble(getSkillLevel(), "duration", 4.0);
+            final double xRange = getSkillVariables().getDouble(getSkillLevel(), "x-range", 8);
+            final double yRange = getSkillVariables().getDouble(getSkillLevel(), "y-range", 5);
+            final double zRange = getSkillVariables().getDouble(getSkillLevel(), "z-range", xRange);
 
             List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), xRange, yRange, zRange, p -> p instanceof Player && getPartySet().isPlayerAllied(player, (Player) p)));
             for (Player target : nearbyPlayers) {

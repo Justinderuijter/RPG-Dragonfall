@@ -3,6 +3,7 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.ApplyStunTask;
@@ -12,7 +13,6 @@ import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -26,7 +26,7 @@ import java.util.UUID;
 
 public class ShieldBash extends XRPGActiveSkill {
 
-    public ShieldBash(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public ShieldBash(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         AttributeModifier mod = new AttributeModifier(UUID.fromString("076c8ed9-b6e2-4da1-a4c0-27c50c61725d"), "SHIELD_BASH", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
@@ -64,9 +64,9 @@ public class ShieldBash extends XRPGActiveSkill {
         RayTraceResult result = Utils.rayTrace(player, 4, FluidCollisionMode.NEVER);
 
         if (result != null && result.getHitEntity() != null){
-            final double castDelay = getSkillVariables().getDouble("cast-delay", 0.25);
-            final double duration = getSkillVariables().getDouble("duration", 1.0);
-            final double pushStrength = getSkillVariables().getDouble("push-strength", 1.5);
+            final double castDelay = getSkillVariables().getDouble(getSkillLevel(), "cast-delay", 0.25);
+            final double duration = getSkillVariables().getDouble(getSkillLevel(), "duration", 1.0);
+            final double pushStrength = getSkillVariables().getDouble(getSkillLevel(), "push-strength", 1.5);
 
             if (result.getHitEntity() instanceof Player){
                 XRPGPlayer xrpgPlayer = getPlugin().getXRPGPlayer(result.getHitEntity().getUniqueId(), true);

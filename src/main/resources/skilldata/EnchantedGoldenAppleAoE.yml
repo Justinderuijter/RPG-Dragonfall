@@ -1,5 +1,8 @@
 name: "Enchanted Golden Apple AoE"
-x-range: 10.0
-y-range: 5.0
-z-range: 10.0
-cooldown: 30.0
+
+levels:
+  statics:
+    x-range: 10.0
+    y-range: 5.0
+    z-range: 10.0
+    cooldown: 30.0

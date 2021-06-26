@@ -2,12 +2,12 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -26,7 +26,7 @@ public class ShadowStep extends XRPGActiveSkill {
 
     private ArmorStand substitute = null;
 
-    public ShadowStep(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public ShadowStep(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
@@ -106,7 +106,7 @@ public class ShadowStep extends XRPGActiveSkill {
                         substitute = null;
                     }
                 }
-            }.runTaskLater(getPlugin(), (long) getSkillVariables().getDouble("duration", 5.0) * 20);
+            }.runTaskLater(getPlugin(), (long) getSkillVariables().getDouble(getSkillLevel(),"duration", 5.0) * 20);
         } else {
             player.teleport(substitute.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             substitute.remove();

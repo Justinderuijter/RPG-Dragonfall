@@ -1,4 +1,9 @@
 name: "Armored"
-description:
-  - "Increases your armor and maximum health"
-  - "by 2 points per level."
+
+levels:
+  statics:
+    armor-per-level: 2
+    health-per-level: 2
+    description:
+      - "Increases your armor and maximum health"
+      - "by 2 points per level."

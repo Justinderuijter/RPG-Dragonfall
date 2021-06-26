@@ -4,6 +4,7 @@ import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.AttributeModifierData;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.skills.base.IMessenger;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
@@ -12,7 +13,6 @@ import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -27,10 +27,10 @@ public class Rage extends XRPGPassiveSkill implements IMessenger {
     private byte rageLevel = 0;
     BukkitTask rageTask = null;
 
-    public Rage(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, int skillLevel) {
+    public Rage(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel);
 
-        double attackSpeedMultiplier = skillVariables.getDouble("atk-spd-multiplier", 1.65) - 1;
+        double attackSpeedMultiplier = skillVariables.getDouble(skillLevel, "atk-spd-multiplier", 1.65) - 1;
         AttributeModifier mod = new AttributeModifier(UUID.fromString("1d7a09c9-b6e2-4dc7-ab6f-8831dffcb111"), "RAGE_ATK_SPD", attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
         Bukkit.getLogger().info("name: " + mod.getName());
@@ -52,10 +52,10 @@ public class Rage extends XRPGPassiveSkill implements IMessenger {
 
         //increase rage count
         if (((LivingEntity) e.getEntity()).getHealth() <= e.getFinalDamage()) {
-            incrementRage((byte) getSkillVariables().getInt("bonus-rage-on-kill"));
+            incrementRage((byte) getSkillVariables().getInt(getSkillLevel(), "bonus-rage-on-kill"));
         }
 
-        incrementRage((byte) getSkillVariables().getInt("rage-on-hit"));
+        incrementRage((byte) getSkillVariables().getInt(getSkillLevel(), "rage-on-hit"));
         getXRPGPlayer().sendActionBarMessage();
         if (rageTask == null || rageTask.isCancelled())
             rageTask = new RavagerRageTask(getXRPGPlayer(), this, (byte) 5).runTaskTimer(getPlugin(), 100L, 100L);
@@ -70,7 +70,7 @@ public class Rage extends XRPGPassiveSkill implements IMessenger {
 
     private void applyDamageRageEffect(EntityDamageByEntityEvent e) {
         Player player = (Player) e.getDamager();
-        ConfigurationSection skillVariable = getSkillVariables();
+        SkillData skillVariable = getSkillVariables();
         AttributeModifierData attackSpeedModifierData = AttributeModifierManager.getInstance().get(ModifierType.POSITIVE, "RAGE_ATK_SPD");
 
         switch (rageLevel) {
@@ -78,15 +78,15 @@ public class Rage extends XRPGPassiveSkill implements IMessenger {
                 Utils.removeUniqueModifier(player, attackSpeedModifierData);
             case 1:
                 Utils.removeUniqueModifier(player, attackSpeedModifierData);
-                e.setDamage(e.getDamage() * skillVariable.getDouble("rage-one-multiplier", 1.1));
+                e.setDamage(e.getDamage() * skillVariable.getDouble(getSkillLevel(), "rage-one-multiplier", 1.1));
                 break;
             case 2:
                 Utils.removeUniqueModifier(player, attackSpeedModifierData);
-                e.setDamage(e.getDamage() * skillVariable.getDouble("rage-two-multiplier", 1.2));
+                e.setDamage(e.getDamage() * skillVariable.getDouble(getSkillLevel(), "rage-two-multiplier", 1.2));
                 break;
             case 3:
                 Utils.addUniqueModifier(player, attackSpeedModifierData);
-                e.setDamage(e.getDamage() * skillVariable.getDouble("rage-three-multiplier", 1.3));
+                e.setDamage(e.getDamage() * skillVariable.getDouble(getSkillLevel(), "rage-three-multiplier", 1.3));
                 break;
         }
     }

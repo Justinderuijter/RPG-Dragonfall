@@ -1,7 +1,10 @@
 name: "Expose Weakness"
 icon: "ENDER_EYE"
-max-health-damage: 25.0
-description:
-  - "Watch what your enemy guards most carefully,"
-  - "then, attack that place. Dealing damage equal to"
-  - "%max-health-damage% % of their maximum health"
+
+levels:
+  statics:
+    max-health-damage: 25.0
+    description:
+      - "Watch what your enemy guards most carefully,"
+      - "then, attack that place. Dealing damage equal to"
+      - "%max-health-damage% % of their maximum health"

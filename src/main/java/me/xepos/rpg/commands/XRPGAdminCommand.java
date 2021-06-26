@@ -140,7 +140,7 @@ public class XRPGAdminCommand implements TabExecutor {
                 }
                 if (plugin.hasSkillData(strings[3])){
                     skillLoader.addSkillToPlayer(strings[3], xrpgTarget, skillLevel);
-                    xrpgTarget.getPlayer().sendMessage(ChatColor.GREEN + "You received the skill " + plugin.getSkillData(strings[3]).getString("name", "???") + "! It is now level " + skillLevel + "!");
+                    xrpgTarget.getPlayer().sendMessage(ChatColor.GREEN + "You received the skill " + plugin.getSkillData(strings[3]).getName() + "! It is now level " + skillLevel + "!");
                     return true;
                 }
                 sender.sendMessage(ChatColor.RED + "Couldn't find skill: " + strings[3] + "!");

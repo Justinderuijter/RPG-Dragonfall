@@ -1,6 +1,6 @@
 package me.xepos.rpg.datatypes;
 
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
+import org.bukkit.craftbukkit.libs.org.eclipse.sisu.Nullable;
 
 import java.util.HashMap;
 

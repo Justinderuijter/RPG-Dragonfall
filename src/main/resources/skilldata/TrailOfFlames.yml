@@ -1,9 +1,16 @@
 name: "Trail of Flames"
 icon: "FLINT_AND_STEEL"
-ignore-villagers: true
-duration: 5.0
-cooldown: 12.0
-description:
-  - "You leave a trail of fire behind you"
-  - "that sets anyone that steps inside it"
-  - "on fire for %duration% seconds"
+levels:
+  statics:
+    ignore-villagers: true
+    cooldown: 12.0
+    description:
+      - "You leave a trail of fire behind you"
+      - "that sets anyone that steps inside it"
+      - "on fire for %duration% seconds"
+  1:
+    duration: 5.0
+  2:
+    duration: 7.0
+  3:
+    duration: 10.0

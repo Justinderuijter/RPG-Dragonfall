@@ -317,6 +317,7 @@ public class TreeData {
     public void updateClickedIcon(Inventory inventory, int slotId, ItemStack item, int newLevel) {
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta.getPersistentDataContainer().has(plugin.getKey("skillId"), PersistentDataType.STRING)) {
+            final String skillId = itemMeta.getPersistentDataContainer().get(plugin.getKey("skillId"), PersistentDataType.STRING);
             itemMeta.getPersistentDataContainer().remove(plugin.getKey("level"));
             int maxLevel = itemMeta.getPersistentDataContainer().get(plugin.getKey("maxLevel"), PersistentDataType.INTEGER);
             Material material;
@@ -331,7 +332,7 @@ public class TreeData {
             String name = itemMeta.getDisplayName().substring(0, itemMeta.getDisplayName().indexOf("("));
             name += "(" + newLevel + "/" + maxLevel + ")";
             itemMeta.setDisplayName(name);
-
+            itemMeta.setLore(plugin.getSkillData(skillId).getDescription(newLevel < maxLevel ? newLevel + 1 : newLevel));
             itemMeta.getPersistentDataContainer().set(plugin.getKey("level"), PersistentDataType.INTEGER, newLevel);
             ItemStack newItem = new ItemStack(material);
             newItem.setItemMeta(itemMeta);
