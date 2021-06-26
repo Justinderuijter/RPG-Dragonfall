@@ -4,10 +4,10 @@ package me.xepos.rpg.utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
-import net.minecraft.server.v1_16_R3.PacketPlayOutSetSlot;
+import net.minecraft.network.protocol.game.PacketPlayOutSetSlot;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,7 +39,7 @@ public class PacketUtils {
             //For packets player inventory hotbar starts at index 36
             PacketPlayOutSetSlot pack = new PacketPlayOutSetSlot(0, i + 36, CraftItemStack.asNMSCopy(itemStack));
 
-            craftPlayer.getHandle().playerConnection.sendPacket(pack);
+            craftPlayer.getHandle().b.sendPacket(pack);
         }
     }
 }

@@ -5,7 +5,7 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MFlag;
 import com.massivecraft.massivecore.ps.PS;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
+import org.bukkit.craftbukkit.libs.org.eclipse.sisu.Nullable;
 
 public class FactionsProtectionManager implements IProtectionManager {
 

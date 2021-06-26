@@ -1,9 +1,9 @@
 package me.xepos.rpg.tasks;
 
-import net.minecraft.server.v1_16_R3.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftLivingEntity;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -50,9 +50,9 @@ public class OverheatTask extends BukkitRunnable {
 
         if (!target.isInWater()) {
             damage = (5 + armorValue / 2) * 1 / (1 - enchantLevel * 0.04);
-            ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.FIRE, (float) damage);
+            ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.a, (float) damage);
         } else {
-            ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.FIRE, (float) damage);
+            ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.a, (float) damage);
             target.sendMessage("Overheat damage was reduced by the water.");
         }
     }

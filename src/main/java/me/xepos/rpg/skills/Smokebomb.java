@@ -7,12 +7,12 @@ import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.EndInvisibilityTask;
 import me.xepos.rpg.utils.Utils;
-import net.minecraft.server.v1_16_R3.EnumItemSlot;
-import net.minecraft.server.v1_16_R3.ItemStack;
-import net.minecraft.server.v1_16_R3.PacketPlayOutEntityEquipment;
+import net.minecraft.network.protocol.game.PacketPlayOutEntityEquipment;
+import net.minecraft.world.entity.EnumItemSlot;
+import net.minecraft.world.item.ItemStack;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.Event;
@@ -65,19 +65,19 @@ public class Smokebomb extends XRPGActiveSkill {
                 e.getPlayer().sendMessage("You're now invisible!");
                 //Custom packet sending starts here, if something breaks between versions it's probably this
                 final List<Pair<EnumItemSlot, ItemStack>> equipmentList = new ArrayList<>();
-                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
-                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
-                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
-                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.FEET, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
-                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
-                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.OFFHAND, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
+                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.f, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
+                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.e, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
+                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.d, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
+                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.c, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
+                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.a, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
+                equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.b, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
                 //Creating the packet we're going to send
                 final PacketPlayOutEntityEquipment entityEquipmentPacket = new PacketPlayOutEntityEquipment(e.getPlayer().getEntityId(), equipmentList);
 
                 //List all affected players so we can undo the packet later
                 List<Player> affectedPlayers = new ArrayList(e.getPlayer().getWorld().getNearbyEntities(e.getPlayer().getLocation(), 20, 10, 20, p -> p instanceof Player && p != e.getPlayer()));
                 for (Player ent : affectedPlayers) {
-                    ((CraftPlayer) ent).getHandle().playerConnection.sendPacket(entityEquipmentPacket);//send affected players the packet
+                    ((CraftPlayer) ent).getHandle().b.sendPacket(entityEquipmentPacket);//send affected players the packet
                 }
 
                 setRemainingCooldown(getCooldown());
