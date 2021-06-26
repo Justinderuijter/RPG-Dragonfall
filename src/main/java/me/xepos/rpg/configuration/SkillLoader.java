@@ -106,7 +106,7 @@ public class SkillLoader extends XRPGLoader{
     public void addSkillToPlayer(String skillId, XRPGPlayer xrpgPlayer, int level) {
         try {
             Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
-            Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class, int.class);
+            Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, SkillData.class, XRPG.class, int.class);
 
             //The instance of the skill automatically assigns itself to the XRPGPlayer
             if (getPlugin().getSkillData(skillId) == null) {

@@ -1,7 +1,7 @@
 package me.xepos.rpg.dependencies.combat.protection;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
+import org.bukkit.craftbukkit.libs.org.eclipse.sisu.Nullable;
 
 import java.util.List;
 

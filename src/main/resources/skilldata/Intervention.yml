@@ -2,7 +2,7 @@ name: "Intervention"
 icon: "LEAD"
 
 levels:
-  static:
+  statics:
     cooldown: 6.0
     description:
       - "Pull your target towards you with a force of %pull-force%"

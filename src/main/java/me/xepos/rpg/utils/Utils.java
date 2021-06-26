@@ -367,6 +367,13 @@ public final class Utils {
         return item;
     }
 
+    public static ItemStack buildItemStack(Material material, int amount, String displayName, List<String> lore) {
+        final ItemStack item = buildItemStack(material, displayName, lore);
+        item.setAmount(amount);
+
+        return item;
+    }
+
 
 
 }

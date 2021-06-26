@@ -3,6 +3,7 @@ package me.xepos.rpg.utils;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import net.minecraft.server.v1_16_R3.PacketPlayOutSetSlot;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -23,10 +24,14 @@ public class PacketUtils {
 
         for (int i = 0; i < xrpgPlayer.getSpellKeybinds().size(); i++) {
 
-            final String skillName = plugin.getSkillData(xrpgPlayer.getSpellKeybinds().get(i)).getString("name", "???");
-            final String materialName = plugin.getSkillData(xrpgPlayer.getSpellKeybinds().get(i)).getString("icon", "BARRIER");
+            final String keyBindId = xrpgPlayer.getSpellKeybinds().get(i);
+            if (keyBindId == null) continue;
+            final SkillData skillData = plugin.getSkillData(keyBindId);
+            final String skillName = skillData.getName();
+            final String materialName = skillData.getIcon();
+            final int skillLevel = xrpgPlayer.getActiveHandler().getSkills().get(keyBindId).getSkillLevel();
 
-            ItemStack itemStack = Utils.buildItemStack(Material.getMaterial(materialName), skillName, null);
+            ItemStack itemStack = Utils.buildItemStack(Material.getMaterial(materialName), skillName, skillData.getDescription(skillLevel));
             ItemMeta meta = itemStack.getItemMeta();
             //meta.displayName(Component.text(skillName));
             itemStack.setItemMeta(meta);

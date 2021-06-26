@@ -2,6 +2,7 @@ package me.xepos.rpg.tree;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.datatypes.TreeCache;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
@@ -159,7 +160,7 @@ public class SkillTree {
                         currentLevel = skill.getSkillLevel();
                     }
 
-                    ConfigurationSection skillData = plugin.getSkillData(skillId);
+                    SkillData skillData = plugin.getSkillData(skillId);
 
                     Material material = Material.RED_WOOL;
                     if (playerSkills.containsKey(skillId)) {
@@ -170,9 +171,9 @@ public class SkillTree {
                     if (skillData == null){
                         Bukkit.getLogger().info("Skilldata is null for " + skillId);
                     }
-                    String nodeName = skillData.getString("name", "???") + " (" + currentLevel + "/" + maxLevel + ")";
-
-                    ItemStack item = Utils.buildItemStack(material, nodeName, skillData.getStringList("description"));
+                    String nodeName = skillData.getName() + " (" + currentLevel + "/" + maxLevel + ")";
+                    Bukkit.getLogger().severe(nodeName);
+                    ItemStack item = Utils.buildItemStack(material, nodeName, skillData.getDescription(currentLevel < maxLevel ? currentLevel + 1 : currentLevel));
 
                     setRequiredMeta(interfaceSection, item, skillId, currentLevel, maxLevel);
 
@@ -201,14 +202,14 @@ public class SkillTree {
             saveBook.setItemMeta(meta);
         }
 
-        final ItemStack health = Utils.buildItemStack(Material.RED_WOOL, "Increase Health", null);
+        final ItemStack health = Utils.buildItemStack(Material.RED_WOOL, xrpgPlayer.getHealthLevel() + 1, "Increase Health", null);
         final ItemMeta healthMeta = health.getItemMeta();
         if (healthMeta != null) {
             healthMeta.getPersistentDataContainer().set(plugin.getKey("attribute"), PersistentDataType.STRING, "health");
             health.setItemMeta(healthMeta);
         }
 
-        final ItemStack mana = Utils.buildItemStack(Material.BLUE_WOOL, "Increase Mana", null);
+        final ItemStack mana = Utils.buildItemStack(Material.BLUE_WOOL, xrpgPlayer.getManaLevel() + 1, "Increase Mana", null);
         final ItemMeta manaMeta = mana.getItemMeta();
         if (manaMeta != null) {
             manaMeta.getPersistentDataContainer().set(plugin.getKey("attribute"), PersistentDataType.STRING, "mana");

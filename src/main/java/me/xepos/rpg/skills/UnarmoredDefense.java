@@ -82,16 +82,12 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
         if (event instanceof PlayerArmorChangeEvent) {
             PlayerArmorChangeEvent e = (PlayerArmorChangeEvent) event;
 
-            e.getPlayer().sendMessage("Armor changed: " + e.getNewItem().getType().toString());
-
             checkIfAllLeatherOrBelow(e.getNewItem());
 
             applyEffects(getSkillLevel());
 
         } else if (event instanceof BlockDispenseArmorEvent) {
             BlockDispenseArmorEvent e = (BlockDispenseArmorEvent) event;
-
-            e.getTargetEntity().sendMessage("Armor dispensed");
 
             checkIfAllLeatherOrBelow(e.getItem());
 
@@ -146,5 +142,24 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
                 add(manager.get(ModifierType.POSITIVE, ATKSPD_MOD_NAME));
             }
         }};
+    }
+
+    @Override
+    public void initializeAttributes(int skillLevel) {
+        //Adding to attribute manager
+//        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(ATKSPD_MOD_NAME)) {
+//            final double attackSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "attack-speed-multiplier", 1.25) - 1;
+//            final AttributeModifier attackSpeedMod = new AttributeModifier(UUID.randomUUID(), ATKSPD_MOD_NAME, attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+//
+//            manager.put(ModifierType.POSITIVE, attackSpeedMod.getName(), attackSpeedMod, Attribute.GENERIC_ATTACK_SPEED);
+//        }
+//        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(MVSPD_MOD_NAME)) {
+//            final double moveSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "move-speed-multiplier", 1.3) - 1;
+//            final AttributeModifier moveSpeedMod = new AttributeModifier(UUID.randomUUID(), MVSPD_MOD_NAME, moveSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+//
+//            manager.put(ModifierType.POSITIVE, moveSpeedMod.getName(), moveSpeedMod, Attribute.GENERIC_MOVEMENT_SPEED);
+//        }
+//
+//        applyEffects(skillLevel);
     }
 }
