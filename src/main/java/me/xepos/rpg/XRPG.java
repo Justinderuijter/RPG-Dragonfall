@@ -56,6 +56,7 @@ public final class XRPG extends JavaPlugin {
 
     //Classes
     private static HashMap<String, ClassInfo> classInfo;
+    private static ClassChangeManager classChangeManager;
 
     //Skills
     private static HashMap<String, SkillData> skillData;
@@ -122,8 +123,7 @@ public final class XRPG extends JavaPlugin {
         if (!this.isEnabled())
             return;
 
-        //CraftLoader disabled as it won't be used (for now)
-        //new CraftLoader(this).initCustomRecipes();
+        this.classChangeManager = new ClassChangeManager(this, this.databaseManager, this.skillLoader);
 
         this.GUIBaseItems = generateBaseGUIItems();
         //registering listeners/commands
@@ -302,6 +302,10 @@ public final class XRPG extends JavaPlugin {
             }
         }
         return items;
+    }
+
+    public ClassChangeManager getClassChangeManager() {
+        return classChangeManager;
     }
 
     public HashMap<String, SkillTree> getTreeData(){ return treeData; }

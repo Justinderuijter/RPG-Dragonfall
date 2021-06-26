@@ -20,7 +20,7 @@ public class McMMOListener implements Listener {
 
         for (String skillString:plugin.getConfig().getStringList("exp.source-blacklist.mcmmo-skills")) {
             try{
-                blacklistedSkills.add(PrimarySkillType.valueOf(skillString));
+                blacklistedSkills.add(PrimarySkillType.valueOf(skillString.toUpperCase()));
             }catch (IllegalArgumentException ex){
                 Bukkit.getLogger().warning(skillString + " is not a valid McMMO skill! Skipping...");
             }

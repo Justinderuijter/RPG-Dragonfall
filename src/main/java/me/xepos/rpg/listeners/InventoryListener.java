@@ -6,12 +6,9 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
-import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.datatypes.TreeData;
-import me.xepos.rpg.events.XRPGClassChangedEvent;
 import me.xepos.rpg.utils.PacketUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -113,47 +110,7 @@ public class InventoryListener implements Listener {
                 String classId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("classId"), PersistentDataType.STRING);
                 if (classId == null) return;
 
-                String classDisplayName = plugin.getClassInfo(classId).getDisplayName();
-                if (classDisplayName == null) return;
-
-                if (classId.equals(xrpgPlayer.getClassId())){
-                    player.sendMessage(ChatColor.RED + "You already are " + xrpgPlayer.getClassDisplayName());
-                    return;
-                }
-
-                XRPGClassChangedEvent event = new XRPGClassChangedEvent(player, xrpgPlayer.getClassId(), xrpgPlayer.getClassDisplayName(), classId, classDisplayName);
-                Bukkit.getServer().getPluginManager().callEvent(event);
-
-                //TODO: add pre class changed event and move the checks above in there.
-
-                if (!event.isCancelled()) {
-                    if (xrpgPlayer.getClassId().length() == 0){
-                        Bukkit.broadcastMessage(player.getName() + " picked " + classDisplayName + " as their first class!");
-                    }else{
-                        Bukkit.broadcastMessage(player.getName() + " changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName);
-                    }
-
-                    final int paidSwapLevel = plugin.getConfig().getInt("class-change.costs-after-level", 9);
-                    if (paidSwapLevel != -1 && xrpgPlayer.getLevel() > paidSwapLevel){
-                        final int amount = plugin.getConfig().getInt("class-change.amount", 32);
-                        if (!player.getInventory().containsAtLeast(new ItemStack(material), amount)){
-                            player.sendMessage("You do not have enough gold ingots to change your class!");
-                            return;
-                        }
-                        player.getInventory().removeItem(new ItemStack(material, amount));
-                    }
-
-                    //PlayerData data = xrpgPlayer.extractData();
-                    Bukkit.getScheduler().runTaskAsynchronously(plugin, ()->{
-                        PlayerData data = databaseManager.savePlayerData(xrpgPlayer);
-
-                        data.setClassId(classId);
-
-                        skillLoader.loadPlayerSkills(data, xrpgPlayer);
-                    });
-
-                    player.closeInventory();
-                }
+                plugin.getClassChangeManager().changeClass(xrpgPlayer, classId);
             }
             
         } else if (e.getView().getTitle().startsWith("Skill Tree: ")) {
