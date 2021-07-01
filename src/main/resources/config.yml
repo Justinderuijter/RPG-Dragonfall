@@ -26,8 +26,6 @@ protection-managers:
 #  - "WorldGuard"
 #  - "Towny"
 
-use-pvp-toggle: false
-
 mana:
   enabled: true
   recovery-delay: 2
@@ -57,9 +55,15 @@ exp:
     mcmmo-skills:
       - Acrobatics
 
+general-dependencies:
+  enable-pvp-toggle-hook: false
+  enable-mcmmo-hook: true
+  enable-levelledmobs-hook: true
+
 garbage-collection:
   # Time that should pass between garbage collection.
   # Set to 0 to disable garbage collection.
+  # Can be disabled if using PaperMC, thank God
   timer: 120
   # Will send message in console if true.
   verbose: false

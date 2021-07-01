@@ -153,6 +153,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>me.lokka30</groupId>
+            <artifactId>LevelledMobs</artifactId>
+            <version>3.0.4 b444</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-legacy</artifactId>
             <version>7.0.0-SNAPSHOT</version>

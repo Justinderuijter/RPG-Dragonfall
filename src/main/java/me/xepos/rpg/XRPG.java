@@ -26,6 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -81,17 +82,6 @@ public final class XRPG extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        Plugin mcMMO = Bukkit.getPluginManager().getPlugin("mcMMO");
-        Plugin pvpToggle = Bukkit.getPluginManager().getPlugin("mcMMO");
-
-        boolean useMcMMO = false;
-        boolean usePvPToggle = false;
-
-        if (mcMMO != null) useMcMMO = true;
-        if (pvpToggle != null) usePvPToggle = true;
-
-
-
         //Load classes
         this.saveDefaultConfig();
 
@@ -115,19 +105,28 @@ public final class XRPG extends JavaPlugin {
         //Load database
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager(skillLoader);
 
+        //Prevents throwing error if databaseManager shuts down this plugin.
+        if (!this.isEnabled()) return;
+
+        Plugin mcMMO = Bukkit.getPluginManager().getPlugin("mcMMO");
+        Plugin pvpToggle = Bukkit.getPluginManager().getPlugin("PvPToggle");
+
+        ConfigurationSection dependencyConfig = this.getConfig().getConfigurationSection("general-dependencies");
+
+        boolean useMcMMO = false;
+        boolean usePvPToggle = false;
+
+        if (mcMMO != null && dependencyConfig.getBoolean("enable-mcmmo-hook", false)) useMcMMO = true;
+        if (pvpToggle != null && dependencyConfig.getBoolean("enable-pvp-toggle-hook", false)) usePvPToggle = true;
+
         //Load ability targetting managers
         this.partySet = new PartySet(PvPToggleFactory.getPvPToggle(usePvPToggle), PartyManagerFactory.getPartyManager());
         this.protectionSet = ProtectionSetFactory.getProtectionRules();
-
-        //Prevents throwing error if databaseManager shuts down this plugin.
-        if (!this.isEnabled())
-            return;
-
         this.classChangeManager = new ClassChangeManager(this, this.databaseManager, this.skillLoader);
 
         this.GUIBaseItems = generateBaseGUIItems();
         //registering listeners/commands
-        initEventListeners();
+        initEventListeners(dependencyConfig);
 
         if (useMcMMO){
             Bukkit.getLogger().info("Using mcMMO for EXP calculations.");
@@ -196,11 +195,16 @@ public final class XRPG extends JavaPlugin {
         return instance;
     }
 
-    private void initEventListeners() {
+    private void initEventListeners(ConfigurationSection dependencyConfig) {
         getServer().getPluginManager().registerEvents(new PlayerListener(this, databaseManager), this);
         getServer().getPluginManager().registerEvents(new InventoryListener(this, skillLoader, databaseManager), this);
         getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
         getServer().getPluginManager().registerEvents(new FollowerListener(this), this);
+
+        Plugin LM = Bukkit.getPluginManager().getPlugin("LevelledMobs");
+        if (LM != null && LM.isEnabled() && dependencyConfig.getBoolean("enable-levelledmobs-hook", false)){
+            getServer().getPluginManager().registerEvents(new LevelledMobsListener(this), this);
+        }
     }
 
     private void loadConfigs() {

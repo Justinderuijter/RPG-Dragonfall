@@ -57,7 +57,7 @@ public class ClassChangeManager {
             if (paidSwapLevel != -1 && xrpgPlayer.getLevel() > paidSwapLevel) {
                 final int amount = plugin.getConfig().getInt("class-change.amount", 32);
                 if (!xrpgPlayer.getPlayer().getInventory().containsAtLeast(new ItemStack(material), amount)) {
-                    xrpgPlayer.getPlayer().sendMessage("You do not have enough gold ingots to change your class!");
+                    xrpgPlayer.getPlayer().sendMessage(ChatColor.RED + "You do not have enough gold ingots to change your class!");
                     return false;
                 }
                 xrpgPlayer.getPlayer().getInventory().removeItem(new ItemStack(material, amount));

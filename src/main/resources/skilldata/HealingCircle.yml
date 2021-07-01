@@ -1,6 +1,6 @@
 name: "Healing Circle"
 
-leveling:
+levels:
   statics:
     heal-per-proc: 1.0
     x-range: 10.0

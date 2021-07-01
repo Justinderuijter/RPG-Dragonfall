@@ -33,22 +33,11 @@ public class InventoryListener implements Listener {
     private final XRPG plugin;
     private final IDatabaseManager databaseManager;
     private final SkillLoader skillLoader;
-    private Material material;
 
     public InventoryListener(XRPG plugin, SkillLoader skillLoader, IDatabaseManager databaseManager) {
         this.plugin = plugin;
         this.databaseManager = databaseManager;
         this.skillLoader = skillLoader;
-
-        String materialString = plugin.getConfig().getString("class-change.material");
-        try{
-            this.material = Material.valueOf(materialString);
-        }catch (IllegalArgumentException ex){
-            material = Material.GOLD_INGOT;
-            Bukkit.getLogger().severe("Could not find material: " + materialString + "!");
-            Bukkit.getLogger().severe("Using default: GOLD_INGOT.");
-        }
-
     }
 
     @EventHandler
@@ -110,7 +99,7 @@ public class InventoryListener implements Listener {
                 String classId = e.getCurrentItem().getItemMeta().getPersistentDataContainer().get(plugin.getKey("classId"), PersistentDataType.STRING);
                 if (classId == null) return;
 
-                plugin.getClassChangeManager().changeClass(xrpgPlayer, classId);
+                plugin.getClassChangeManager().changeClass(xrpgPlayer, classId, false);
             }
             
         } else if (e.getView().getTitle().startsWith("Skill Tree: ")) {
