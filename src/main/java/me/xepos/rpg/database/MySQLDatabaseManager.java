@@ -4,6 +4,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.datatypes.PlayerData;
+import me.xepos.rpg.enums.DatabaseType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -11,7 +12,7 @@ import java.sql.*;
 import java.util.UUID;
 
 
-public class MySQLDatabaseManager implements IDatabaseManager {
+public class MySQLDatabaseManager extends DatabaseManager {
 
     private final static XRPG plugin = XRPG.getPlugin(XRPG.class);
     private final static FileConfiguration config = plugin.getConfig();
@@ -64,6 +65,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
     }
 
     protected MySQLDatabaseManager(SkillLoader skillLoader) {
+        setDatabaseType(DatabaseType.MYSQL);
         this.skillLoader = skillLoader;
         try {
             connect();

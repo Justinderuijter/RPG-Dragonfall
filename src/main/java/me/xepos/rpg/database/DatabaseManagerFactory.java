@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class DatabaseManagerFactory {
 
-    public static IDatabaseManager getDatabaseManager(SkillLoader skillLoader) {
+    public static DatabaseManager getDatabaseManager(SkillLoader skillLoader) {
 
         return JavaPlugin.getPlugin(XRPG.class).getConfig().getBoolean("MySQL.use-MySQL", false) ? new MySQLDatabaseManager(skillLoader) : new JSONDatabaseManager(skillLoader);
     }

@@ -6,6 +6,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.datatypes.PlayerData;
+import me.xepos.rpg.enums.DatabaseType;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
@@ -15,7 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.UUID;
 
-public class JSONDatabaseManager implements IDatabaseManager {
+public class JSONDatabaseManager extends DatabaseManager {
     private final static XRPG plugin = XRPG.getPlugin(XRPG.class);
     private final static String playerFolderName = "playerdata";
 
@@ -24,6 +25,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
     private final SkillLoader skillLoader;
 
     protected JSONDatabaseManager(SkillLoader skillLoader) {
+        setDatabaseType(DatabaseType.JSON);
         this.skillLoader = skillLoader;
         File baseFile = plugin.getDataFolder();
         if (!baseFile.exists()) {
