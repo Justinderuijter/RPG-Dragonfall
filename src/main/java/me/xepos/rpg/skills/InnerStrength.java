@@ -29,16 +29,16 @@ public class InnerStrength extends XRPGActiveSkill {
         add(new PotionEffect(PotionEffectType.ABSORPTION, (int) (potionDuration * 20), 0, false, false, true));
     }};
 
-    public InnerStrength(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, LotusStrike lotusStrike) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public InnerStrength(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill, LotusStrike lotusStrike) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         this.lotusStrike = lotusStrike;
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
     }
 
-    public InnerStrength(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public InnerStrength(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
     }

@@ -11,8 +11,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class Reflect extends XRPGPassiveSkill {
-    public Reflect(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public Reflect(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
     }

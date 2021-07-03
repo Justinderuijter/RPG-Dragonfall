@@ -2,12 +2,9 @@ package me.xepos.rpg.commands;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.database.IDatabaseManager;
-import me.xepos.rpg.database.tasks.SavePlayerDataTask;
+import me.xepos.rpg.database.DatabaseManager;
 import me.xepos.rpg.datatypes.TreeData;
-import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.tree.SkillTree;
-import me.xepos.rpg.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -23,13 +20,13 @@ import java.util.List;
 
 public class TreeCommand implements TabExecutor {
     private final XRPG plugin;
-    private final IDatabaseManager databaseManager;
+    private final DatabaseManager databaseManager;
     private final List<String> completions = new ArrayList<String>(){{
         add("open");
         add("reset");
     }};
 
-    public TreeCommand(XRPG plugin, IDatabaseManager manager){
+    public TreeCommand(XRPG plugin, DatabaseManager manager){
         this.plugin = plugin;
         this.databaseManager = manager;
     }
@@ -49,7 +46,7 @@ public class TreeCommand implements TabExecutor {
                 return openSkillTree(player, xrpgPlayer);
             }else if(strings.length == 1){
                 if (strings[0].equalsIgnoreCase("reset")){
-                    return resetPlayerSkills(player, xrpgPlayer);
+                    return xrpgPlayer.resetSkillTree();
                 }else if(strings[0].equalsIgnoreCase("open")){
                     return openSkillTree(player, xrpgPlayer);
                 }
@@ -75,57 +72,6 @@ public class TreeCommand implements TabExecutor {
         plugin.addTreeViewer(player.getUniqueId(), new TreeData(xrpgPlayer, treeId, tree, plugin));
 
         player.openInventory(tree.getInventory(xrpgPlayer));
-        return true;
-    }
-
-    private boolean resetPlayerSkills(Player player, XRPGPlayer xrpgPlayer){
-        byte upgradePointsToRefund = 0;
-        byte unlockPointsToRefund = 0;
-
-        for (String skillId :xrpgPlayer.getActiveHandler().getSkills().keySet()) {
-            final int skillLevel = xrpgPlayer.getActiveHandler().getSkills().get(skillId).getSkillLevel();
-
-            if (skillLevel > 1){
-                upgradePointsToRefund += skillLevel -1;
-                unlockPointsToRefund++;
-            }else if (skillLevel == 1){
-                unlockPointsToRefund++;
-            }
-        }
-        xrpgPlayer.getActiveHandler().clear();
-
-        for (String handlerName :xrpgPlayer.getPassiveHandlerList().keySet()) {
-            PassiveEventHandler handler = xrpgPlayer.getPassiveEventHandler(handlerName);
-            for (String skillId:handler.getSkills().keySet()) {
-                final int skillLevel = handler.getSkills().get(skillId).getSkillLevel();
-
-                if (skillLevel > 1){
-                    upgradePointsToRefund += skillLevel -1;
-                    unlockPointsToRefund++;
-                }else if (skillLevel == 1){
-                    unlockPointsToRefund++;
-                }
-
-            }
-            handler.clear();
-        }
-
-        upgradePointsToRefund += xrpgPlayer.getHealthLevel();
-        upgradePointsToRefund += xrpgPlayer.getManaLevel();
-
-        xrpgPlayer.setHealthLevel(0);
-        xrpgPlayer.setManaLevel(0);
-
-        xrpgPlayer.addSkillUpgradePoints(upgradePointsToRefund);
-        xrpgPlayer.addSkillUnlockPoints(unlockPointsToRefund);
-
-        Utils.removeAllModifiers(player);
-
-        new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
-
-        player.sendMessage(ChatColor.GREEN + "You successfully reset your skill points!");
-        player.sendMessage(ChatColor.GREEN + "You have been refunded " + upgradePointsToRefund + " upgrade points and " + unlockPointsToRefund + " unlock points!");
-
         return true;
     }
 

@@ -19,8 +19,8 @@ import java.util.List;
 public class Zephyr extends XRPGActiveSkill {
     private Fireball fireball;
 
-    public Zephyr(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public Zephyr(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }

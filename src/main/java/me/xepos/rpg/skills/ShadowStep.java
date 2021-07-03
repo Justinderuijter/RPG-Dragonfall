@@ -26,8 +26,8 @@ public class ShadowStep extends XRPGActiveSkill {
 
     private ArmorStand substitute = null;
 
-    public ShadowStep(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public ShadowStep(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }

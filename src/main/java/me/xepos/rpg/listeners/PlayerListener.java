@@ -3,7 +3,7 @@ package me.xepos.rpg.listeners;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.database.IDatabaseManager;
+import me.xepos.rpg.database.DatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.utils.SpellmodeUtils;
@@ -28,9 +28,9 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class PlayerListener implements Listener {
     private final XRPG plugin;
-    private final IDatabaseManager databaseManager;
+    private final DatabaseManager databaseManager;
 
-    public PlayerListener(XRPG plugin, IDatabaseManager databaseManager) {
+    public PlayerListener(XRPG plugin, DatabaseManager databaseManager) {
         this.plugin = plugin;
         this.databaseManager = databaseManager;
     }

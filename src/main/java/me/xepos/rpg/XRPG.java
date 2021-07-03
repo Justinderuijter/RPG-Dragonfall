@@ -4,8 +4,8 @@ import me.xepos.rpg.commands.*;
 import me.xepos.rpg.configuration.ClassLoader;
 import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.configuration.TreeLoader;
+import me.xepos.rpg.database.DatabaseManager;
 import me.xepos.rpg.database.DatabaseManagerFactory;
-import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.datatypes.BaseProjectileData;
 import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.SkillData;
@@ -53,7 +53,7 @@ public final class XRPG extends JavaPlugin {
     private IPvPToggle pvpToggle;
 
     //Data manager
-    private IDatabaseManager databaseManager;
+    private DatabaseManager databaseManager;
 
     //Classes
     private static HashMap<String, ClassInfo> classInfo;
@@ -360,5 +360,9 @@ public final class XRPG extends JavaPlugin {
 
     public TreeData removeTreeViewer(UUID playerUUID){
         return treeView.remove(playerUUID);
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 }

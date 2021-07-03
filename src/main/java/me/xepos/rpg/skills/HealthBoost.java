@@ -26,8 +26,8 @@ public class HealthBoost extends XRPGPassiveSkill implements IAttributable {
     private static double healthPerLevel = -1;
     private static double armorPerLevel = -1;
 
-    public HealthBoost(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public HealthBoost(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         if (armorPerLevel == -1) armorPerLevel = skillVariables.getDouble(getSkillLevel(),"armor-per-level", 2);
         if (healthPerLevel == -1) healthPerLevel = skillVariables.getDouble(getSkillLevel(), "health-per-level", 2);

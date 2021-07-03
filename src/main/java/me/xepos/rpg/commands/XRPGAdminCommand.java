@@ -3,13 +3,20 @@ package me.xepos.rpg.commands;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
+import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +32,8 @@ public class XRPGAdminCommand implements TabExecutor {
         add("add");
         //add("remove");
         add("set");
+        add("create");
+        add("reset");
     }};
 
     private final List<String> options = new ArrayList<String>() {{
@@ -61,6 +70,10 @@ public class XRPGAdminCommand implements TabExecutor {
                     return true;
                 case "set":
                     return subCommandSet(commandSender, xrpgTarget, strings);
+                case "create":
+                    return subCommandCreate(commandSender, xrpgTarget, strings);
+                case "reset":
+                    return subCommandReset(commandSender, xrpgTarget, strings);
             }
         }
         return false;
@@ -82,19 +95,28 @@ public class XRPGAdminCommand implements TabExecutor {
                 }
                 return result;
             case 3:
-                if (strings[1].equalsIgnoreCase("set")){
-                    return new ArrayList<String>(){{
-                        add("class");
-                    }};
 
-                }else {
-                    for (String tab : options) {
-                        if (tab.toLowerCase().startsWith(strings[2].toLowerCase())) {
-                            result.add(tab);
+                switch (strings[1].toLowerCase()){
+                    case "set":
+                        return new ArrayList<String>() {{
+                            add("class");
+                        }};
+                    case "create":
+                        return new ArrayList<String>() {{
+                            add("eventspell");
+                        }};
+                    case "reset":
+                        return new ArrayList<String>() {{
+                            add("skilltree");
+                        }};
+                    default:
+                        for (String tab : options) {
+                            if (tab.toLowerCase().startsWith(strings[2].toLowerCase())) {
+                                result.add(tab);
+                            }
                         }
-                    }
+                        return result;
                 }
-                return result;
             case 4:
                 if (strings[1].equalsIgnoreCase("set") && strings[2].equalsIgnoreCase("class")){
                     for (String tab:plugin.getClassInfo().keySet()) {
@@ -103,7 +125,7 @@ public class XRPGAdminCommand implements TabExecutor {
                         }
                     }
                 }
-                else if (strings[2].equalsIgnoreCase("skill")) {
+                else if (strings[2].equalsIgnoreCase("skill") || strings[2].equalsIgnoreCase("eventspell")){
                     for (String tab : plugin.getAllLoadedSkillIds()) {
                         if (tab.toLowerCase().startsWith(strings[3].toLowerCase())) {
                             result.add(tab);
@@ -157,7 +179,7 @@ public class XRPGAdminCommand implements TabExecutor {
                     skillLevel = Integer.parseInt(strings[4]);
                 }
                 if (plugin.hasSkillData(strings[3])) {
-                    skillLoader.addSkillToPlayer(strings[3], xrpgTarget, skillLevel);
+                    skillLoader.addSkillToPlayer(strings[3], xrpgTarget, skillLevel, false);
                     xrpgTarget.getPlayer().sendMessage(ChatColor.GREEN + "You received the skill " + plugin.getSkillData(strings[3]).getName() + "! It is now level " + skillLevel + "!");
                     return true;
                 }
@@ -174,6 +196,58 @@ public class XRPGAdminCommand implements TabExecutor {
                 return true;
             }
             plugin.getClassChangeManager().changeClass(xrpgTarget, strings[3], Boolean.parseBoolean(strings[4]));
+            return true;
+        }
+        return false;
+    }
+
+    public boolean subCommandCreate(CommandSender sender, XRPGPlayer xrpgTarget, String[] strings){
+        if (strings.length == 4){
+            if (strings[2].equalsIgnoreCase("create.eventspell")){
+                if(!checkPermissions(sender, "createspell")){
+                    sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                    return true;
+                }
+
+                String skillId = strings[3];
+                SkillData skillData = plugin.getSkillData(skillId);
+                if (skillData != null){
+                    List<String> lore = new ArrayList<String>(){{
+                        add("Hold and right click this item");
+                        add("To learn this skill or level it up");
+                        add("Can only be learned by the following classes:");
+                        add("- ALL");
+                    }};
+                    ItemStack spellItem = Utils.buildItemStack(Material.ENCHANTED_BOOK, "Event Spell: " + skillData.getName(), lore);
+                    ItemMeta spellItemMeta = spellItem.getItemMeta();
+                    spellItemMeta.getPersistentDataContainer().set(plugin.getKey("skillId"), PersistentDataType.STRING, skillId);
+                    spellItem.setItemMeta(spellItemMeta);
+
+                    Inventory targetInventory = xrpgTarget.getPlayer().getInventory();
+                    if (targetInventory.firstEmpty() != -1){
+                        targetInventory.addItem(spellItem);
+                        xrpgTarget.getPlayer().sendMessage(ChatColor.GREEN + "You received " + ChatColor.BOLD + spellItem.displayName() + "!");
+                    }else{
+                        sender.sendMessage(ChatColor.RED + "Target's inventory is full!");
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean subCommandReset(CommandSender sender, XRPGPlayer xrpgTarget, String[] strings){
+        if (strings.length == 3){
+            if (!checkPermissions(sender, "reset.skilltree")){
+                sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                return true;
+            }
+            if (plugin.isTreeViewer(xrpgTarget.getPlayer())){
+                sender.sendMessage(ChatColor.RED + "This player is currently editing their skill tree!");
+                return true;
+            }
+            xrpgTarget.resetSkillTree();
             return true;
         }
         return false;

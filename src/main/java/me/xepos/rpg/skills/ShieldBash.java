@@ -26,8 +26,8 @@ import java.util.UUID;
 
 public class ShieldBash extends XRPGActiveSkill {
 
-    public ShieldBash(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public ShieldBash(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         AttributeModifier mod = new AttributeModifier(UUID.fromString("076c8ed9-b6e2-4da1-a4c0-27c50c61725d"), "SHIELD_BASH", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 

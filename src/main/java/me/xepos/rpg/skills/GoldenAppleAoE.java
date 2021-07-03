@@ -17,15 +17,15 @@ import java.util.List;
 public class GoldenAppleAoE extends XRPGPassiveSkill {
     private EnchantedGoldenAppleAoE GAppleAoE;
 
-    public GoldenAppleAoE(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, EnchantedGoldenAppleAoE GAppleAoE) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public GoldenAppleAoE(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill, EnchantedGoldenAppleAoE GAppleAoE) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         this.GAppleAoE = GAppleAoE;
         xrpgPlayer.getPassiveEventHandler("CONSUME_ITEM").addSkill(this.getClass().getSimpleName() ,this);
     }
 
-    public GoldenAppleAoE(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public GoldenAppleAoE(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         xrpgPlayer.getPassiveEventHandler("CONSUME_ITEM").addSkill(this.getClass().getSimpleName() ,this);
     }

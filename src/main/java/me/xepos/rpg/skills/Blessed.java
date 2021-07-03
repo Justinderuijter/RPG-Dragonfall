@@ -10,8 +10,8 @@ import org.bukkit.event.Event;
 public class Blessed extends XRPGPassiveSkill {
     private static int manaPerLevel = -1;
 
-    public Blessed(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public Blessed(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         if (!xrpgPlayer.getPassiveHandlerList().containsKey("ATTRIBUTE")){
             xrpgPlayer.addPassiveEventHandler("ATTRIBUTE", new PassiveEventHandler());

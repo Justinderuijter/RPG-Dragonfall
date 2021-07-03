@@ -38,6 +38,7 @@ leveling:
 
 items:
   spellbook:
+    name: "Spellmode"
     lore:
       - "Hold this item and right click"
       - "to enter spellmode."

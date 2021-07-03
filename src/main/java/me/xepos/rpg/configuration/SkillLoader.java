@@ -2,10 +2,7 @@ package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.datatypes.ClassData;
-import me.xepos.rpg.datatypes.ClassInfo;
-import me.xepos.rpg.datatypes.PlayerData;
-import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.datatypes.*;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -97,16 +94,23 @@ public class SkillLoader extends XRPGLoader{
 
 
         for (String skillId : classData.getSkills().keySet()) {
-            final int level = data.getClassData(data.getClassId()).getSkills().getOrDefault(skillId, 1);
-            addSkillToPlayer(skillId, xrpgPlayer, level);
+            final SavedSkillProperties properties = data.getClassData(data.getClassId()).getSavedSkillProperties(skillId);
+            int level = 1;
+            boolean isEventSkill = false;
+            if (properties != null){
+                level = properties.getLevel();
+                isEventSkill = properties.isEventSkill();
+            }
+
+            addSkillToPlayer(skillId, xrpgPlayer, level, isEventSkill);
         }
 
     }
 
-    public void addSkillToPlayer(String skillId, XRPGPlayer xrpgPlayer, int level) {
+    public void addSkillToPlayer(String skillId, XRPGPlayer xrpgPlayer, int level, boolean isEventSkill) {
         try {
             Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
-            Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, SkillData.class, XRPG.class, int.class);
+            Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, SkillData.class, XRPG.class, int.class, boolean.class);
 
             //The instance of the skill automatically assigns itself to the XRPGPlayer
             if (getPlugin().getSkillData(skillId) == null) {
@@ -114,7 +118,7 @@ public class SkillLoader extends XRPGLoader{
                 return;
             }
 
-            constructor.newInstance(xrpgPlayer, getPlugin().getSkillData(skillId), getPlugin(), level);
+            constructor.newInstance(xrpgPlayer, getPlugin().getSkillData(skillId), getPlugin(), level, isEventSkill);
 
         } catch (Exception e) {
             e.printStackTrace();

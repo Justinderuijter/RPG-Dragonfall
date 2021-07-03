@@ -1,7 +1,7 @@
 package me.xepos.rpg;
 
 import me.xepos.rpg.configuration.SkillLoader;
-import me.xepos.rpg.database.IDatabaseManager;
+import me.xepos.rpg.database.DatabaseManager;
 import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.events.classes.XRPGClassChangeEvent;
@@ -14,11 +14,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class ClassChangeManager {
     private final XRPG plugin;
-    private final IDatabaseManager databaseManager;
+    private final DatabaseManager databaseManager;
     private final SkillLoader skillLoader;
     private Material material;
 
-    public ClassChangeManager(XRPG plugin, IDatabaseManager databaseManager, SkillLoader skillLoader) {
+    public ClassChangeManager(XRPG plugin, DatabaseManager databaseManager, SkillLoader skillLoader) {
         this.plugin = plugin;
         this.databaseManager = databaseManager;
         this.skillLoader = skillLoader;

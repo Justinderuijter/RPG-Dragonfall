@@ -5,7 +5,7 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
 
 public abstract class XRPGBowSkill extends XRPGSkill{
-    public XRPGBowSkill(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public XRPGBowSkill(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
     }
 }

@@ -27,8 +27,8 @@ public class Rage extends XRPGPassiveSkill implements IMessenger {
     private byte rageLevel = 0;
     BukkitTask rageTask = null;
 
-    public Rage(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public Rage(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         double attackSpeedMultiplier = skillVariables.getDouble(skillLevel, "atk-spd-multiplier", 1.65) - 1;
         AttributeModifier mod = new AttributeModifier(UUID.fromString("1d7a09c9-b6e2-4dc7-ab6f-8831dffcb111"), "RAGE_ATK_SPD", attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);

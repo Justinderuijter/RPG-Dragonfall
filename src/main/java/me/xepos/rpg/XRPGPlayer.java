@@ -1,8 +1,10 @@
 package me.xepos.rpg;
 
+import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.PlayerData;
+import me.xepos.rpg.datatypes.SavedSkillProperties;
 import me.xepos.rpg.handlers.ActiveEventHandler;
 import me.xepos.rpg.handlers.BowEventHandler;
 import me.xepos.rpg.handlers.PassiveEventHandler;
@@ -463,7 +465,65 @@ public class XRPGPlayer {
         this.skillUpgradePoints += skillUpgradePoints;
     }
 
+    public boolean resetSkillTree(){
+        byte upgradePointsToRefund = 0;
+        byte unlockPointsToRefund = 0;
 
+        for (String skillId :this.getActiveHandler().getSkills().keySet()) {
+            final XRPGSkill skill = this.getActiveHandler().getSkills().get(skillId);
+
+            if (skill.isEventSkill()) continue;
+
+            final int skillLevel = skill.getSkillLevel();
+
+            if (skillLevel > 1){
+                upgradePointsToRefund += skillLevel -1;
+                unlockPointsToRefund++;
+            }else if (skillLevel == 1){
+                unlockPointsToRefund++;
+            }
+            this.getActiveHandler().removeSkill(skillId);
+        }
+
+        for (String handlerName :this.getPassiveHandlerList().keySet()) {
+            PassiveEventHandler handler = this.getPassiveEventHandler(handlerName);
+            for (String skillId:handler.getSkills().keySet()) {
+                final XRPGSkill skill = handler.getSkills().get(skillId);
+
+                if (skill.isEventSkill()) continue;
+
+                final int skillLevel = skill.getSkillLevel();
+
+                if (skillLevel > 1){
+                    upgradePointsToRefund += skillLevel -1;
+                    unlockPointsToRefund++;
+                }else if (skillLevel == 1){
+                    unlockPointsToRefund++;
+                }
+                handler.removeSkill(skillId);
+            }
+        }
+
+        upgradePointsToRefund += this.getHealthLevel();
+        upgradePointsToRefund += this.getManaLevel();
+
+        this.setHealthLevel(0);
+        this.setManaLevel(0);
+
+        this.addSkillUpgradePoints(upgradePointsToRefund);
+        this.addSkillUnlockPoints(unlockPointsToRefund);
+
+        Utils.removeAllModifiers(player);
+
+        XRPG plugin = XRPG.getInstance();
+
+        new SavePlayerDataTask(plugin.getDatabaseManager(), this).runTaskAsynchronously(plugin);
+
+        player.sendMessage(ChatColor.GREEN + "You successfully reset your skill points!");
+        player.sendMessage(ChatColor.GREEN + "You have been refunded " + upgradePointsToRefund + " upgrade points and " + unlockPointsToRefund + " unlock points!");
+
+        return true;
+    }
 
     //////////////////////////////////
     //                              //
@@ -510,16 +570,19 @@ public class XRPGPlayer {
     }
 
     public PlayerData extractData() {
-        HashMap<String, Integer> skills = new HashMap<>();
+        HashMap<String, SavedSkillProperties> skills = new HashMap<>();
         HashMap<String, XRPGSkill> learnedSkills = getAllLearnedSkills();
 
         for (String skillId : learnedSkills.keySet()) {
-            skills.put(skillId, learnedSkills.get(skillId).getSkillLevel());
+            XRPGSkill skill = learnedSkills.get(skillId);
+            skills.put(skillId, new SavedSkillProperties(skill.getSkillLevel(), skill.isEventSkill()));
         }
+
+
 
         PlayerData playerData = new PlayerData(this.classId, this.lastClassChangeTime, this.lastBookReceivedTime, this.isClassEnabled);
         if (StringUtils.isNotBlank(this.classId)) {
-            playerData.addClassData(this.classId, new ClassData(this.level, this.currentExp, (byte) this.currentMana, this.levelMana, this.healthLevel, this.skillUpgradePoints, this.skillUnlockPoints, skills, this.spellKeybinds));
+            playerData.addClassData(this.classId, new ClassData(this.level, player.getHealth(),this.currentExp, (byte) this.currentMana, this.levelMana, this.healthLevel, this.skillUpgradePoints, this.skillUnlockPoints, skills, this.spellKeybinds));
         }
 
         return playerData;

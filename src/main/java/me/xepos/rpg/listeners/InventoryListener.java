@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
-import me.xepos.rpg.database.IDatabaseManager;
+import me.xepos.rpg.database.DatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.datatypes.TreeData;
 import me.xepos.rpg.utils.PacketUtils;
@@ -31,10 +31,10 @@ import java.util.Set;
 public class InventoryListener implements Listener {
 
     private final XRPG plugin;
-    private final IDatabaseManager databaseManager;
+    private final DatabaseManager databaseManager;
     private final SkillLoader skillLoader;
 
-    public InventoryListener(XRPG plugin, SkillLoader skillLoader, IDatabaseManager databaseManager) {
+    public InventoryListener(XRPG plugin, SkillLoader skillLoader, DatabaseManager databaseManager) {
         this.plugin = plugin;
         this.databaseManager = databaseManager;
         this.skillLoader = skillLoader;

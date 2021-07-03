@@ -15,6 +15,7 @@ import java.util.List;
 public abstract class XRPGSkill {
 
     private int skillLevel;
+    private final boolean isEventSkill;
     private final XRPGPlayer xrpgPlayer;
     private final XRPG plugin;
     private final ProtectionSet protectionSet;
@@ -24,7 +25,7 @@ public abstract class XRPGSkill {
     private final SkillData skillVariables;
     private long remainingCooldown;
 
-    public XRPGSkill(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
+    public XRPGSkill(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         this.xrpgPlayer = xrpgPlayer;
         this.plugin = plugin;
         this.skillVariables = skillVariables;
@@ -32,6 +33,7 @@ public abstract class XRPGSkill {
         this.partySet = plugin.getPartySet();
         this.remainingCooldown = System.currentTimeMillis();
         this.skillLevel = skillLevel;
+        this.isEventSkill = isEventSkill;
 
         if (this instanceof IMessenger) {
             xrpgPlayer.getMessengerSkills().add((IMessenger) this);
@@ -133,5 +135,9 @@ public abstract class XRPGSkill {
 
     public void setSkillLevel(int skillLevel) {
         this.skillLevel = skillLevel;
+    }
+
+    public boolean isEventSkill() {
+        return isEventSkill;
     }
 }

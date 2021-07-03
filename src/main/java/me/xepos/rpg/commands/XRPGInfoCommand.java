@@ -98,7 +98,11 @@ public class XRPGInfoCommand implements TabExecutor {
         HashMap<String, XRPGSkill> skillHashMap = xrpgTarget.getAllLearnedSkills();
         for (String skillId:skillHashMap.keySet()) {
             XRPGSkill skill = skillHashMap.get(skillId);
-            skillString.append(ChatColor.GREEN).append(skill.getSkillName()).append(ChatColor.WHITE).append(" (").append(ChatColor.GREEN).append(skill.getSkillLevel()).append(ChatColor.WHITE).append("), ");
+            skillString.append(ChatColor.GREEN).append(skill.getSkillName()).append(ChatColor.WHITE);
+            if (skill.isEventSkill()){
+                skillString.append("*");
+            }
+            skillString.append(" (").append(ChatColor.GREEN).append(skill.getSkillLevel()).append(ChatColor.WHITE).append("), ");
         }
         if (skillString.length() > 2) {
             skillString = new StringBuilder(skillString.substring(0, skillString.lastIndexOf(", ")));

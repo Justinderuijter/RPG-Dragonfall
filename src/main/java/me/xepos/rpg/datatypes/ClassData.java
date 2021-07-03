@@ -11,18 +11,20 @@ public class ClassData {
     private transient int baseMana;
     private int manaLevel;
     private int healthLevel;
+    private double lastHealth;
     private final byte skillUpgradePoints;
     private final byte skillUnlockPoints;
 
-    private final HashMap<String, Integer> skills;
+    private final HashMap<String, SavedSkillProperties> skills;
     private final List<String> keybindOrder;
 
-    public ClassData(int level, double experience, int lastMana, int manaLevel, int healthLevel, byte skillUpgradePoints, byte skillUnlockPoints, HashMap<String, Integer> skills, List<String> keybindOrder) {
+    public ClassData(int level, double lastHealth, double experience, int lastMana, int manaLevel, int healthLevel, byte skillUpgradePoints, byte skillUnlockPoints, HashMap<String, SavedSkillProperties> skills, List<String> keybindOrder) {
         this.level = level;
         this.experience = experience;
         this.lastMana = lastMana;
         this.manaLevel = manaLevel;
         this.healthLevel = healthLevel;
+        this.lastHealth = lastHealth;
         this.skillUpgradePoints = skillUpgradePoints;
         this.skillUnlockPoints = skillUnlockPoints;
 
@@ -61,8 +63,12 @@ public class ClassData {
         return skillUnlockPoints;
     }
 
-    public HashMap<String, Integer> getSkills() {
+    public HashMap<String, SavedSkillProperties> getSkills() {
         return skills;
+    }
+
+    public SavedSkillProperties getSavedSkillProperties(String skillId){
+        return skills.get(skillId);
     }
 
     public List<String> getKeybindOrder() {

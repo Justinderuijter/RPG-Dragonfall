@@ -21,8 +21,8 @@ import java.util.UUID;
 
 public class Nimble extends XRPGPassiveSkill {
     private static final String speedAttributeName = "NIMBLE_";
-    public Nimble(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public Nimble(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         //Initializing the modifier
         double multiplier = getSkillVariables().getDouble(skillLevel, "speed-multiplier", 1.5) - 1;

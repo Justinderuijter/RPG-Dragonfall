@@ -288,7 +288,7 @@ public class TreeData {
         if (player != null) {
             //Skills
             for (String skillId : progression.keySet()) {
-                skillLoader.addSkillToPlayer(skillId, player, progression.get(skillId));
+                skillLoader.addSkillToPlayer(skillId, player, progression.get(skillId), false);
             }
             //Health
             final int level = getCurrentAttributeLevel("health");

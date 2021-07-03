@@ -12,8 +12,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Bullseye extends XRPGPassiveSkill {
 
-    public Bullseye(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public Bullseye(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         setRemainingCooldown(-1);
         xrpgPlayer.getPassiveEventHandler("SHOOT_BOW").addSkill(this.getClass().getSimpleName(),this);

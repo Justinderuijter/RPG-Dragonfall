@@ -16,8 +16,8 @@ import org.bukkit.util.Vector;
 public class Meteor extends XRPGActiveSkill {
     private me.xepos.rpg.skills.Fireball fireball;
 
-    public Meteor(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public Meteor(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         xrpgPlayer.getPassiveEventHandler("LEFT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
     }

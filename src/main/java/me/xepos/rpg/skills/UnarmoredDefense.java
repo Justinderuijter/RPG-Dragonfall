@@ -31,8 +31,8 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
     private final static String MVSPD_MOD_NAME = "UNARMORED_DEFENSE_MOVESPEED";
     private final static String ATKSPD_MOD_NAME = "UNARMORED_DEFENSE_ATTACKSPEED";
 
-    public UnarmoredDefense(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public UnarmoredDefense(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         //Add handlers if needed
         if (!xrpgPlayer.getPassiveHandlerList().containsKey("ARMOR_DISPENSE"))

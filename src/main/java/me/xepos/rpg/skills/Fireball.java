@@ -19,8 +19,8 @@ public class Fireball extends XRPGActiveSkill {
     private final byte maxFireballStacks = (byte) getSkillVariables().getInt(getSkillLevel(),"max-stacks", 2);
     private long lastStackGained = System.currentTimeMillis();
 
-    public Fireball(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public Fireball(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }

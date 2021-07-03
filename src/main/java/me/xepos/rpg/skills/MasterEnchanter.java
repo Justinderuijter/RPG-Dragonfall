@@ -10,8 +10,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 
 public class MasterEnchanter extends XRPGPassiveSkill {
-    public MasterEnchanter(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public MasterEnchanter(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         if (!xrpgPlayer.getPassiveHandlerList().containsKey("ENCHANT")){
             xrpgPlayer.getPassiveHandlerList().put("ENCHANT", new PassiveEventHandler());

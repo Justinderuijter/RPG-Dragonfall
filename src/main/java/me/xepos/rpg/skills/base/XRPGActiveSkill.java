@@ -6,8 +6,8 @@ import me.xepos.rpg.datatypes.SkillData;
 import org.bukkit.ChatColor;
 
 public abstract class XRPGActiveSkill extends XRPGSkill{
-    public XRPGActiveSkill(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public XRPGActiveSkill(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
     }
 
     public String getCooldownMessage(){

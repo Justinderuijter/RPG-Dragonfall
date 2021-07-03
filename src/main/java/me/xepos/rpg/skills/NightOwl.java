@@ -10,8 +10,8 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.potion.PotionEffectType;
 
 public class NightOwl extends XRPGActiveSkill {
-    public NightOwl(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel) {
-        super(xrpgPlayer, skillVariables, plugin, skillLevel);
+    public NightOwl(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+        super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
     }
