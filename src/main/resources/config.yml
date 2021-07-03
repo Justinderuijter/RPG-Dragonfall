@@ -57,9 +57,14 @@ exp:
       - Acrobatics
 
 general-dependencies:
-  enable-pvp-toggle-hook: false
-  enable-mcmmo-hook: true
-  enable-levelledmobs-hook: true
+  pvp-toggle:
+    enable-hook: false
+  mcmmo:
+    enable-hook: true
+  levelled-mobs:
+    enable-hook: true
+    max-negative-level-offset: -5
+    max-positive-level-offset: 5
 
 garbage-collection:
   # Time that should pass between garbage collection.

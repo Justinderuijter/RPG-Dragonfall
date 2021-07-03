@@ -117,8 +117,8 @@ public final class XRPG extends JavaPlugin {
         boolean useMcMMO = false;
         boolean usePvPToggle = false;
 
-        if (mcMMO != null && dependencyConfig.getBoolean("enable-mcmmo-hook", false)) useMcMMO = true;
-        if (pvpToggle != null && dependencyConfig.getBoolean("enable-pvp-toggle-hook", false)) usePvPToggle = true;
+        if (mcMMO != null && dependencyConfig.getBoolean("mcmmo.enable-hook", false)) useMcMMO = true;
+        if (pvpToggle != null && dependencyConfig.getBoolean("pvp-toggle.enable-hook", false)) usePvPToggle = true;
 
         //Load ability targetting managers
         this.partySet = new PartySet(PvPToggleFactory.getPvPToggle(usePvPToggle), PartyManagerFactory.getPartyManager());
