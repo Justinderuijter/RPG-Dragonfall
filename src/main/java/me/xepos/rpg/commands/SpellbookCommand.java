@@ -5,10 +5,10 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpellbookCommand implements TabExecutor {
+public class SpellbookCommand extends BaseCommand {
     private final XRPG plugin;
     private final List<String> completions = new ArrayList<String>(){{
         add("open");
@@ -28,12 +28,17 @@ public class SpellbookCommand implements TabExecutor {
     }};
 
     public SpellbookCommand(XRPG plugin){
+        super("spellbook");
         this.plugin = plugin;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (command.getName().equalsIgnoreCase("spellbook") ||command.getName().equalsIgnoreCase("sb")) {
+            if (!checkPermissions(commandSender, "")){
+                commandSender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+                return true;
+            }
             switch(strings.length){
                 case 0:
                     return openSpellbook(commandSender);

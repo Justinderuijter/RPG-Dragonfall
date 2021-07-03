@@ -40,8 +40,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("all")
 public final class XRPG extends JavaPlugin {
-
     private static XRPG instance;
+    public static final String permissionPrefix = "xrpg.";
+    public static final String modifierPrefix = "XRPG_";
 
     private List<ItemStack> GUIBaseItems;
     private SkillLoader skillLoader;
@@ -142,7 +143,7 @@ public final class XRPG extends JavaPlugin {
         this.getCommand("xrpgreload").setExecutor(new XRPGReload());
         this.getCommand("spellmode").setExecutor(new ToggleSpellCommand(this));
         this.getCommand("spellbook").setExecutor(new SpellbookCommand(this));
-        this.getCommand("tree").setExecutor(new TreeCommand(this, this.databaseManager));
+        this.getCommand("tree").setExecutor(new TreeCommand(this));
         this.getCommand("xrpginfo").setExecutor(new XRPGInfoCommand(this));
         this.getCommand("xrpgadmin").setExecutor(new XRPGAdminCommand(this, skillLoader));
         this.getCommand("class").setExecutor(new ChangeClassCommand(this, GUIBaseItems));

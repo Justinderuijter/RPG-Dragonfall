@@ -50,3 +50,35 @@ permissions:
   xrpg.admin:
     description: allows administration commands for this plugin
     default: op
+    children:
+      xrpg.admin.add.level: true
+      xrpg.admin.add.skill: true
+      xrpg.admin.create.eventspell: true
+      xrpg.admin.reset.skilltree: true
+  xrpg.admin.add.level:
+    description: allows to add levels or experience to players
+    default: op
+  xrpg.admin.add.skill:
+    description: allows to add skills to players
+    default: op
+  xrpg.admin.create.eventspell:
+    description: allows to create event spell items
+    default: op
+  xrpg.admin.reset.skilltree:
+    description: allows to reset other player's skilltree
+    default: op
+  xrpg.tree.*:
+    description: allows all interactions for the player's own skilltree
+    default: false
+    children:
+      xrpg.tree.open: true
+      xrpg.tree.reset: true
+  xrpg.tree.open:
+    description: allows the player to open the tree menu
+    default: true
+  xrpg.tree.reset:
+    description: allows the player to reset their skilltree
+    default: op
+  xrpg.spellbook.*:
+    description: allows players all spellbook interactions
+    default: true

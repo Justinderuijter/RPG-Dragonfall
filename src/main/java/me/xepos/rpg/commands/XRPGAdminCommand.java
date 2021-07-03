@@ -5,13 +5,11 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.utils.Utils;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class XRPGAdminCommand implements TabExecutor {
+public class XRPGAdminCommand extends BaseCommand {
     private final XRPG plugin;
     private final SkillLoader skillLoader;
 
@@ -43,6 +41,7 @@ public class XRPGAdminCommand implements TabExecutor {
     }};
 
     public XRPGAdminCommand(XRPG plugin, SkillLoader skillLoader) {
+        super("admin");
         this.plugin = plugin;
         this.skillLoader = skillLoader;
     }
@@ -156,7 +155,7 @@ public class XRPGAdminCommand implements TabExecutor {
                 }
                 return false;
             case "experience":
-                if (!checkPermissions(sender, "add.exp")) {
+                if (!checkPermissions(sender, "add.level")) {
                     sender.sendMessage(ChatColor.RED + "You don't have permission to use this command");
                     return false;
                 }
@@ -170,7 +169,7 @@ public class XRPGAdminCommand implements TabExecutor {
                 }
                 return false;
             case "skill":
-                if (!checkPermissions(sender, "add.level")) {
+                if (!checkPermissions(sender, "add.skill")) {
                     sender.sendMessage(ChatColor.RED + "You don't have permission to use this command");
                     return false;
                 }
@@ -203,8 +202,8 @@ public class XRPGAdminCommand implements TabExecutor {
 
     public boolean subCommandCreate(CommandSender sender, XRPGPlayer xrpgTarget, String[] strings){
         if (strings.length == 4){
-            if (strings[2].equalsIgnoreCase("create.eventspell")){
-                if(!checkPermissions(sender, "createspell")){
+            if (strings[2].equalsIgnoreCase("eventspell")){
+                if(!checkPermissions(sender, "create.eventspell")){
                     sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
                     return true;
                 }
@@ -226,7 +225,7 @@ public class XRPGAdminCommand implements TabExecutor {
                     Inventory targetInventory = xrpgTarget.getPlayer().getInventory();
                     if (targetInventory.firstEmpty() != -1){
                         targetInventory.addItem(spellItem);
-                        xrpgTarget.getPlayer().sendMessage(ChatColor.GREEN + "You received " + ChatColor.BOLD + spellItem.displayName() + "!");
+                        xrpgTarget.getPlayer().sendMessage(ChatColor.GREEN + "You received " + ChatColor.BOLD + "Event Spell: " + skillData.getName() + "!");
                     }else{
                         sender.sendMessage(ChatColor.RED + "Target's inventory is full!");
                     }
@@ -251,14 +250,5 @@ public class XRPGAdminCommand implements TabExecutor {
             return true;
         }
         return false;
-    }
-
-    private boolean checkPermissions(CommandSender sender, String childPermission) {
-        final String wildcard = "xrpg.*";
-        final String base = "xrpg.admin";
-        if (StringUtils.isBlank(childPermission))
-            return sender.hasPermission(wildcard) || sender.hasPermission(base);
-        else
-            return sender.isOp() || sender.hasPermission(wildcard) || sender.hasPermission(base) || sender.hasPermission(base + "." + childPermission);
     }
 }
