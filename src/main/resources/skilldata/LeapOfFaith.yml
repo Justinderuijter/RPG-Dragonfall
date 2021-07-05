@@ -3,14 +3,19 @@ icon: FEATHER
 
 levels:
   statics:
-    cooldown: 15
+    cooldown: 30
     description:
-      - "Close your eyes and spurt forwards"
-      - "Casting this while jumping can significantly"
-      - "increase the distance traveled."
+      - "Mark an area for %area-duration% seconds."
+      - "Anyone that steps close to the marked area"
+      - "will get the levitation effect for %buff-duration% seconds"
+      - "and the slow falling effect for double that duration."
   1:
-    velocity: 2
+    buff-duration: 5.0
+    #Area duration cannot be a decimal value!
+    area-duration: 5
   2:
-    velocity: 4
+    buff-duration: 7.0
+    area-duration: 7
   3:
-    velocity: 6
+    buff-duration: 10.0
+    area-duration: 10

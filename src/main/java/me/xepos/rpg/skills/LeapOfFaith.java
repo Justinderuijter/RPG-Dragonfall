@@ -31,8 +31,11 @@ public class LeapOfFaith extends XRPGActiveSkill {
             return;
         }
 
-        new LeapOfFaithTask(e.getPlayer().getLocation()).runTaskTimer(getPlugin(), 20L, 20L);
-        new ParticleSpiralEffectTask(Particle.FIREWORKS_SPARK, e.getPlayer(), 2.5, 1, 10, false, 0.02).runTaskTimer(getPlugin(), 20L, 1L);
+        final double buffDuration = getSkillVariables().getDouble(getSkillLevel(), "buff-duration", 5.0);
+        final int areaDuration = getSkillVariables().getInt(getSkillLevel(), "area-duration", 5);
+
+        new LeapOfFaithTask(e.getPlayer().getLocation(), areaDuration, buffDuration).runTaskTimer(getPlugin(), 20L, 20L);
+        new ParticleSpiralEffectTask(Particle.FIREWORKS_SPARK, e.getPlayer(), 2.5, 1, areaDuration, false, 0.02).runTaskTimer(getPlugin(), 20L, 1L);
 
         setRemainingCooldown(getCooldown());
         updatedCasterMana();

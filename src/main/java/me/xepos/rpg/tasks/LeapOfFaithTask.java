@@ -11,17 +11,18 @@ import java.util.Collection;
 
 public class LeapOfFaithTask extends BukkitRunnable {
     private final Location location;
-    private final byte duration;
+    private final int duration;
     private final PotionEffect levitationEffect;
     private final PotionEffect slowFallingEffect;
 
-    private byte counter = 0;
+    private int counter = 0;
 
-    public LeapOfFaithTask(Location baseLocation){
+    public LeapOfFaithTask(Location baseLocation, int fieldDurationInSeconds, double buffDurationInSeconds){
         this.location = baseLocation.add(0, 1, 0);
-        this.duration = 10;
-        this.levitationEffect = new PotionEffect(PotionEffectType.LEVITATION, 200, 1, false, false, false);
-        this.slowFallingEffect = new PotionEffect(PotionEffectType.SLOW_FALLING, 400, 0, false, false, true);
+        this.duration = fieldDurationInSeconds;
+        final int buffDurationInTicks = (int)(buffDurationInSeconds * 20);
+        this.levitationEffect = new PotionEffect(PotionEffectType.LEVITATION, buffDurationInTicks, 1, false, false, false);
+        this.slowFallingEffect = new PotionEffect(PotionEffectType.SLOW_FALLING, buffDurationInTicks * 2, 0, false, false, true);
     }
 
     @Override
