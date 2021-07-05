@@ -7,3 +7,5 @@ display:
     - "Useful for dishing out tons of damage or protecting others."
 
 base-mana: 20
+allowed-event-skills:
+  - "Smokebomb"

@@ -7,3 +7,7 @@ display:
     - "The sneaky explorer also has quite a few tricks up their sleeve."
 
 base-mana: 20
+allowed-event-skills:
+  - "Meteor"
+  - "GoldenAppleAoE"
+  - "EnchantedGoldenAppleAoE"
