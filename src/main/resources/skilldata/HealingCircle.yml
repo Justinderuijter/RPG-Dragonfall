@@ -1,4 +1,5 @@
 name: "Healing Circle"
+icon: "BARRIER"
 
 levels:
   statics:

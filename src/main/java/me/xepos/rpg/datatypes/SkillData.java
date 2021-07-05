@@ -29,6 +29,8 @@ public class SkillData {
     }
 
     public String getIcon() {
+        if (this.icon == null)
+            return "BARRIER";
         return icon;
     }
 

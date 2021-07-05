@@ -203,7 +203,7 @@ public final class XRPG extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FollowerListener(this), this);
 
         Plugin LM = Bukkit.getPluginManager().getPlugin("LevelledMobs");
-        if (LM != null && LM.isEnabled() && dependencyConfig.getBoolean("enable-levelledmobs-hook", false)){
+        if (LM != null && LM.isEnabled() && dependencyConfig.getBoolean("levelled-mobs.enable-hook", false)){
             getServer().getPluginManager().registerEvents(new LevelledMobsListener(this), this);
         }
     }

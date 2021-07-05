@@ -41,7 +41,7 @@ public class HealingCircle extends XRPGActiveSkill {
 
         List<Player> nearbyPlayers = getNearbyAlliedPlayers(caster, xRange, yRange, xRange);
         nearbyPlayers.removeIf(p -> !canApplyBuffToFriendly(p));
-        new ParticleSpiralEffectTask(Particle.HEART, caster, xRange/2, 2,2).runTaskTimer(getPlugin(), 0, 1);
+        new ParticleSpiralEffectTask(Particle.HEART, caster, xRange/2, 2,2, true, 1).runTaskTimer(getPlugin(), 0, 1);
         for (Player nearbyPlayer : nearbyPlayers) {
             new HealOverTimeTask(nearbyPlayer, getSkillVariables().getDouble(getSkillLevel(), "heal-per-proc", 1.0), getSkillVariables().getInt(getSkillLevel(), "max-procs", 10)).runTaskTimer(getPlugin(), 1L, (long) getSkillVariables().getDouble(getSkillLevel(), "interval", 1.0) * 20L);
         }

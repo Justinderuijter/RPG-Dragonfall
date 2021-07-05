@@ -10,6 +10,7 @@ import me.xepos.rpg.utils.SpellmodeUtils;
 import me.xepos.rpg.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -254,6 +255,14 @@ public class PlayerListener implements Listener {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()) {
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerGamemodeChange(PlayerGameModeChangeEvent e){
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer(), true);
+        if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled() && e.getNewGameMode() != GameMode.SURVIVAL) {
+            SpellmodeUtils.disableSpellmode(xrpgPlayer);
         }
     }
 }

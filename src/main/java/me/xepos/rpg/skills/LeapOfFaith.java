@@ -4,10 +4,12 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
+import me.xepos.rpg.tasks.LeapOfFaithTask;
+import me.xepos.rpg.tasks.particles.ParticleSpiralEffectTask;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Particle;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.util.Vector;
 
 public class LeapOfFaith extends XRPGActiveSkill {
     public LeapOfFaith(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
@@ -29,9 +31,8 @@ public class LeapOfFaith extends XRPGActiveSkill {
             return;
         }
 
-        final int velocity = getSkillVariables().getInt(getSkillLevel(), "velocity", 5);
-
-        e.getPlayer().setVelocity(e.getPlayer().getEyeLocation().getDirection().multiply(new Vector(velocity, 0, velocity)));
+        new LeapOfFaithTask(e.getPlayer().getLocation()).runTaskTimer(getPlugin(), 20L, 20L);
+        new ParticleSpiralEffectTask(Particle.FIREWORKS_SPARK, e.getPlayer(), 2.5, 1, 10, false, 0.02).runTaskTimer(getPlugin(), 20L, 1L);
 
         setRemainingCooldown(getCooldown());
         updatedCasterMana();
