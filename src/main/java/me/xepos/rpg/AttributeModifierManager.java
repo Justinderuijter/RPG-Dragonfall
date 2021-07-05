@@ -4,6 +4,7 @@ import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.enums.ModifierType;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 
@@ -67,6 +68,19 @@ public class AttributeModifierManager {
             if (modifier.getName().equalsIgnoreCase(HEALTH_LEVEL_MODIFIER_NAME)){
                 Bukkit.getLogger().info("Removed " + HEALTH_LEVEL_MODIFIER_NAME + ", value: " + modifier.getAmount());
                 player.getAttribute(Attribute.GENERIC_MAX_HEALTH).removeModifier(modifier);
+            }
+        }
+    }
+
+    public void removeAllXRPGModifiers(Player player){
+        for (Attribute attribute:Attribute.values()) {
+            AttributeInstance instance = player.getAttribute(attribute);
+            if (instance != null){
+                for (AttributeModifier modifier:instance.getModifiers()) {
+                    if (modifier.getName().startsWith(XRPG.modifierPrefix)){
+                        instance.removeModifier(modifier);
+                    }
+                }
             }
         }
     }

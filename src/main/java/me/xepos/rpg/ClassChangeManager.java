@@ -7,6 +7,7 @@ import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.events.classes.XRPGClassChangeEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -72,6 +73,14 @@ public class ClassChangeManager {
             PlayerData data = databaseManager.savePlayerData(xrpgPlayer);
 
             data.setClassId(event.getNewClassId());
+
+            Component text;
+            if (StringUtils.isBlank(xrpgPlayer.getClassId())){
+                text = xrpgPlayer.getPlayer().displayName().append(Component.text(" selected " + classInfo.getDisplayName() + " as their first class!"));
+            }else{
+                text = xrpgPlayer.getPlayer().displayName().append(Component.text(" changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classInfo.getDisplayName() + "!"));
+            }
+            Bukkit.broadcast(text);
 
             skillLoader.loadPlayerSkills(data, xrpgPlayer);
         });

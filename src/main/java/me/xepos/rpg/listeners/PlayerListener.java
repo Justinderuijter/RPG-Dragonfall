@@ -1,6 +1,7 @@
 package me.xepos.rpg.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.DatabaseManager;
@@ -87,6 +88,9 @@ public class PlayerListener implements Listener {
         Player player = e.getPlayer();
         XRPGPlayer xrpgPlayer = null;
 
+        if (this.plugin.getConfig().getBoolean("safety-options.modifier-check-on-join", true))
+            AttributeModifierManager.getInstance().removeAllXRPGModifiers(player);
+
         if (plugin.getRPGPlayers().containsKey(player.getUniqueId())) {
             xrpgPlayer = plugin.getXRPGPlayer(player, true);
             if (xrpgPlayer != null) {
@@ -102,6 +106,7 @@ public class PlayerListener implements Listener {
 
 
         } else {
+            plugin.getRPGPlayers().remove(player.getUniqueId());
             player.kickPlayer("Something went wrong while loading XRPG data.");
         }
 
@@ -180,7 +185,7 @@ public class PlayerListener implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onHealthRegen(EntityRegainHealthEvent e) {
         if (!(e.getEntity() instanceof Player)) return;
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getEntity().getUniqueId());

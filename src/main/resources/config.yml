@@ -66,6 +66,9 @@ general-dependencies:
     max-negative-level-offset: -5
     max-positive-level-offset: 5
 
+safety-options:
+  modifier-check-on-join: true
+
 garbage-collection:
   # Time that should pass between garbage collection.
   # Set to 0 to disable garbage collection.
