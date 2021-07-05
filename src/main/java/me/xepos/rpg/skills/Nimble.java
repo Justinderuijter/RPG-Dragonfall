@@ -25,7 +25,7 @@ public class Nimble extends XRPGPassiveSkill {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         //Initializing the modifier
-        double multiplier = getSkillVariables().getDouble(skillLevel, "speed-multiplier", 1.5) - 1;
+        double multiplier = getSkillVariables().getDouble(skillLevel, "speed-multiplier", 50.0) / 100;
         AttributeModifier modifier = new AttributeModifier(UUID.fromString("076c8ed9-b6e2-4da1-a4c0-27c50c61726a"), speedAttributeName + skillLevel, multiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
         AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, modifier.getName(), modifier, Attribute.GENERIC_MOVEMENT_SPEED);
@@ -55,15 +55,15 @@ public class Nimble extends XRPGPassiveSkill {
         }else if(event instanceof PlayerJumpEvent){
             PlayerJumpEvent e = (PlayerJumpEvent) event;
 
-            double vertical = getSkillVariables().getDouble(getSkillLevel(), "vertical-velocity-multiplier", 2.1);
-            double horizontal = getSkillVariables().getDouble(getSkillLevel(), "horizontal-velocity-multiplier", 1.5);
+            double vertical = 1 + getSkillVariables().getDouble(getSkillLevel(), "vertical-velocity-multiplier", 25.0) / 100;
+            double horizontal = 1 + getSkillVariables().getDouble(getSkillLevel(), "horizontal-velocity-multiplier", 50.0) / 100;
 
             e.getPlayer().setVelocity(e.getPlayer().getVelocity().multiply(new Vector(horizontal, vertical, horizontal)));
         }else if(event instanceof EntityDamageEvent && !(event instanceof EntityDamageByEntityEvent)){
             //Reduce damage by half if it's fall damage
             EntityDamageEvent e = (EntityDamageEvent) event;
             if (e.getCause() != EntityDamageEvent.DamageCause.FALL) return;
-            double damage = e.getDamage() / (100 / getSkillVariables().getDouble(getSkillLevel(), "fall-damage-reduction", 50.0));
+            double damage = e.getDamage() * (1 - getSkillVariables().getDouble(getSkillLevel(), "fall-damage-reduction", 17.5) / 100);
             if (damage < 1) {
                 e.setCancelled(true);
             } else {
@@ -97,7 +97,7 @@ public class Nimble extends XRPGPassiveSkill {
         AttributeModifierManager manager = AttributeModifierManager.getInstance();
 
         if (manager.get(ModifierType.POSITIVE, speedAttributeName + skillLevel) == null){
-            double multiplier = getSkillVariables().getDouble(skillLevel, "speed-multiplier", 1.5) - 1;
+            double multiplier = getSkillVariables().getDouble(skillLevel, "speed-multiplier", 50.0) / 100;
             AttributeModifier modifier = new AttributeModifier(UUID.randomUUID(), speedAttributeName + skillLevel, multiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
             AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, modifier.getName(), modifier, Attribute.GENERIC_MOVEMENT_SPEED);

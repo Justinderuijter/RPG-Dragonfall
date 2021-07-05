@@ -7,8 +7,8 @@ levels:
       - "you require %reduction% percent less EXP to"
       - "enchant your items."
   1:
-    enchanting-discount: 0.175
+    enchanting-discount: 17.5
   2:
-    enchanting-discount: 0.25
+    enchanting-discount: 25.0
   3:
-    enchanting-discount: 0.50
+    enchanting-discount: 50.0

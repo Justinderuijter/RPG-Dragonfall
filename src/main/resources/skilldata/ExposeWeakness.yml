@@ -8,3 +8,5 @@ levels:
       - "Watch what your enemy guards most carefully,"
       - "then, attack that place. Dealing damage equal to"
       - "%max-health-damage% % of their maximum health"
+    cooldown: 15.0
+    mana: 15

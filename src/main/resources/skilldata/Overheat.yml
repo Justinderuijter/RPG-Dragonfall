@@ -6,7 +6,8 @@ levels:
     damage-per-armor: 0.5
     range: 16.0
     delay: 5.0
-    cooldown: 20.0
+    cooldown: 15.0
+    mana: 15
     description:
       - "Set your target on fire, overheating them."
       - "Deals %damage% fire damage to your target after %delay% seconds"

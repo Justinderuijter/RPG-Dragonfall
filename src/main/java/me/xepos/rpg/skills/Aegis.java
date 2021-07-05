@@ -59,7 +59,7 @@ public class Aegis extends XRPGPassiveSkill {
                 Bukkit.getServer().getPluginManager().callEvent(event);
                 XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(target, true);
                 if (xrpgTarget != null && !event.isCancelled()) {
-                    Utils.addDTModifier(xrpgTarget, getSkillName(), getDamageMultiplier());
+                    Utils.addDTModifier(xrpgTarget, getSkillName(), getSkillVariables().getDouble(getSkillLevel(), "damage-reduction", 5) / 100);
                     target.sendMessage(player.getDisplayName() + " Granted you " + getSkillName() + "!");
 
                     new RemoveDTModifierTask(player, xrpgTarget, this).runTaskLaterAsynchronously(getPlugin(), (long) duration * 20);

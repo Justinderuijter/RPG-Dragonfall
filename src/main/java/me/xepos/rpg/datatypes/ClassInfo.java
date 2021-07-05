@@ -2,7 +2,6 @@ package me.xepos.rpg.datatypes;
 
 import org.bukkit.Material;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class ClassInfo {
@@ -10,15 +9,15 @@ public class ClassInfo {
     private final String displayName;
     private final Material icon;
     private final List<String> description;
-    private final HashMap<String, Integer> baseSkills;
+    private final List<String> allowedEventSkillIds;
     private final byte baseMana;
     private final String skillTreeId;
 
-    public ClassInfo(String displayName, Material icon, List<String> description, byte baseMana, String skillTreeId){
-        this.baseSkills = new HashMap<>();
+    public ClassInfo(String displayName, Material icon, List<String> description, List<String> allowedEventSkillIds, byte baseMana, String skillTreeId){
         this.displayName = displayName;
         this.icon = icon;
         this.description = description;
+        this.allowedEventSkillIds = allowedEventSkillIds;
         this.baseMana = baseMana;
         this.skillTreeId = skillTreeId;
     }
@@ -49,5 +48,9 @@ public class ClassInfo {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public boolean canLearnEventSkill(String skillId){
+        return this.allowedEventSkillIds.contains(skillId);
     }
 }

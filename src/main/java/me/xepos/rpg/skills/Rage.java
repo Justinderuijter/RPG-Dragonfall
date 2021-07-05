@@ -30,7 +30,7 @@ public class Rage extends XRPGPassiveSkill implements IMessenger {
     public Rage(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
-        double attackSpeedMultiplier = skillVariables.getDouble(skillLevel, "atk-spd-multiplier", 1.65) - 1;
+        double attackSpeedMultiplier = 1 + skillVariables.getDouble(skillLevel, "atk-spd-multiplier", 65.0) / 100;
         AttributeModifier mod = new AttributeModifier(UUID.fromString("1d7a09c9-b6e2-4dc7-ab6f-8831dffcb111"), "RAGE_ATK_SPD", attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
         Bukkit.getLogger().info("name: " + mod.getName());
@@ -78,15 +78,15 @@ public class Rage extends XRPGPassiveSkill implements IMessenger {
                 Utils.removeUniqueModifier(player, attackSpeedModifierData);
             case 1:
                 Utils.removeUniqueModifier(player, attackSpeedModifierData);
-                e.setDamage(e.getDamage() * skillVariable.getDouble(getSkillLevel(), "rage-one-multiplier", 1.1));
+                e.setDamage(e.getDamage() * (1 + skillVariable.getDouble(getSkillLevel(), "rage-one-multiplier", 10.0) / 100));
                 break;
             case 2:
                 Utils.removeUniqueModifier(player, attackSpeedModifierData);
-                e.setDamage(e.getDamage() * skillVariable.getDouble(getSkillLevel(), "rage-two-multiplier", 1.2));
+                e.setDamage(e.getDamage() * (1 + skillVariable.getDouble(getSkillLevel(), "rage-two-multiplier", 20) / 100));
                 break;
             case 3:
                 Utils.addUniqueModifier(player, attackSpeedModifierData);
-                e.setDamage(e.getDamage() * skillVariable.getDouble(getSkillLevel(), "rage-three-multiplier", 1.3));
+                e.setDamage(e.getDamage() * (1 + skillVariable.getDouble(getSkillLevel(), "rage-three-multiplier", 30.0) / 100));
                 break;
         }
     }

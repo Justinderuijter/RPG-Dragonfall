@@ -47,13 +47,13 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
 
         //Adding to attribute manager
         if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(ATKSPD_MOD_NAME)) {
-            final double attackSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "attack-speed-multiplier", 1.25) - 1;
+            final double attackSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "attack-speed-multiplier", 25.0) /100;
             final AttributeModifier attackSpeedMod = new AttributeModifier(UUID.randomUUID(), ATKSPD_MOD_NAME, attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
             manager.put(ModifierType.POSITIVE, attackSpeedMod.getName(), attackSpeedMod, Attribute.GENERIC_ATTACK_SPEED);
         }
         if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(MVSPD_MOD_NAME)) {
-            final double moveSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "move-speed-multiplier", 1.3) - 1;
+            final double moveSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "move-speed-multiplier", 30) / 100;
             final AttributeModifier moveSpeedMod = new AttributeModifier(UUID.randomUUID(), MVSPD_MOD_NAME, moveSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
             manager.put(ModifierType.POSITIVE, moveSpeedMod.getName(), moveSpeedMod, Attribute.GENERIC_MOVEMENT_SPEED);
@@ -105,7 +105,6 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
         isAllLeatherOrAir = true;
         if (newItem.getType() == Material.AIR || newItem.getType().toString().toLowerCase().contains("leather")) {
             for (ItemStack armor : getXRPGPlayer().getPlayer().getInventory().getArmorContents()) {
-                if (armor == null) continue;
                 if (armor.getType() != Material.AIR && !armor.getType().toString().toLowerCase().contains("leather")) {
                     isAllLeatherOrAir = false;
                     break;

@@ -101,7 +101,7 @@ public abstract class XRPGSkill {
     }
 
     public double getDamageMultiplier() {
-        return skillVariables.getDouble(getSkillLevel(), "damage-multiplier");
+        return (skillVariables.getDouble(getSkillLevel(), "damage-multiplier", 0) + 100) / 100;
     }
 
     public int getRequiredMana() {

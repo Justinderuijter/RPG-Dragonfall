@@ -25,7 +25,7 @@ public class MasterEnchanter extends XRPGPassiveSkill {
         if (!(event instanceof PrepareItemEnchantEvent)) return;
         PrepareItemEnchantEvent e = (PrepareItemEnchantEvent) event;
 
-        float discount = (float) (1 - getSkillVariables().getDouble(getSkillLevel(), "enchanting-discount", 0.175));
+        float discount = (float) (1 - getSkillVariables().getDouble(getSkillLevel(), "enchanting-discount", 17.5) / 100);
         for (EnchantmentOffer offer:e.getOffers()) {
             offer.setCost(Math.round(offer.getCost() * discount));
         }

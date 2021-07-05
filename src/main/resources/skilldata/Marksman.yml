@@ -4,20 +4,20 @@ levels:
   statics:
     pierce: 1
   1:
-    headshot-multiplier: 1.0
+    headshot-multiplier: 0
     description:
       - "Fully charged shots from your bow make your arrows"
       - "slash through the air with exceptional speed,"
       - "removing all drop-off and granting them pierce"
   2:
-    headshot-multiplier: 1.5
+    headshot-multiplier: 50
     description:
       - "Fully charged shots from your bow make your arrows"
       - "slash through the air with exceptional speed,"
       - "removing all drop-off and granting them pierce"
       - "Headshot deal bonus damage"
   3:
-    headshot-multiplier: 2.0
+    headshot-multiplier: 150
     description:
       - "Fully charged shots from your bow make your arrows"
       - "slash through the air with exceptional speed,"

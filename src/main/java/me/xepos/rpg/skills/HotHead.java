@@ -41,7 +41,7 @@ public class HotHead extends XRPGPassiveSkill {
             EntityDamageEvent e = (EntityDamageEvent) event;
 
             if (causes.contains(e.getCause())){
-                e.setDamage(e.getDamage() * (1 - getSkillVariables().getDouble(getSkillLevel(), "fire-damage-reduction-multiplier", 0.5)));
+                e.setDamage(e.getDamage() * (1 - getSkillVariables().getDouble(getSkillLevel(), "fire-damage-reduction-multiplier", 17.5) / 100));
             }
         }
     }

@@ -93,7 +93,7 @@ public class ClassLoader {
                 final byte baseMana = (byte) fileConfiguration.getInt("base-mana", 20);
                 final String treeId = fileConfiguration.getString("treeId", fileName);
 
-                ClassInfo classInfo = new ClassInfo(name, material, fileConfiguration.getStringList("display.description"), baseMana, treeId);
+                ClassInfo classInfo = new ClassInfo(name, material, fileConfiguration.getStringList("display.description"), fileConfiguration.getStringList("allowed-event-skills"), baseMana, treeId);
 
                 classInfo.setEnabled(fileConfiguration.getBoolean("enabled", true));
 

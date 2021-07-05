@@ -3,6 +3,7 @@ package me.xepos.rpg.commands;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
+import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
@@ -215,7 +216,16 @@ public class XRPGAdminCommand extends BaseCommand {
                         add("Hold and right click this item");
                         add("To learn this skill or level it up");
                         add("Can only be learned by the following classes:");
-                        add("- ALL");
+
+                        int counter = 0;
+                        for (String classId:plugin.getClassInfo().keySet()) {
+                            ClassInfo classInfo = plugin.getClassInfo(classId);
+                            if (classInfo.canLearnEventSkill(skillId)){
+                                add("- " + classInfo.getDisplayName());
+                                counter++;
+                            }
+                        }
+                        if (counter == 0) add("- None");
                     }};
                     ItemStack spellItem = Utils.buildItemStack(Material.ENCHANTED_BOOK, "Event Spell: " + skillData.getName(), lore);
                     ItemMeta spellItemMeta = spellItem.getItemMeta();

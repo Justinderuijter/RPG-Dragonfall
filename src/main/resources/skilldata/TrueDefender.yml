@@ -2,6 +2,7 @@ name: "True Defender"
 levels:
   statics:
     cooldown: 15.0
+    mana: 10
     description:
       - "When actives you ascend into a true defender for %duration% seconds"
       - "While ascended you are immune to all damage and reflect"

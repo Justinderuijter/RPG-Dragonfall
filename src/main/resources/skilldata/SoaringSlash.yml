@@ -2,7 +2,8 @@ name: "Soaring Slash"
 icon: GOLDEN_AXE
 levels:
   statics:
-    cooldown: 15
+    cooldown: 10
+    mana: 10
     description:
       - "Jump into the air, slamming down on nearby enemies"
       - "deals %damage% damage and slows them."

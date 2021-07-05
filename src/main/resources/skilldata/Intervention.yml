@@ -3,7 +3,8 @@ icon: "LEAD"
 
 levels:
   statics:
-    cooldown: 6.0
+    cooldown: 3.0
+    mana: 5
     description:
       - "Pull your target towards you with a force of %pull-force%"
   1:

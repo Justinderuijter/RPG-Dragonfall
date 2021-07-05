@@ -2,7 +2,8 @@ name: "Shield Bash"
 icon: SHIELD
 levels:
   statics:
-    cooldown: 10
+    cooldown: 5
+    mana: 7
     description:
       - "Wave the heavy shield to bash the target."
       - "Stuns the target with a strong shock"

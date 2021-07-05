@@ -4,10 +4,10 @@ levels:
   statics:
     rage-on-hit: 5
     bonus-rage-on-kill: 5
-    atk-spd-multiplier: 1.65
-    rage-one-multiplier: 1.10
-    rage-two-multiplier: 1.20
-    rage-three-multiplier: 1.30
+    atk-spd-multiplier: 65
+    rage-one-multiplier: 10
+    rage-two-multiplier: 20
+    rage-three-multiplier: 30
     description:
       - "Your attacks with an axe build %rage-on-hit% rage."
       - "You are granted bonus damage and"

@@ -63,7 +63,7 @@ public class TrueDefender extends XRPGActiveSkill {
             this.isActive = true;
 
             int duration = (int)(getSkillVariables().getDouble(getSkillLevel(), "duration", 3.0) * 20);
-            Bukkit.getScheduler().runTaskLaterAsynchronously(getPlugin(), () -> this.isActive = false, duration);
+            Bukkit.getScheduler().runTaskLater(getPlugin(), () -> this.isActive = false, duration);
 
             setRemainingCooldown(getCooldown());
             updatedCasterMana();

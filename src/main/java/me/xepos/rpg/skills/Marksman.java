@@ -48,7 +48,7 @@ public class Marksman extends XRPGPassiveSkill {
             arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
 
             ProjectileData data = new ProjectileData(arrow, 0, 20);
-            data.setHeadshotDamage(getSkillVariables().getDouble(getSkillLevel(), "headshot-multiplier"));
+            data.setHeadshotDamage((100 + getSkillVariables().getDouble(getSkillLevel(), "headshot-multiplier")) / 100);
 
             getPlugin().projectiles.put(arrow.getUniqueId(), data);
 

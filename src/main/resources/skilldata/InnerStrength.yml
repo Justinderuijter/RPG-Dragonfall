@@ -4,7 +4,8 @@ levels:
   statics:
     duration: 8
     heal: 8.0
-    cooldown: 10.0
+    cooldown: 15.0
+    mana: 10
     description:
       - "Focus your energies inward, recovering %heal% health"
       - "and granting yourself a random defensive potion effect."

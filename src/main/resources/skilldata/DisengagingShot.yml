@@ -4,6 +4,7 @@ icon: "FEATHER"
 levels:
   statics:
     max-travel-time: 1.0
-    cooldown: 10
+    cooldown: 5.0
+    mana: 4
     description:
       - "Social distancing"

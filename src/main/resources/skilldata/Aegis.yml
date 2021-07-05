@@ -12,8 +12,8 @@ levels:
       - "reducing their damage taken for the next %duration% seconds"
       - "by %damage-multiplier% percent"
   1:
-    damage-multiplier: 0.05
+    damage-reduction: 5
   2:
-    damage-multiplier: 0.1
+    damage-reduction: 10
   3:
-    damage-multiplier: 0.2
+    damage-reduction: 20

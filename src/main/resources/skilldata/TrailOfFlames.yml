@@ -4,6 +4,7 @@ levels:
   statics:
     ignore-villagers: true
     cooldown: 12.0
+    mana: 12
     description:
       - "You leave a trail of fire behind you"
       - "that sets anyone that steps inside it"

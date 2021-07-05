@@ -7,8 +7,8 @@ levels:
       - "to set them on fire."
       - "You take %damage-multiplier% % less damage from fire."
   1:
-    fire-damage-reduction-multiplier: 0.175
+    fire-damage-reduction-multiplier: 17.5
   2:
-    fire-damage-reduction-multiplier: 0.25
+    fire-damage-reduction-multiplier: 25.0
   3:
-    fire-damage-reduction-multiplier: 0.50
+    fire-damage-reduction-multiplier: 50.0

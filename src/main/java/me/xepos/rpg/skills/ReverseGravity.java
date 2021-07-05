@@ -11,8 +11,8 @@ import org.bukkit.Particle;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
-public class LeapOfFaith extends XRPGActiveSkill {
-    public LeapOfFaith(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+public class ReverseGravity extends XRPGActiveSkill {
+    public ReverseGravity(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
