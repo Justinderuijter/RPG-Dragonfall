@@ -10,6 +10,7 @@ import me.xepos.rpg.handlers.BowEventHandler;
 import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.IMessenger;
 import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.utils.SpellmodeUtils;
 import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -227,6 +228,8 @@ public class XRPGPlayer {
 
         //Clearing skills
         activeHandler.getSkills().clear();
+        messengerSkills.clear();
+        SpellmodeUtils.disableSpellmode(this);
         for (PassiveEventHandler handler : handlerList.values()) {
             handler.clear();
         }

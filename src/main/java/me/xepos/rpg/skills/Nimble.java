@@ -47,7 +47,7 @@ public class Nimble extends XRPGPassiveSkill {
             PlayerToggleSprintEvent e = (PlayerToggleSprintEvent) event;
 
             if (e.isSprinting()){
-                Utils.addUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, "NIMBLE_SPRINT"));
+                Utils.addUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, speedAttributeName + getSkillLevel()));
             }else{
                 Utils.removeUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, "NIMBLE_SPRINT"));
             }

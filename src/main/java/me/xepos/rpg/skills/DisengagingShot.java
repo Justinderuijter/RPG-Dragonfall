@@ -24,6 +24,7 @@ public class DisengagingShot extends XRPGBowSkill {
         EntityShootBowEvent e = (EntityShootBowEvent) event;
         if (!isSkillReady()){
             e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
+            return;
         }else if(!hasRequiredMana()){
             sendNotEnoughManaMessage();
             return;
