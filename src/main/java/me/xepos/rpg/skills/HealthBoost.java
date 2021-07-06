@@ -21,8 +21,8 @@ import java.util.UUID;
 
 public class HealthBoost extends XRPGPassiveSkill implements IAttributable {
 
-    private static final String healthAttributeName = "HEALTH_BOOST_HEALTH_";
-    private static final String armorAttributeName = "HEALTH_BOOST_ARMOR_";
+    private static final String healthAttributeName = XRPG.modifierPrefix + "HEALTH_BOOST_HEALTH_";
+    private static final String armorAttributeName = XRPG.modifierPrefix + "HEALTH_BOOST_ARMOR_";
     private static double healthPerLevel = -1;
     private static double armorPerLevel = -1;
 
@@ -34,28 +34,13 @@ public class HealthBoost extends XRPGPassiveSkill implements IAttributable {
 
         final AttributeModifierManager manager = AttributeModifierManager.getInstance();
 
-        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(healthAttributeName + getSkillLevel())){
-            final double healthAmount = healthPerLevel * skillLevel;
-            final AttributeModifier healthMod = new AttributeModifier(UUID.randomUUID(), healthAttributeName + skillLevel, healthAmount, AttributeModifier.Operation.ADD_NUMBER);
-
-            manager.put(ModifierType.POSITIVE, healthMod.getName(), healthMod, Attribute.GENERIC_MAX_HEALTH);
-        }
-        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(armorAttributeName + getSkillLevel())){
-            final double armorAmount = armorPerLevel * skillLevel;
-            final AttributeModifier armorMod = new AttributeModifier(UUID.randomUUID(), armorAttributeName + skillLevel, armorAmount, AttributeModifier.Operation.ADD_NUMBER);
-
-
-            manager.put(ModifierType.POSITIVE, armorMod.getName(), armorMod, Attribute.GENERIC_ARMOR);
-        }
+        registerAttributes(manager, skillLevel);
 
         if (xrpgPlayer.getPlayer() != null){
             Utils.addUniqueModifier(xrpgPlayer.getPlayer(), manager.get(ModifierType.POSITIVE, healthAttributeName + skillLevel));
             Utils.addUniqueModifier(xrpgPlayer.getPlayer(), manager.get(ModifierType.POSITIVE, armorAttributeName + skillLevel));
         }
 
-        if (!xrpgPlayer.getPassiveHandlerList().containsKey("ATTRIBUTE")){
-            xrpgPlayer.addPassiveEventHandler("ATTRIBUTE", new PassiveEventHandler());
-        }
         xrpgPlayer.getPassiveEventHandler("ATTRIBUTE").addSkill(this.getClass().getSimpleName(), this);
     }
 
@@ -81,18 +66,7 @@ public class HealthBoost extends XRPGPassiveSkill implements IAttributable {
 
         super.setSkillLevel(skillLevel);
 
-        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(healthAttributeName + getSkillLevel())){
-            final double healthAmount = healthPerLevel * skillLevel;
-            final AttributeModifier healthMod = new AttributeModifier(UUID.randomUUID(), healthAttributeName + skillLevel, healthAmount, AttributeModifier.Operation.ADD_NUMBER);
-
-            manager.put(ModifierType.POSITIVE, healthMod.getName(), healthMod, Attribute.GENERIC_MAX_HEALTH);
-        }
-        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(armorAttributeName + getSkillLevel())){
-            final double armorAmount = armorPerLevel * skillLevel;
-            final AttributeModifier armorMod = new AttributeModifier(UUID.randomUUID(), armorAttributeName + skillLevel, armorAmount, AttributeModifier.Operation.ADD_NUMBER);
-
-            manager.put(ModifierType.POSITIVE, armorMod.getName(), armorMod, Attribute.GENERIC_ARMOR);
-        }
+        registerAttributes(manager, skillLevel);
 
         Utils.addUniqueModifier(player, manager.get(ModifierType.POSITIVE, healthAttributeName + getSkillLevel()));
         Utils.addUniqueModifier(player, manager.get(ModifierType.POSITIVE, armorAttributeName + getSkillLevel()));
@@ -102,6 +76,8 @@ public class HealthBoost extends XRPGPassiveSkill implements IAttributable {
     public List<AttributeModifierData> getModifiersToApply() {
         final AttributeModifierManager manager = AttributeModifierManager.getInstance();
 
+        registerAttributes(manager, getSkillLevel());
+
         return new ArrayList<AttributeModifierData>(){{
             add(manager.get(ModifierType.POSITIVE, healthAttributeName + getSkillLevel()));
             add(manager.get(ModifierType.POSITIVE, armorAttributeName + getSkillLevel()));
@@ -109,30 +85,24 @@ public class HealthBoost extends XRPGPassiveSkill implements IAttributable {
     }
 
     @Override
-    public void initializeAttributes(int skillLevel) {
-//        final AttributeModifierManager manager = AttributeModifierManager.getInstance();
-//
-//        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(healthAttributeName + skillLevel)){
-//            final double healthAmount = healthPerLevel * getSkillLevel();
-//            final AttributeModifier healthMod = new AttributeModifier(UUID.randomUUID(), healthAttributeName + getSkillLevel(), healthAmount, AttributeModifier.Operation.ADD_NUMBER);
-//
-//            manager.put(ModifierType.POSITIVE, healthMod.getName(), healthMod, Attribute.GENERIC_MAX_HEALTH);
-//        }
-//        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(armorAttributeName + getSkillLevel())){
-//            final double armorAmount = armorPerLevel * getSkillLevel();
-//            final AttributeModifier armorMod = new AttributeModifier(UUID.randomUUID(), armorAttributeName + getSkillLevel(), armorAmount, AttributeModifier.Operation.ADD_NUMBER);
-//
-//
-//            manager.put(ModifierType.POSITIVE, armorMod.getName(), armorMod, Attribute.GENERIC_ARMOR);
-//        }
-//
-//        if (getXRPGPlayer().getPlayer() != null){
-//            Utils.addUniqueModifier(getXRPGPlayer().getPlayer(), manager.get(ModifierType.POSITIVE, healthAttributeName + skillLevel));
-//            Utils.addUniqueModifier(getXRPGPlayer().getPlayer(), manager.get(ModifierType.POSITIVE, armorAttributeName + skillLevel));
-//        }
-//
-//        if (!getXRPGPlayer().getPassiveHandlerList().containsKey("ATTRIBUTE")){
-//            getXRPGPlayer().addPassiveEventHandler("ATTRIBUTE", new PassiveEventHandler());
-//        }
+    public void registerAttributes(AttributeModifierManager attributeModifierManager, int skillLevel) {
+
+        if (!attributeModifierManager.getModifiers(ModifierType.POSITIVE).containsKey(healthAttributeName + skillLevel)){
+            final double healthAmount = healthPerLevel * getSkillLevel();
+            final AttributeModifier healthMod = new AttributeModifier(UUID.randomUUID(), healthAttributeName + getSkillLevel(), healthAmount, AttributeModifier.Operation.ADD_NUMBER);
+
+            attributeModifierManager.put(ModifierType.POSITIVE, healthMod.getName(), healthMod, Attribute.GENERIC_MAX_HEALTH);
+        }
+        if (!attributeModifierManager.getModifiers(ModifierType.POSITIVE).containsKey(armorAttributeName + getSkillLevel())){
+            final double armorAmount = armorPerLevel * getSkillLevel();
+            final AttributeModifier armorMod = new AttributeModifier(UUID.randomUUID(), armorAttributeName + getSkillLevel(), armorAmount, AttributeModifier.Operation.ADD_NUMBER);
+
+
+            attributeModifierManager.put(ModifierType.POSITIVE, armorMod.getName(), armorMod, Attribute.GENERIC_ARMOR);
+        }
+
+        if (!getXRPGPlayer().getPassiveHandlerList().containsKey("ATTRIBUTE")){
+            getXRPGPlayer().addPassiveEventHandler("ATTRIBUTE", new PassiveEventHandler());
+        }
     }
 }

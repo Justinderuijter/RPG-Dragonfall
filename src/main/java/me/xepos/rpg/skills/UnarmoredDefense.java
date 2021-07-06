@@ -11,7 +11,6 @@ import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.IAttributable;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -28,8 +27,8 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
     private boolean isAllLeatherOrAir;
 
     private final static AttributeModifierManager manager = AttributeModifierManager.getInstance();
-    private final static String MVSPD_MOD_NAME = "UNARMORED_DEFENSE_MOVESPEED";
-    private final static String ATKSPD_MOD_NAME = "UNARMORED_DEFENSE_ATTACKSPEED";
+    private final static String MVSPD_MOD_NAME = XRPG.modifierPrefix + "UNARMORED_DEFENSE_MOVESPEED";
+    private final static String ATKSPD_MOD_NAME = XRPG.modifierPrefix + "UNARMORED_DEFENSE_ATTACKSPEED";
 
     public UnarmoredDefense(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
@@ -46,18 +45,7 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
         xrpgPlayer.getPassiveEventHandler("ARMOR_DISPENSE").addSkill(this.getClass().getSimpleName(), this);
 
         //Adding to attribute manager
-        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(ATKSPD_MOD_NAME)) {
-            final double attackSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "attack-speed-multiplier", 25.0) /100;
-            final AttributeModifier attackSpeedMod = new AttributeModifier(UUID.randomUUID(), ATKSPD_MOD_NAME, attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
-
-            manager.put(ModifierType.POSITIVE, attackSpeedMod.getName(), attackSpeedMod, Attribute.GENERIC_ATTACK_SPEED);
-        }
-        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(MVSPD_MOD_NAME)) {
-            final double moveSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "move-speed-multiplier", 30) / 100;
-            final AttributeModifier moveSpeedMod = new AttributeModifier(UUID.randomUUID(), MVSPD_MOD_NAME, moveSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
-
-            manager.put(ModifierType.POSITIVE, moveSpeedMod.getName(), moveSpeedMod, Attribute.GENERIC_MOVEMENT_SPEED);
-        }
+        registerAttributes(manager, getSkillLevel());
 
         //Only executes if the player is already online
         //If the player is not already online, use the IAttributable interface
@@ -130,11 +118,10 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
 
     @Override
     public List<AttributeModifierData> getModifiersToApply() {
+        registerAttributes(manager, getSkillLevel());
+
         return new ArrayList<AttributeModifierData>()
         {{
-            if (manager == null){
-                Bukkit.getLogger().severe("Manager is null");
-            }
             AttributeModifierData data = manager.get(ModifierType.POSITIVE, MVSPD_MOD_NAME);
             add(data);
             if (getSkillLevel() >= 2) {
@@ -144,21 +131,19 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
     }
 
     @Override
-    public void initializeAttributes(int skillLevel) {
+    public void registerAttributes(AttributeModifierManager attributeModifierManager, int skillLevel) {
         //Adding to attribute manager
-//        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(ATKSPD_MOD_NAME)) {
-//            final double attackSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "attack-speed-multiplier", 1.25) - 1;
-//            final AttributeModifier attackSpeedMod = new AttributeModifier(UUID.randomUUID(), ATKSPD_MOD_NAME, attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
-//
-//            manager.put(ModifierType.POSITIVE, attackSpeedMod.getName(), attackSpeedMod, Attribute.GENERIC_ATTACK_SPEED);
-//        }
-//        if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(MVSPD_MOD_NAME)) {
-//            final double moveSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "move-speed-multiplier", 1.3) - 1;
-//            final AttributeModifier moveSpeedMod = new AttributeModifier(UUID.randomUUID(), MVSPD_MOD_NAME, moveSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
-//
-//            manager.put(ModifierType.POSITIVE, moveSpeedMod.getName(), moveSpeedMod, Attribute.GENERIC_MOVEMENT_SPEED);
-//        }
-//
-//        applyEffects(skillLevel);
+        if (!attributeModifierManager.getModifiers(ModifierType.POSITIVE).containsKey(ATKSPD_MOD_NAME)) {
+            final double attackSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "attack-speed-multiplier", 1.25) - 1;
+            final AttributeModifier attackSpeedMod = new AttributeModifier(UUID.randomUUID(), ATKSPD_MOD_NAME, attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+
+            attributeModifierManager.put(ModifierType.POSITIVE, attackSpeedMod.getName(), attackSpeedMod, Attribute.GENERIC_ATTACK_SPEED);
+        }
+        if (!attributeModifierManager.getModifiers(ModifierType.POSITIVE).containsKey(MVSPD_MOD_NAME)) {
+            final double moveSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "move-speed-multiplier", 1.3) - 1;
+            final AttributeModifier moveSpeedMod = new AttributeModifier(UUID.randomUUID(), MVSPD_MOD_NAME, moveSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+
+            attributeModifierManager.put(ModifierType.POSITIVE, moveSpeedMod.getName(), moveSpeedMod, Attribute.GENERIC_MOVEMENT_SPEED);
+        }
     }
 }

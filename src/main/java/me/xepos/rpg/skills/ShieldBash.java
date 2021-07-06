@@ -26,10 +26,11 @@ import java.util.UUID;
 
 public class ShieldBash extends XRPGActiveSkill {
 
+    private static final String stunAttributeName = XRPG.modifierPrefix + "SHIELD_BASH_";
     public ShieldBash(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
-        AttributeModifier mod = new AttributeModifier(UUID.fromString("076c8ed9-b6e2-4da1-a4c0-27c50c61725d"), "SHIELD_BASH", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+        AttributeModifier mod = new AttributeModifier(UUID.fromString("076c8ed9-b6e2-4da1-a4c0-27c50c61725d"), stunAttributeName + skillLevel, -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
         AttributeModifierManager.getInstance().put(ModifierType.NEGATIVE, mod.getName(), mod, Attribute.GENERIC_MOVEMENT_SPEED);
 
@@ -71,7 +72,7 @@ public class ShieldBash extends XRPGActiveSkill {
             if (result.getHitEntity() instanceof Player){
                 XRPGPlayer xrpgPlayer = getPlugin().getXRPGPlayer(result.getHitEntity().getUniqueId(), true);
                 if (xrpgPlayer != null && xrpgPlayer.canBeStunned() && !canHurtTarget((Player) result.getHitEntity()))
-                    new ApplyStunTask(xrpgPlayer, AttributeModifierManager.getInstance().get(ModifierType.NEGATIVE, "SHIELD_BASH").getAttributeModifier(), (long) duration * 20, getPlugin()).runTaskLater(getPlugin(), (long) castDelay * 20);
+                    new ApplyStunTask(xrpgPlayer, AttributeModifierManager.getInstance().get(ModifierType.NEGATIVE, stunAttributeName + getSkillLevel()).getAttributeModifier(), (long) duration * 20, getPlugin()).runTaskLater(getPlugin(), (long) castDelay * 20);
                 else
                     player.sendMessage(ChatColor.RED + result.getHitEntity().getName() + " cannot be stunned for " + xrpgPlayer.getStunblockDuration() + " seconds!");
             }else {

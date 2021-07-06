@@ -10,7 +10,6 @@ import me.xepos.rpg.skills.base.IMessenger;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.tasks.RavagerRageTask;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.LivingEntity;
@@ -27,13 +26,14 @@ public class Rage extends XRPGPassiveSkill implements IMessenger {
     private byte rageLevel = 0;
     BukkitTask rageTask = null;
 
+    private static final String attackSpeedAttributeName = XRPG.modifierPrefix + "RAGE_ATK_SPD";
+
     public Rage(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         double attackSpeedMultiplier = 1 + skillVariables.getDouble(skillLevel, "atk-spd-multiplier", 65.0) / 100;
-        AttributeModifier mod = new AttributeModifier(UUID.fromString("1d7a09c9-b6e2-4dc7-ab6f-8831dffcb111"), "RAGE_ATK_SPD", attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+        AttributeModifier mod = new AttributeModifier(UUID.fromString("1d7a09c9-b6e2-4dc7-ab6f-8831dffcb111"), attackSpeedAttributeName, attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
-        Bukkit.getLogger().info("name: " + mod.getName());
         AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, mod.getName(), mod, Attribute.GENERIC_ATTACK_SPEED);
 
         setRemainingCooldown(-1);

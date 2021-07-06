@@ -20,7 +20,7 @@ import org.bukkit.util.Vector;
 import java.util.UUID;
 
 public class Nimble extends XRPGPassiveSkill {
-    private static final String speedAttributeName = "NIMBLE_";
+    private static final String speedAttributeName = XRPG.modifierPrefix + "NIMBLE_";
     public Nimble(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
