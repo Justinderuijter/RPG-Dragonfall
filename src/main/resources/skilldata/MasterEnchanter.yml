@@ -4,7 +4,7 @@ levels:
   statics:
     description:
       - "Thanks to your knowledge of the Standard Galactic Alphabet"
-      - "you require %reduction% percent less EXP to"
+      - "you require %enchanting-discount% percent less EXP to"
       - "enchant your items."
   1:
     enchanting-discount: 17.5

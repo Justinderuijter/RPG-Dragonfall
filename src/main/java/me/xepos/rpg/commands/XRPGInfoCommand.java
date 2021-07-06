@@ -13,11 +13,17 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 public class XRPGInfoCommand implements TabExecutor {
     private final XRPG plugin;
+    private final List<String> modifiers = new ArrayList<String>() {{
+        add("player");
+        //add("skill");
+    }};
 
     public XRPGInfoCommand(XRPG plugin) {
         this.plugin = plugin;
@@ -60,7 +66,21 @@ public class XRPGInfoCommand implements TabExecutor {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        return null;
+        List<String> result = new ArrayList<>();
+
+        switch (strings.length){
+            case 1:
+                for (String tab : modifiers) {
+                    if (tab.toLowerCase().startsWith(strings[1].toLowerCase())) {
+                        result.add(tab);
+                    }
+                }
+                return result;
+            case 2:
+                return null;
+            default:
+                return Collections.emptyList();
+        }
     }
 
     private boolean displayPlayerStats(CommandSender commandSender, Player target) {

@@ -49,7 +49,7 @@ public class Nimble extends XRPGPassiveSkill {
             if (e.isSprinting()){
                 Utils.addUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, speedAttributeName + getSkillLevel()));
             }else{
-                Utils.removeUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, "NIMBLE_SPRINT"));
+                Utils.removeUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, speedAttributeName + getSkillLevel()));
             }
 
         }else if(event instanceof PlayerJumpEvent){
@@ -75,11 +75,11 @@ public class Nimble extends XRPGPassiveSkill {
 
             if (!e.getPlayer().isSneaking()){
                 //Enter sneak
-                Utils.removeUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, "NIMBLE_SPRINT"));
+                Utils.removeUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, speedAttributeName + getSkillLevel()));
             }else{
                 //Leaving sneak
                 if (e.getPlayer().isSprinting()){
-                    Utils.addUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, "NIMBLE_SPRINT"));
+                    Utils.addUniqueModifier(e.getPlayer(), manager.get(ModifierType.POSITIVE, speedAttributeName + getSkillLevel()));
                 }
             }
         }

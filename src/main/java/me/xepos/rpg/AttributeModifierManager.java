@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class AttributeModifierManager {
     private static AttributeModifierManager instance;
-    public final static String HEALTH_LEVEL_MODIFIER_NAME = "XRPG_HEALTH_LEVEL";
+    public final static String HEALTH_LEVEL_MODIFIER_NAME = XRPG.modifierPrefix + "HEALTH_LEVEL";
 
     private final HashMap<String, AttributeModifierData> positiveModifiers = new HashMap<>();
     private final HashMap<String, AttributeModifierData> negativeModifiers = new HashMap<>();

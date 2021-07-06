@@ -12,7 +12,7 @@ levels:
     description:
       - "Chant a powerful healing mantra that"
       - "activates the body's latent regenerative ability,"
-      - "healing your nearby allies for %heal% per second"
+      - "healing yourself and nearby allies for %heal-per-proc% per second"
       - "for a duration of %duration% seconds"
   1:
     cooldown: 15

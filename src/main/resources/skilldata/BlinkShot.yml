@@ -3,7 +3,7 @@ icon: "ENDER_PEARL"
 
 levels:
   1:
-    cooldown: 20.0
+    cooldown: 5.0
     mana: 7
     description:
       - "Load an arrow infused with the power of The End"

@@ -5,7 +5,7 @@ levels:
   statics:
     horizontal-range: 5.0
     vertical-range: 2.0
-    mana: 10
+    mana: 3
     description:
       - "You do a whirling slash around yourself"
       - "dealing %damage% damage to all nearby enemies."

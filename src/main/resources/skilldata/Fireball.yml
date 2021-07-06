@@ -3,17 +3,17 @@ name: "Fireball"
 levels:
   statics:
     fire-duration: 3.0
-    cooldown: 2.0
+    cooldown: 1.0
     mana: 4
     description:
-      - "Gather fire energy in your hands, then send it hurtling toward the enemy."
-      - "deals %damage% the first enemy hit."
+      - "Gather fire energy in your hands, then send it hurtling toward the enemy,"
+      - "dealing %damage% damage."
   1:
-    damage: 4.0
+    damage: 6.0
     max-stacks: 2
   2:
     damage: 8.0
     max-stacks: 2
   3:
-    damage: 8.0
+    damage: 10.0
     max-stacks: 3

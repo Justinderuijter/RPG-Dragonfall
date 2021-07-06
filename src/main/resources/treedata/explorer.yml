@@ -7,13 +7,13 @@ skills:
     max-level: 3
   DisengagingShot:
     requires: [ Nimble ]
-    max-level: 2
+    max-level: 1
   Bullseye:
     requires: [ DisengagingShot ]
-    max-level: 1
+    max-level: 3
   Marksman:
     requires: [ DisengagingShot, NightOwl, RapidFire ]
-    max-level: 1
+    max-level: 3
   RapidFire:
     requires: [ Marksman, Bullseye ]
     max-level: 2
@@ -22,7 +22,7 @@ skills:
     max-level: 1
   BlinkShot:
     requires: [ Nimble ]
-    max-level: 2
+    max-level: 1
   NightOwl:
     requires: [ BlinkShot, Marksman, AceUpMySleeve ]
     max-level: 1

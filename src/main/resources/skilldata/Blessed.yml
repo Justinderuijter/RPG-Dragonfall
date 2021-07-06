@@ -3,7 +3,7 @@ levels:
   statics:
     description:
       - "Unlocking this skill increases your maximum mana by 1."
-      - "Subsequent levels give 2 mana per level."
+      - "Subsequent upgrades give 2 mana per level."
   1:
     mana: 1
   2:

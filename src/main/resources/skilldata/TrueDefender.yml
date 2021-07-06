@@ -4,8 +4,8 @@ levels:
     cooldown: 15.0
     mana: 10
     description:
-      - "When actives you ascend into a true defender for %duration% seconds"
-      - "While ascended you are immune to all damage and reflect"
-      - "100% of the damage you take back to the attacker."
+      - "When activated you become a true defender."
+      - "For the next %duration% seconds you are immune"
+      - "to all damage and reflect ALL damage back to the attacker"
   1:
     duration: 3.0

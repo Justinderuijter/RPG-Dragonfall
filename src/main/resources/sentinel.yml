@@ -3,9 +3,8 @@ display:
   name: "Sentinel"
   icon: SHIELD
   description:
-    - "A Magic based class that can focus on"
-    - "either healing and supporting yourself and allies"
-    - "or mercilessly burning your enemies."
+    - "A Melee focused class that has a variety of offensive and defensive abilities."
+    - "Useful for dishing out tons of damage or protecting others."
 
 base-mana: 20
 allowed-event-skills:

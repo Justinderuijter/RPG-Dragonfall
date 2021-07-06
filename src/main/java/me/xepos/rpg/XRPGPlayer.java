@@ -441,7 +441,7 @@ public class XRPGPlayer {
     }
 
     public double getRequiredExpToLevel(int level) {
-        return 4 * (4 * (Math.pow(level, 3))) + 1000;
+        return 2 * (4 * (Math.pow(level, 4))) + 2000;
     }
 
     public int getSkillUnlockPoints() {

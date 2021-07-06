@@ -40,6 +40,7 @@ commands:
   xrpgadmin:
     description: a set of administration commands
     usage: /<command> ...
+    permission: xrpg.admin
 
 permissions:
   xrpg.*:

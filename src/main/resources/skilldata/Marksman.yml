@@ -8,18 +8,18 @@ levels:
     description:
       - "Fully charged shots from your bow make your arrows"
       - "slash through the air with exceptional speed,"
-      - "removing all drop-off and granting them pierce"
+      - "removing all drop-off and granting them piercing"
   2:
     headshot-multiplier: 50
     description:
       - "Fully charged shots from your bow make your arrows"
       - "slash through the air with exceptional speed,"
-      - "removing all drop-off and granting them pierce"
-      - "Headshot deal bonus damage"
+      - "removing all drop-off and granting them piercing"
+      - "Headshot deal %headshot-multiplier%% bonus damage"
   3:
     headshot-multiplier: 150
     description:
       - "Fully charged shots from your bow make your arrows"
       - "slash through the air with exceptional speed,"
-      - "removing all drop-off and granting them pierce"
-      - "Headshot deal bonus damage"
+      - "removing all drop-off and granting them piercing"
+      - "Headshot %headshot-multiplier%% deal bonus damage"

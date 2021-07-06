@@ -7,4 +7,5 @@ levels:
     cooldown: 5.0
     mana: 4
     description:
-      - "Social distancing"
+      - "Your next arrow launches your backwards away"
+      - "from your target"

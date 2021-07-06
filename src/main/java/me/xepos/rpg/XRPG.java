@@ -238,6 +238,7 @@ public final class XRPG extends JavaPlugin {
     }
 
     public XRPGPlayer getXRPGPlayer(UUID playerUUID, boolean force) {
+        //TODO: check for null
         XRPGPlayer xrpgPlayer = RPGPlayers.get(playerUUID);
         if (force || xrpgPlayer.isClassEnabled()){
             return xrpgPlayer;

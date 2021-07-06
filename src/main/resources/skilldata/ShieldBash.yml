@@ -5,9 +5,8 @@ levels:
     cooldown: 5
     mana: 7
     description:
-      - "Wave the heavy shield to bash the target."
-      - "Stuns the target with a strong shock"
-      - "and pushes them back."
+      - "Bash the target with your shield,"
+      - "Stunning them and pushing them back."
   1:
     push-strength: 1.0
     cast-delay: 0.25

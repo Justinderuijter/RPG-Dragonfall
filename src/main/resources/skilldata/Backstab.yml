@@ -2,6 +2,9 @@ name: "Backstab"
 
 levels:
   statics:
+    description:
+      - "While crouching you become invisible"
+      - "Striking a target from behind deals %damage-multiplier%% bonus damage"
     cooldown: 3.0
   1:
     damage-multiplier: 30

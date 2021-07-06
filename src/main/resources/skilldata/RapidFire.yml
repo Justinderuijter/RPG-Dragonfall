@@ -6,6 +6,6 @@ levels:
       cooldown: 5
       mana: 7
       description:
-        - "You load %extra-arrows% into your bow"
+        - "You load %extra-arrows% extra into your bow"
         - "All the arrows fired ignore the target's armor"
       extra-arrows: 2

@@ -4,15 +4,15 @@ levels:
   statics:
     vertical-velocity-multiplier: 110
     description:
-      - "PLACEHOLDER"
-      - "Increase your movespeed and jump height."
-      - "Also reduces damage taken by falling."
+      - "Increase jump height and movespeed while sprinting."
+      - "You also take reduced fall damage."
   1:
-    horizontal-velocity-multiplier: 25.0
+    horizontal-velocity-multiplier: 12.5
     fall-damage-reduction: 17.5
   2:
-    horizontal-velocity-multiplier: 50.0
+    horizontal-velocity-multiplier: 25.0
     fall-damage-reduction: 25.0
   3:
-    horizontal-velocity-multiplier: 100.0
+    horizontal-velocity-multiplier: 50.0
     fall-damage-reduction: 50.0
+    vertical-velocity-multiplier: 210

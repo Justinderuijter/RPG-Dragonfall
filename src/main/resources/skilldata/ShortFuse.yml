@@ -4,8 +4,8 @@ levels:
   statics:
     cooldown: 20
     description:
-      - "After a short delay of %delay% seconds"
-      - "You explode with a explosion power of %yield%."
+      - "After a short delay of %fuse% seconds"
+      - "You explode with a explosion power of %explosion-yield%."
   1:
     explosion-yield: 4.0
     fuse: 1.5

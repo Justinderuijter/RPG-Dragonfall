@@ -3,8 +3,9 @@ display:
   name: "Scholar"
   icon: GOLDEN_APPLE
   description:
-    - "A Ranged class with deadly aim and impressive mobility."
-    - "The sneaky explorer also has quite a few tricks up their sleeve."
+    - "A Magic based class that can focus on"
+    - "either healing and supporting yourself and allies"
+    - "or mercilessly burning your enemies."
 
 base-mana: 20
 allowed-event-skills:

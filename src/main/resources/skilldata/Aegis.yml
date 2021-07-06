@@ -9,7 +9,7 @@ levels:
     cooldown: 20.0
     description:
       - "Getting attacked activates Aegis' protection"
-      - "reducing their damage taken for the next %duration% seconds"
+      - "reducing damage taken for you and nearby allies for the next %duration% seconds"
       - "by %damage-multiplier% percent"
   1:
     damage-reduction: 5

@@ -3,8 +3,8 @@ display:
   name: "Explorer"
   icon: MAP
   description:
-    - "A Melee focused class that has a variety of offensive and defensive abilities."
-    - "Useful for dishing out tons of damage or protecting others."
+    - "A Ranged class with deadly aim and impressive mobility."
+    - "The sneaky explorer also has quite a few tricks up their sleeve."
 
 base-mana: 20
 allowed-event-skills:
