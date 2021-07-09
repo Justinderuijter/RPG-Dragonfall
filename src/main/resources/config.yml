@@ -61,12 +61,22 @@ general-dependencies:
     enable-hook: false
   mcmmo:
     enable-hook: true
+  essentialsX:
+    enable-hook: true
   levelled-mobs:
     enable-hook: true
     max-negative-level-offset: -5
     max-positive-level-offset: 5
+    allowed-gamemodes:
+      - Survival
+      - Adventure
+    #This requires essentialsX hook to be active
+    ignore-essentialsX-afk: true
 
 safety-options:
+  #Checks if the player has modifiers that should have
+  #been removed when they left the server.
+  #This is useful in case the server crashes.
   modifier-check-on-join: true
 
 garbage-collection:

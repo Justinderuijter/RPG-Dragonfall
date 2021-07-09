@@ -3,9 +3,12 @@ package me.xepos.rpg.dependencies;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.LocationInformation;
+import me.xepos.rpg.dependencies.hooks.EssentialsXHook;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.Random;
@@ -17,12 +20,16 @@ public class LevelledMobsManager {
     private final int lowerBound;
     private final int upperBound;
     private final Random random;
+    private final boolean useEssentialsHook;
 
     public LevelledMobsManager(XRPG plugin, int lowerBound, int upperBound){
         this.locationLevelMap = new ConcurrentHashMap<>();
         this.random = new Random();
         this.lowerBound = lowerBound;
         this.upperBound = Math.max(upperBound, 0);
+
+        ConfigurationSection configurationSection = plugin.getConfig().getConfigurationSection("general-dependencies");
+        this.useEssentialsHook = Bukkit.getPluginManager().getPlugin("Essentials") != null && configurationSection != null && configurationSection.getBoolean("essentialsX.enable-hook", false);
 
         Bukkit.getScheduler().runTaskTimer(plugin,() -> {
             locationLevelMap.clear();
@@ -33,8 +40,15 @@ public class LevelledMobsManager {
 
     public void takeSnapshot(Collection<XRPGPlayer> xrpgPlayers){
         for (XRPGPlayer xrpgPlayer:xrpgPlayers) {
-            if (xrpgPlayer != null && xrpgPlayer.getPlayer() != null && xrpgPlayer.getPlayer().getGameMode() == GameMode.SURVIVAL){
-                locationLevelMap.put(xrpgPlayer.getPlayer().getUniqueId(), new LocationInformation(xrpgPlayer.getPlayer().getLocation(), xrpgPlayer.getLevel()));
+            if (xrpgPlayer != null && xrpgPlayer.getPlayer() != null){
+                Player player = xrpgPlayer.getPlayer();
+                if (useEssentialsHook){
+                    if (EssentialsXHook.isAFK(player)) continue;
+                }
+
+                if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+                    locationLevelMap.put(xrpgPlayer.getPlayer().getUniqueId(), new LocationInformation(xrpgPlayer.getPlayer().getLocation(), xrpgPlayer.getLevel()));
+                }
             }
         }
     }

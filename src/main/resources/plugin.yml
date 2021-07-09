@@ -8,6 +8,7 @@ softdepend:
   - WorldGuard
   - mcMMO
   - LevelledMobs
+  - Essentials
 commands:
   xrpgdebug:
     description: debug command

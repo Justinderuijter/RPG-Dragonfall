@@ -2,7 +2,7 @@ package me.xepos.rpg.dependencies.hooks;
 
 import com.sk89q.worldguard.WorldGuard;
 
-public class WorldGuardHook {
+public class WorldGuardHook extends AbstractHook{
     private static final WorldGuard WG = WorldGuard.getInstance();
 
 /*    public boolean isInRegion(org.bukkit.Location location, String name){

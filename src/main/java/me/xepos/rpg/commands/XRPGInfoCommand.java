@@ -71,7 +71,7 @@ public class XRPGInfoCommand implements TabExecutor {
         switch (strings.length){
             case 1:
                 for (String tab : modifiers) {
-                    if (tab.toLowerCase().startsWith(strings[1].toLowerCase())) {
+                    if (tab.toLowerCase().startsWith(strings[0].toLowerCase())) {
                         result.add(tab);
                     }
                 }

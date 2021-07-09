@@ -23,10 +23,11 @@ public class HealOverTimeTask extends BukkitRunnable {
             this.cancel();
 
         if (count < maxProcs) {
-            Utils.healLivingEntity(entity, healPerProc);
+            if (entity.isValid() && !entity.isDead()) {
+                Utils.healLivingEntity(entity, healPerProc);
+            }
             count++;
-        }
-        else
+        } else
             this.cancel();
     }
 }
