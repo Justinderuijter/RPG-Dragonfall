@@ -14,7 +14,7 @@ MySQL:
 
 party-managers:
   - "mcMMO"
-#  - "Towny"
+  - "Towny"
 
 # You can have as many protection managers as you like
 # As long as they are supported by the plugin.
@@ -22,9 +22,9 @@ party-managers:
 # If you wish to not use any, simple remove all from the list below.
 # Currently supported: Factions3, FactionsUUID, WorldGuard 7.0+ and Towny
 protection-managers:
-  - "Factions"
-#  - "WorldGuard"
-#  - "Towny"
+#  - "Factions"
+  - "WorldGuard"
+  - "Towny"
 
 mana:
   enabled: true
@@ -62,7 +62,7 @@ general-dependencies:
   mcmmo:
     enable-hook: true
   essentialsX:
-    enable-hook: true
+    enable-hook: false
   levelled-mobs:
     enable-hook: true
     max-negative-level-offset: -5
@@ -71,7 +71,7 @@ general-dependencies:
       - Survival
       - Adventure
     #This requires essentialsX hook to be active
-    ignore-essentialsX-afk: true
+    ignore-essentialsX-afk: false
 
 safety-options:
   #Checks if the player has modifiers that should have
