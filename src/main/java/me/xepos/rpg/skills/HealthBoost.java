@@ -23,14 +23,9 @@ public class HealthBoost extends XRPGPassiveSkill implements IAttributable {
 
     private static final String healthAttributeName = XRPG.modifierPrefix + "HEALTH_BOOST_HEALTH_";
     private static final String armorAttributeName = XRPG.modifierPrefix + "HEALTH_BOOST_ARMOR_";
-    private static double healthPerLevel = -1;
-    private static double armorPerLevel = -1;
 
     public HealthBoost(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
-
-        if (armorPerLevel == -1) armorPerLevel = skillVariables.getDouble(getSkillLevel(),"armor-per-level", 2);
-        if (healthPerLevel == -1) healthPerLevel = skillVariables.getDouble(getSkillLevel(), "health-per-level", 2);
 
         final AttributeModifierManager manager = AttributeModifierManager.getInstance();
 
@@ -88,15 +83,14 @@ public class HealthBoost extends XRPGPassiveSkill implements IAttributable {
     public void registerAttributes(AttributeModifierManager attributeModifierManager, int skillLevel) {
 
         if (!attributeModifierManager.getModifiers(ModifierType.POSITIVE).containsKey(healthAttributeName + skillLevel)){
-            final double healthAmount = healthPerLevel * getSkillLevel();
+            double healthAmount = getSkillLevel() * getSkillVariables().getDouble(getSkillLevel(), "health-per-level", 2);
             final AttributeModifier healthMod = new AttributeModifier(UUID.randomUUID(), healthAttributeName + getSkillLevel(), healthAmount, AttributeModifier.Operation.ADD_NUMBER);
 
             attributeModifierManager.put(ModifierType.POSITIVE, healthMod.getName(), healthMod, Attribute.GENERIC_MAX_HEALTH);
         }
         if (!attributeModifierManager.getModifiers(ModifierType.POSITIVE).containsKey(armorAttributeName + getSkillLevel())){
-            final double armorAmount = armorPerLevel * getSkillLevel();
+            final double armorAmount =  getSkillLevel() * getSkillVariables().getDouble(getSkillLevel(), "armor-per-level", 2);
             final AttributeModifier armorMod = new AttributeModifier(UUID.randomUUID(), armorAttributeName + getSkillLevel(), armorAmount, AttributeModifier.Operation.ADD_NUMBER);
-
 
             attributeModifierManager.put(ModifierType.POSITIVE, armorMod.getName(), armorMod, Attribute.GENERIC_ARMOR);
         }

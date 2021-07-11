@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -17,19 +16,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChangeClassCommand implements TabExecutor {
+public class ChangeClassCommand extends BaseCommand {
     private final XRPG plugin;
     private final List<ItemStack> baseItems;
 
     private final List<String> completions = new ArrayList<String>() {{
         add("select");
         add("change");
-        add("enable");
-        add("disable");
-        add("toggle");
+        //add("enable");
+        //add("disable");
+        //add("toggle");
     }};
 
     public ChangeClassCommand(XRPG plugin, List<ItemStack> itemStacks) {
+        super("class");
         this.plugin = plugin;
         this.baseItems = itemStacks;
     }
@@ -52,6 +52,10 @@ public class ChangeClassCommand implements TabExecutor {
             if (strings.length == 1) {
                 switch (strings[0].toLowerCase()) {
                     case "select":
+                        if(!checkPermissions(commandSender, "change")){
+                            commandSender.sendMessage(ChatColor.RED + "You don't have permission to use this command");
+                            return true;
+                        }
 
                         if (StringUtils.isBlank(xrpgPlayer.getClassId())) {
                             //open class select GUI
@@ -69,6 +73,11 @@ public class ChangeClassCommand implements TabExecutor {
 
                         return true;
                     case "change":
+                        if(!checkPermissions(commandSender, "change")){
+                            commandSender.sendMessage(ChatColor.RED + "You don't have permission to use this command");
+                            return true;
+                        }
+
                         if (StringUtils.isNotBlank(xrpgPlayer.getClassId())) {
                             Inventory inventory = Bukkit.createInventory(null, 9, "Change Your Class");
 

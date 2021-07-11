@@ -6,12 +6,14 @@ levels:
     attack-speed-multiplier: 25.0
     move-speed-multiplier: 30.0
     description:
+      - "CURRENTLY WIP"
       - "When you're holding nothing in your offhand"
       - "You gain %attack-speed-multiplier%  % bonus attack speed"
   2:
     attack-speed-multiplier: 25.0
     move-speed-multiplier: 30.0
     description:
+      - "CURRENTLY WIP"
       - "When you're holding nothing in your offhand"
       - "You gain %attack-speed-multiplier%  % bonus attack speed"
       - "and %move-speed-multiplier% % bonus move speed"

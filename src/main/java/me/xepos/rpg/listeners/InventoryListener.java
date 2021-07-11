@@ -9,6 +9,7 @@ import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.datatypes.TreeData;
 import me.xepos.rpg.utils.PacketUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -79,7 +80,10 @@ public class InventoryListener implements Listener {
                 if (e.getCurrentItem() != null && e.getCurrentItem().getItemMeta().getPersistentDataContainer().has(plugin.getKey("separator"), PersistentDataType.BYTE)) {
                     e.setCancelled(true);
                     if (e.getCurrentItem().getType() == Material.WRITABLE_BOOK) {
-                        //e.getWhoClicked().sendMessage(Component.text("You clicked save"));
+                        if (e.getCursor().getType() != Material.AIR){
+                            e.getWhoClicked().sendMessage(ChatColor.RED + "You cannot save while holding a skill!");
+                            return;
+                        }
 
                         updateKeybinds(xrpgPlayer, e.getClickedInventory());
 
@@ -191,7 +195,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryClose(final InventoryCloseEvent e) {
-        if (!e.getView().getTitle().equals("Spellbook")){
+        if (e.getView().getTitle().equals("Spellbook")){
             e.getPlayer().setItemOnCursor(null);
         }
 

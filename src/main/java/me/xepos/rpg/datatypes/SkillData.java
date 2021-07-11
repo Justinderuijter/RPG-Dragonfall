@@ -45,9 +45,7 @@ public class SkillData {
 
         HashMap<String, Object> levelDataRef = levelData.get(level);
         HashMap<String, Object> data = new HashMap<>(statics);
-        for (String string : data.keySet()) {
-            Bukkit.getLogger().severe(string);
-        }
+
         if (levelDataRef != null) {
             data.putAll(levelDataRef);
         }
@@ -62,6 +60,17 @@ public class SkillData {
             }
             result.add(editedString);
         }
+        result.add("");
+
+        final double cooldown = getDouble(level, "cooldown", 0);
+        if (cooldown > 0){
+            result.add("cooldown: " + cooldown);
+        }
+        final int mana = getInt(level, "mana", 0);
+        if (mana > 0){
+            result.add("mana: " + mana);
+        }
+
         return result;
     }
 

@@ -172,7 +172,6 @@ public class SkillTree {
                         Bukkit.getLogger().info("Skilldata is null for " + skillId);
                     }
                     String nodeName = skillData.getName() + " (" + currentLevel + "/" + maxLevel + ")";
-                    Bukkit.getLogger().severe(nodeName);
                     ItemStack item = Utils.buildItemStack(material, nodeName, skillData.getDescription(currentLevel < maxLevel ? currentLevel + 1 : currentLevel));
 
                     setRequiredMeta(interfaceSection, item, skillId, currentLevel, maxLevel);

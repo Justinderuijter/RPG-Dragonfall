@@ -13,5 +13,5 @@ levels:
     explosion-yield: 5.0
     fuse: 1.5
   3:
-    explosion-yield: 4.0
+    explosion-yield: 5.0
     fuse: 1

@@ -50,7 +50,7 @@ public class XRPGAdminCommand extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (command.getName().equalsIgnoreCase("XRPGAdmin")) {
-            if (strings.length < 4) return false;
+            if (strings.length < 3) return false;
             final Player target = Bukkit.getPlayer(strings[0]);
 
             if (target == null) {

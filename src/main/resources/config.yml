@@ -15,6 +15,8 @@ MySQL:
 party-managers:
   - "mcMMO"
   - "Towny"
+# - "Factions"
+# - "Parties"
 
 # You can have as many protection managers as you like
 # As long as they are supported by the plugin.
@@ -29,7 +31,7 @@ protection-managers:
 mana:
   enabled: true
   recovery-delay: 2
-  recovery-amount: 2
+  recovery-amount: 1
 
 leveling:
   max-level: 30
@@ -58,20 +60,21 @@ exp:
 
 general-dependencies:
   pvp-toggle:
-    enable-hook: false
+    enable-hook: true
   mcmmo:
     enable-hook: true
   essentialsX:
-    enable-hook: false
+    enable-hook: true
   levelled-mobs:
     enable-hook: true
     max-negative-level-offset: -5
     max-positive-level-offset: 5
+    #Not implemented yet
     allowed-gamemodes:
       - Survival
       - Adventure
     #This requires essentialsX hook to be active
-    ignore-essentialsX-afk: false
+    ignore-essentialsX-afk: true
 
 safety-options:
   #Checks if the player has modifiers that should have

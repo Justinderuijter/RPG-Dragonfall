@@ -77,6 +77,7 @@ public class XRPGPlayer {
             this.currentMana = data.getLastMana();
             this.baseMana = plugin.getClassInfo(classId).getBaseMana();
             this.healthLevel = data.getHealthLevel();
+            this.levelMana = data.getManaLevel();
             this.skillUnlockPoints = data.getSkillUnlockPoints();
             this.skillUpgradePoints = data.getSkillUpgradePoints();
 
@@ -441,7 +442,7 @@ public class XRPGPlayer {
     }
 
     public double getRequiredExpToLevel(int level) {
-        return 2 * (4 * (Math.pow(level, 4))) + 2000;
+        return 2 * (4 * (Math.pow(level, 4))) + 10000;
     }
 
     public int getSkillUnlockPoints() {

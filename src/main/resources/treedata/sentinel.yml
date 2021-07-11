@@ -18,7 +18,7 @@ skills:
     requires: [ Aegis, Rage, StaggeringPush ]
   TrueDefender:
     max-level: 2
-    requires: [ ShieldBash ]
+    requires: [ Aegis ]
   SoaringSlash:
     max-level: 3
     requires: [ HealthBoost, Rage, UnarmoredDefense ]

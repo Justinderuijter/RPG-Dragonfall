@@ -5,7 +5,7 @@ levels:
     heal: 1.0
     description:
       - "You strengthen your defenses."
-      - "Blocking an attack has a chance (%trigger-chance%) to heal you for %heal% health."
+      - "Blocking an attack has a chance (%trigger-chance%%) to heal you for %heal% health."
   1:
     trigger-chance: 5
   2:

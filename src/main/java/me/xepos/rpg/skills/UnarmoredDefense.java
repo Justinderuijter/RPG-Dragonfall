@@ -14,7 +14,6 @@ import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.craftbukkit.libs.org.eclipse.sisu.Nullable;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockDispenseArmorEvent;
 import org.bukkit.inventory.ItemStack;
@@ -50,17 +49,7 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
         //Only executes if the player is already online
         //If the player is not already online, use the IAttributable interface
         if (xrpgPlayer.getPlayer() != null) {
-            isAllLeatherOrAir = true;
-
-            for (ItemStack armor : xrpgPlayer.getPlayer().getInventory().getArmorContents()) {
-                if (armor == null) continue;
-                if (armor.getType() != Material.AIR && !armor.getType().toString().toLowerCase().contains("leather")) {
-                    isAllLeatherOrAir = false;
-                    break;
-                }
-            }
-
-            applyEffects(skillLevel);
+            //applyEffects(skillLevel);
         }
 
     }
@@ -70,16 +59,14 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
         if (event instanceof PlayerArmorChangeEvent) {
             PlayerArmorChangeEvent e = (PlayerArmorChangeEvent) event;
 
-            checkIfAllLeatherOrBelow(e.getNewItem());
 
-            applyEffects(getSkillLevel());
+            //applyEffects(getSkillLevel());
 
         } else if (event instanceof BlockDispenseArmorEvent) {
             BlockDispenseArmorEvent e = (BlockDispenseArmorEvent) event;
 
-            checkIfAllLeatherOrBelow(e.getItem());
 
-            applyEffects(getSkillLevel());
+            //applyEffects(getSkillLevel());
         }
 
     }
@@ -87,21 +74,6 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
     @Override
     public void initialize() {
 
-    }
-
-    private void checkIfAllLeatherOrBelow(@Nullable ItemStack newItem) {
-        isAllLeatherOrAir = true;
-        if (newItem.getType() == Material.AIR || newItem.getType().toString().toLowerCase().contains("leather")) {
-            for (ItemStack armor : getXRPGPlayer().getPlayer().getInventory().getArmorContents()) {
-                if (armor.getType() != Material.AIR && !armor.getType().toString().toLowerCase().contains("leather")) {
-                    isAllLeatherOrAir = false;
-                    break;
-                }
-
-            }
-        } else {
-            isAllLeatherOrAir = false;
-        }
     }
 
     private void applyEffects(int level){
@@ -134,16 +106,21 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
     public void registerAttributes(AttributeModifierManager attributeModifierManager, int skillLevel) {
         //Adding to attribute manager
         if (!attributeModifierManager.getModifiers(ModifierType.POSITIVE).containsKey(ATKSPD_MOD_NAME)) {
-            final double attackSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "attack-speed-multiplier", 1.25) - 1;
+            final double attackSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "attack-speed-multiplier", 25)/100;
             final AttributeModifier attackSpeedMod = new AttributeModifier(UUID.randomUUID(), ATKSPD_MOD_NAME, attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
             attributeModifierManager.put(ModifierType.POSITIVE, attackSpeedMod.getName(), attackSpeedMod, Attribute.GENERIC_ATTACK_SPEED);
         }
         if (!attributeModifierManager.getModifiers(ModifierType.POSITIVE).containsKey(MVSPD_MOD_NAME)) {
-            final double moveSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "move-speed-multiplier", 1.3) - 1;
+            final double moveSpeedMultiplier = getSkillVariables().getDouble(skillLevel, "move-speed-multiplier", 30)/100;
             final AttributeModifier moveSpeedMod = new AttributeModifier(UUID.randomUUID(), MVSPD_MOD_NAME, moveSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
             attributeModifierManager.put(ModifierType.POSITIVE, moveSpeedMod.getName(), moveSpeedMod, Attribute.GENERIC_MOVEMENT_SPEED);
         }
+    }
+
+    private boolean isHoldingShield(){
+        ItemStack item = getXRPGPlayer().getPlayer().getInventory().getItemInOffHand();
+        return item == null || item.getType() == Material.AIR;
     }
 }

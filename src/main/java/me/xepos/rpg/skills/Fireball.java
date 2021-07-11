@@ -6,9 +6,6 @@ import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.Event;
@@ -50,9 +47,6 @@ public class Fireball extends XRPGActiveSkill {
 
         if (lastStackGained + getCooldown() * 2000L < System.currentTimeMillis() && fireBallStacks != 0) {
             fireBallStacks = 0;
-            TextComponent text = new TextComponent("Fireball stacks lost!");
-            text.setColor(ChatColor.RED.asBungee());
-            e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, text);
         }
 
         //Skill logic
@@ -71,10 +65,6 @@ public class Fireball extends XRPGActiveSkill {
         this.lastStackGained = System.currentTimeMillis();
         setRemainingCooldown(getCooldown());
         updatedCasterMana();
-
-        TextComponent text = new TextComponent("You now have " + this.fireBallStacks + " " + getSkillName() + " stacks");
-        text.setColor(ChatColor.DARK_GREEN.asBungee());
-        e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, text);
     }
 
     private void incrementFireBallStacks(byte maxFireballStacks) {

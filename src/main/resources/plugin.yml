@@ -38,6 +38,7 @@ commands:
   class:
     description: change or toggle your class
     usage: /<command> <select|change|enable|disable|toggle>
+    permission: class.change
   xrpgadmin:
     description: a set of administration commands
     usage: /<command> ...
@@ -49,6 +50,7 @@ permissions:
     default: op
     children:
       xrpg.admin: true
+      xrpg.debug: true
   xrpg.admin:
     description: allows administration commands for this plugin
     default: op
@@ -71,7 +73,7 @@ permissions:
     default: op
   xrpg.tree.*:
     description: allows all interactions for the player's own skilltree
-    default: false
+    default: true
     children:
       xrpg.tree.open: true
       xrpg.tree.reset: true
@@ -84,3 +86,14 @@ permissions:
   xrpg.spellbook.*:
     description: allows players all spellbook interactions
     default: true
+  xrpg.class.*:
+    description: allows all class commands
+    default: op
+    children:
+      xrpg.class.change: true
+  xrpg.class.change:
+    description: allows the player to change or select their class
+    default: op
+  xrpg.debug.*:
+    description: debug commands for administrators
+    default: op

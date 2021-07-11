@@ -10,19 +10,21 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
-public class XRPGDebug implements CommandExecutor {
+public class XRPGDebug extends BaseCommand {
 
     private final XRPG plugin;
 
     public XRPGDebug(XRPG plugin) {
+        super("debug");
         this.plugin = plugin;
     }
 
@@ -101,5 +103,10 @@ public class XRPGDebug implements CommandExecutor {
 
         }
         return false;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String string, @NotNull String[] strings) {
+        return null;
     }
 }

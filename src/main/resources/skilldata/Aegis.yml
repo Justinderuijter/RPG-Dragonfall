@@ -10,7 +10,7 @@ levels:
     description:
       - "Getting attacked activates Aegis' protection"
       - "reducing damage taken for you and nearby allies for the next %duration% seconds"
-      - "by %damage-multiplier% percent"
+      - "by %damage-reduction% percent"
   1:
     damage-reduction: 5
   2:

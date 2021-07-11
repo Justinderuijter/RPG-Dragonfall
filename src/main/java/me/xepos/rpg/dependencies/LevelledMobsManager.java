@@ -34,7 +34,6 @@ public class LevelledMobsManager {
         Bukkit.getScheduler().runTaskTimer(plugin,() -> {
             locationLevelMap.clear();
             takeSnapshot(plugin.getRPGPlayers().values());
-            Bukkit.broadcastMessage("Cached " + locationLevelMap.size() + " locations");
         }, 600L, 1200L);
     }
 
