@@ -31,7 +31,7 @@ public class McMMOListener implements Listener {
     public void onMcMMOEXPGain(McMMOPlayerXpGainEvent e){
         XRPGPlayer gainer = plugin.getXRPGPlayer(e.getPlayer());
 
-        if (gainer != null && !blacklistedSkills.contains(e.getSkill())){
+        if (gainer != null && gainer.canGainEXP() && !blacklistedSkills.contains(e.getSkill())){
             gainer.addExp(e.getRawXpGained() * plugin.getConfig().getDouble("exp.global-multiplier", 1.0));
         }
     }

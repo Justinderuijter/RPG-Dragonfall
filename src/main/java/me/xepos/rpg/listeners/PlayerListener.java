@@ -103,8 +103,6 @@ public class PlayerListener implements Listener {
             if (!StringUtils.isEmpty(xrpgPlayer.getClassId())) {
                 player.sendMessage("You are now " + xrpgPlayer.getClassId());
             }
-
-
         } else {
             plugin.getRPGPlayers().remove(player.getUniqueId());
             player.kickPlayer("Something went wrong while loading XRPG data.");
@@ -259,7 +257,7 @@ public class PlayerListener implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent e) {
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()) {
-            e.setCancelled(true);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
         }
     }
 

@@ -1,27 +1,35 @@
 package me.xepos.rpg.commands;
 
-import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.enums.ModifierType;
-import me.xepos.rpg.handlers.PassiveEventHandler;
-import me.xepos.rpg.skills.base.XRPGSkill;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.codehaus.plexus.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 public class XRPGDebug extends BaseCommand {
-
+    private final ChatColor primaryColor = ChatColor.YELLOW;
+    private final ChatColor secondaryColor = ChatColor.GREEN;
     private final XRPG plugin;
+
+    private final List<String> modifiers = new ArrayList<String>() {{
+        add("projectiles");
+        add("players");
+        add("skills");
+        add("modifiers");
+        add("dt");
+    }};
 
     public XRPGDebug(XRPG plugin) {
         super("debug");
@@ -31,82 +39,92 @@ public class XRPGDebug extends BaseCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] strings) {
         if (command.getName().equals("xrpgdebug")) {
-            if (commandSender instanceof Player) {
-                Player player = (Player) commandSender;
-                if(strings.length == 1)
-                {
-                    switch (strings[0])
-                    {
-                        case "fireballs":
-                            player.sendMessage("Fireballs: " + plugin.projectiles.size());
-                            return true;
-                        case "damagetaken":
-                            for (String d : plugin.getXRPGPlayer(player, true).dmgTakenMultipliers.keySet()) {
-                                player.sendMessage(plugin.getXRPGPlayer(player, true).dmgTakenMultipliers.get(d).toString());
-                            }
-                            player.sendMessage("dmgTakenMP" + plugin.getXRPGPlayer(player, true).dmgTakenMultipliers.size());
-                            return true;
-                        case "modifiers":
-                            for (String identifier : AttributeModifierManager.getInstance().getModifiers(ModifierType.POSITIVE).keySet()) {
-                                player.sendMessage(AttributeModifierManager.getInstance().get(ModifierType.POSITIVE, identifier).getAttributeModifier().toString());
-                            }
+            switch(strings.length){
+                case 1:
+                    if(strings[0].equalsIgnoreCase("projectiles")){
+                        commandSender.sendMessage(primaryColor + "Projectiles tracked: " + secondaryColor + plugin.projectiles.size());
+                        return true;
+                    }else if (strings[0].equalsIgnoreCase("players")){
+                        StringBuilder playerList = new StringBuilder();
+                        for (XRPGPlayer xrpgPlayer:plugin.getRPGPlayers().values()) {
+                            playerList.append(primaryColor).append(xrpgPlayer.getPlayer().getName()).append(ChatColor.WHITE).append(" (").append(secondaryColor).append(xrpgPlayer.getClassDisplayName()).append(ChatColor.WHITE).append(")").append(", ");
+                        }
 
-                            for (String identifier : AttributeModifierManager.getInstance().getModifiers(ModifierType.NEGATIVE).keySet()) {
-                                player.sendMessage(AttributeModifierManager.getInstance().get(ModifierType.NEGATIVE, identifier).getAttributeModifier().toString());
-                            }
-                            return true;
-                        case "players":
-                            for (UUID id : plugin.getRPGPlayers().keySet()) {
-                                XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(id, true);
-                                player.sendMessage(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getClassId());
-                            }
-                            return true;
-                        case "skilldata":
-                            HashMap<String, PassiveEventHandler> handlers = plugin.getXRPGPlayer(player, true).getPassiveHandlerList();
-                            for (XRPGSkill skill:plugin.getXRPGPlayer(player, true).getActiveHandler().getSkills().values()) {
-                                player.sendMessage(skill.getSkillName() + ": " + skill.getSkillLevel());
-                            }
-                            for (String handlerName : handlers.keySet()) {
-                                for (XRPGSkill skill : handlers.get(handlerName).getSkills().values()) {
-                                    player.sendMessage(skill.getSkillName() + ": " + skill.getSkillLevel());
+                        int length = playerList.length();
+                        if (length < 1){
+                            playerList.delete(length - 2, length);
+                        }
+
+                        commandSender.sendMessage(primaryColor + "Players tracked" + ChatColor.WHITE + "(" + secondaryColor + plugin.getRPGPlayers().size() + ChatColor.WHITE + ")" + primaryColor + ":");
+                        commandSender.sendMessage(playerList.toString());
+                        return true;
+                    }else if (strings[0].equalsIgnoreCase("skills")){
+                        StringBuilder skillList = new StringBuilder();
+                        for (String skillId:plugin.getAllLoadedSkillIds()) {
+                            skillList.append(skillId).append(", ");
+                        }
+
+                        int length = skillList.length();
+                        if (length < 1){
+                            skillList.delete(length - 2, length);
+                        }
+
+                        commandSender.sendMessage(primaryColor + "Loaded skills " + ChatColor.WHITE + "(" + secondaryColor + plugin.getSkillData().size() + ChatColor.WHITE + ")" + primaryColor + ":");
+                        commandSender.sendMessage(skillList.toString());
+                        return true;
+                    }
+                case 2:
+                    Player player = Bukkit.getPlayer(strings[1]);
+                    if (player == null){
+                        commandSender.sendMessage(ChatColor.RED + "Could not find player: " + strings[1]);
+                        return true;
+                    }
+
+                    if (strings[0].equalsIgnoreCase("modifiers")){
+                        for (Attribute attribute:Attribute.values()) {
+                            AttributeInstance attributeInstance = player.getAttribute(attribute);
+                            if (attributeInstance != null){
+                                for (AttributeModifier modifier:attributeInstance.getModifiers()) {
+                                    commandSender.sendMessage(primaryColor + "Name: " + secondaryColor + modifier.getName() + ChatColor.WHITE + " | " + primaryColor + "Attribute: " + secondaryColor + attribute.name());
+                                    commandSender.sendMessage(primaryColor + "Operation: " + secondaryColor + modifier.getOperation().name() + ChatColor.WHITE + " | " + primaryColor + "Amount: " + secondaryColor + modifier.getAmount());
+                                    commandSender.sendMessage(primaryColor + "UUID: " + secondaryColor + modifier.getUniqueId().toString());
+
                                 }
                             }
+                        }
+                        return true;
+                    }else if(strings[0].equalsIgnoreCase("dt")){
+                        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
+                        if (xrpgPlayer == null){
+                            commandSender.sendMessage(ChatColor.RED + StringUtils.capitalise(player.getName()) + ChatColor.RED + " is not a valid XRPG player!");
                             return true;
-                        case "keybinds":
-                            int counter = 0;
-                            for (String name:plugin.getXRPGPlayer(player, true).getSpellKeybinds()) {
-                                player.sendMessage(counter + ": " + name);
-                                counter++;
-                            }
-                            return true;
-                        case "clear":
-                            plugin.getXRPGPlayer(player, true).getSpellKeybinds().clear();
-                            return true;
-                        case "skill":
-                            for (String skillId:plugin.getAllLoadedSkillIds()) {
-                                player.sendMessage(skillId);
-                            }
-                        default:
-                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(strings[0]));
-                            return false;
+                        }
+
+                        commandSender.sendMessage(ChatColor.RED + "Damage Taken multiplier for " + player.getPlayer() + ChatColor.RED + ": " + String.format("%.2f", xrpgPlayer.getDamageTakenMultiplier()));
+                        return true;
                     }
-                }
-            }else{
-                Bukkit.getLogger().info("Player count: " + plugin.getRPGPlayers().size());
-                for (UUID id : plugin.getRPGPlayers().keySet()) {
-                    XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(id, true);
-
-                    Bukkit.getLogger().info(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getClassId());
-                }
-                return true;
+                default:
+                    return false;
             }
-
         }
         return false;
     }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String string, @NotNull String[] strings) {
-        return null;
+        List<String> result = new ArrayList<>();
+
+        if (strings.length == 1){
+            for (String tab : modifiers) {
+                if (tab.toLowerCase().startsWith(strings[0].toLowerCase())) {
+                    result.add(tab);
+                }
+            }
+            return result;
+        }else if(strings.length == 2 && strings[0].equalsIgnoreCase("modifiers")){
+            return null;
+        }else {
+            return Collections.emptyList();
+        }
     }
 }

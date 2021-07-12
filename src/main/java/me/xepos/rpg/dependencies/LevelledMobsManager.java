@@ -62,6 +62,9 @@ public class LevelledMobsManager {
             }
 
             double distance = locationInformation.distanceSquared(location);
+            //ignore if more than 10 chunks (160 blocks) away
+            if (distance > 25600) continue;
+
             if (distance < closestDistance){
                 closestDistance = distance;
                 level = locationInformation.getLevel();

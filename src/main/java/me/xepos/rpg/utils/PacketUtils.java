@@ -37,7 +37,7 @@ public class PacketUtils {
             itemStack.setItemMeta(meta);
 
             //For packets player inventory hotbar starts at index 36
-            PacketPlayOutSetSlot pack = new PacketPlayOutSetSlot(0, i + 36, CraftItemStack.asNMSCopy(itemStack));
+            PacketPlayOutSetSlot pack = new PacketPlayOutSetSlot(0, 0,i + 36, CraftItemStack.asNMSCopy(itemStack));
 
             craftPlayer.getHandle().b.sendPacket(pack);
         }

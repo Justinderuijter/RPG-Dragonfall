@@ -150,7 +150,7 @@ public class XRPGPlayer {
     private transient List<IMessenger> messengerSkills = new ArrayList<>();
 
     private transient ActiveEventHandler activeHandler;
-    private final transient HashMap<String, PassiveEventHandler> handlerList = new HashMap<>();
+    private final transient ConcurrentHashMap<String, PassiveEventHandler> handlerList = new ConcurrentHashMap<>();
 
     public Player getPlayer() {
         return player;
@@ -232,6 +232,9 @@ public class XRPGPlayer {
         messengerSkills.clear();
         SpellmodeUtils.disableSpellmode(this);
         for (PassiveEventHandler handler : handlerList.values()) {
+            if (handler instanceof BowEventHandler bowEventHandler){
+                bowEventHandler.setActiveBowSkill(null);
+            }
             handler.clear();
         }
 
@@ -384,6 +387,10 @@ public class XRPGPlayer {
     //                              //
     //////////////////////////////////
 
+    public boolean canGainEXP(){
+        return !StringUtils.isBlank(this.classId) && this.isClassEnabled;
+    }
+
     public int getLevel() {
         return level;
     }
@@ -472,19 +479,25 @@ public class XRPGPlayer {
     public boolean resetSkillTree(){
         byte upgradePointsToRefund = 0;
         byte unlockPointsToRefund = 0;
+        Set<String> processedSkills = new HashSet<>();
+
 
         for (String skillId :this.getActiveHandler().getSkills().keySet()) {
+
             final XRPGSkill skill = this.getActiveHandler().getSkills().get(skillId);
 
             if (skill.isEventSkill()) continue;
 
-            final int skillLevel = skill.getSkillLevel();
+            if (!processedSkills.contains(skillId)) {
+                final int skillLevel = skill.getSkillLevel();
 
-            if (skillLevel > 1){
-                upgradePointsToRefund += skillLevel -1;
-                unlockPointsToRefund++;
-            }else if (skillLevel == 1){
-                unlockPointsToRefund++;
+                if (skillLevel > 1) {
+                    upgradePointsToRefund += skillLevel - 1;
+                    unlockPointsToRefund++;
+                } else if (skillLevel == 1) {
+                    unlockPointsToRefund++;
+                }
+                processedSkills.add(skillId);
             }
             this.getActiveHandler().removeSkill(skillId);
         }
@@ -496,13 +509,16 @@ public class XRPGPlayer {
 
                 if (skill.isEventSkill()) continue;
 
-                final int skillLevel = skill.getSkillLevel();
+                if (!processedSkills.contains(skillId)) {
+                    final int skillLevel = skill.getSkillLevel();
 
-                if (skillLevel > 1){
-                    upgradePointsToRefund += skillLevel -1;
-                    unlockPointsToRefund++;
-                }else if (skillLevel == 1){
-                    unlockPointsToRefund++;
+                    if (skillLevel > 1) {
+                        upgradePointsToRefund += skillLevel - 1;
+                        unlockPointsToRefund++;
+                    } else if (skillLevel == 1) {
+                        unlockPointsToRefund++;
+                    }
+                    processedSkills.add(skillId);
                 }
                 handler.removeSkill(skillId);
             }
@@ -539,7 +555,7 @@ public class XRPGPlayer {
         return handlerList.get(handlerName.toUpperCase());
     }
 
-    public HashMap<String, PassiveEventHandler> getPassiveHandlerList() {
+    public ConcurrentHashMap<String, PassiveEventHandler> getPassiveHandlerList() {
         return handlerList;
     }
 

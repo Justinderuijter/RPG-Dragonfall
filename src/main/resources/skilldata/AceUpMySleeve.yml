@@ -1,9 +1,4 @@
 name: "Ace Up My Sleeve"
-enchantments:
-  - "POWER"
-  - "FLAME"
-  - "PUNCH"
-  - "PIERCE"
 
 levels:
   statics:
@@ -13,5 +8,10 @@ levels:
       - ""
       - "These effects stack with their"
       - "corresponding natural enchantments"
+    enchantments:
+      - "POWER"
+      - "FLAME"
+      - "PUNCH"
+      - "PIERCE"
   1:
     trigger-chance: 30

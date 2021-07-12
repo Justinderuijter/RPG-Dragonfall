@@ -35,6 +35,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -140,7 +141,7 @@ public final class XRPG extends JavaPlugin {
 
 
         this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this));
-        this.getCommand("xrpgreload").setExecutor(new XRPGReload());
+        this.getCommand("xrpgreload").setExecutor(new XRPGReload(this, skillLoader));
         this.getCommand("spellmode").setExecutor(new ToggleSpellCommand(this));
         this.getCommand("spellbook").setExecutor(new SpellbookCommand(this));
         this.getCommand("tree").setExecutor(new TreeCommand(this));
@@ -329,8 +330,13 @@ public final class XRPG extends JavaPlugin {
         return this.getConfig().getBoolean("mana.enabled", false);
     }
 
+    @Nullable
     public SkillData getSkillData(String skillId){
         return skillData.get(skillId);
+    }
+
+    public HashMap<String, SkillData> getSkillData(){
+        return this.skillData;
     }
 
     public boolean hasSkillData(String skillId){

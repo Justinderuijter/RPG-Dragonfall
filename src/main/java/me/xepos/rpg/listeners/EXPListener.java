@@ -26,7 +26,7 @@ public class EXPListener implements Listener {
         Player player = e.getEntity().getKiller();
         XRPGPlayer gainer = plugin.getXRPGPlayer(player, true);
 
-        if (gainer != null) {
+        if (gainer != null && gainer.canGainEXP()) {
             double health = e.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 
             XRPGGainEXPEvent event = new XRPGGainEXPEvent(gainer, health / 2);

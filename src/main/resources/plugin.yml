@@ -13,9 +13,11 @@ commands:
   xrpgdebug:
     description: debug command
     usage: /<command> <number>
+    permission: xrpg.debug.*
   xrpgreload:
     description: reloads xrpg configuration
     usage: /<command>
+    permission: xrpg.admin.reload
   spellmode:
     description: switch to or from spell casting mode
     usage: /<command> <on|off|toggle|status>
@@ -35,6 +37,11 @@ commands:
   xrpginfo:
     description: get information about a player or skill
     usage: /<command> (player|skill) <player|skillId>
+    aliases:
+      - dragonfall
+      - df
+      - info
+      - dfinfo
   class:
     description: change or toggle your class
     usage: /<command> <select|change|enable|disable|toggle>
@@ -59,6 +66,7 @@ permissions:
       xrpg.admin.add.skill: true
       xrpg.admin.create.eventspell: true
       xrpg.admin.reset.skilltree: true
+      xrpg.admin.reload: true
   xrpg.admin.add.level:
     description: allows to add levels or experience to players
     default: op
@@ -71,6 +79,9 @@ permissions:
   xrpg.admin.reset.skilltree:
     description: allows to reset other player's skilltree
     default: op
+  xrpg.admin.reload:
+    description: reload config files
+    default: false
   xrpg.tree.*:
     description: allows all interactions for the player's own skilltree
     default: true

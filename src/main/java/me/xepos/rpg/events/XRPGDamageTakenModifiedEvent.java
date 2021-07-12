@@ -3,6 +3,7 @@ package me.xepos.rpg.events;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.skills.base.XRPGSkill;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -16,6 +17,7 @@ public class XRPGDamageTakenModifiedEvent extends Event {
     private final XRPGSkill skill;
 
     public XRPGDamageTakenModifiedEvent(Player sourcePlayer, Player targetPlayer, XRPGSkill skill) {
+        super(!Bukkit.isPrimaryThread());
         final XRPG plugin = XRPG.getPlugin(XRPG.class);
         this.xrpgPlayer = plugin.getXRPGPlayer(sourcePlayer);
         this.targetPlayer = plugin.getXRPGPlayer(targetPlayer);
