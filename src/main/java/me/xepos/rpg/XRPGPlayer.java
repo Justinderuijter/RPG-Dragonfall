@@ -588,6 +588,9 @@ public class XRPGPlayer {
 
         XRPG plugin = XRPG.getInstance();
 
+        this.setBaseMana(plugin.getClassInfo(this.getClassId()).getBaseMana());
+        if (this.getCurrentMana() > this.getBaseMana()) this.currentMana = this.getBaseMana();
+
         new SavePlayerDataTask(plugin.getDatabaseManager(), this).runTaskAsynchronously(plugin);
 
         player.sendMessage(ChatColor.GREEN + "You successfully reset your skill points!");

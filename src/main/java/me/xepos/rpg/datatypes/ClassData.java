@@ -91,6 +91,10 @@ public class ClassData {
         return healthLevel;
     }
 
+    public double getLastHealth() {
+        return lastHealth;
+    }
+
     @Override
     public String toString(){
         return  "{ClassData{Level: + " + level + " +}{Experience: " + experience + "}{Mana: " + lastMana + "}{UpgradePoints: " + skillUpgradePoints + "}{UnlockPoints: " + skillUnlockPoints + "}}";

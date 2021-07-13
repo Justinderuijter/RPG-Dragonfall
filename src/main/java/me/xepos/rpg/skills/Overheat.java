@@ -6,6 +6,7 @@ import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.OverheatTask;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -23,8 +24,7 @@ public class Overheat extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemHeldEvent)) return;
-        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (!(event instanceof PlayerItemHeldEvent e)) return;
 
         doOverheat(e.getPlayer());
 
@@ -49,10 +49,15 @@ public class Overheat extends XRPGActiveSkill {
         RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
         if (result != null && result.getHitEntity() != null) {
 
+            LivingEntity target = (LivingEntity) result.getHitEntity();
             double delay = getSkillVariables().getDouble(getSkillLevel(), "delay", 5.0);
 
+            result.getHitEntity().setVisualFire(true);
             //Utils.rayTrace only returns livingEntities so no need to check
-            new OverheatTask((LivingEntity) result.getHitEntity(), getDamage(), getSkillVariables().getDouble(getSkillLevel(),"damage-per-armor", 0.5)).runTaskLater(getPlugin(), (long) delay * 20L);
+            target.sendMessage(ChatColor.RED + "You've been hit by Overheat!");
+            target.sendMessage(ChatColor.RED + "Get in water to reduce the damage!");
+
+            new OverheatTask(target, getDamage(), getSkillVariables().getDouble(getSkillLevel(),"damage-per-armor", 0.5)).runTaskLater(getPlugin(), (long) delay * 20L);
             setRemainingCooldown(getCooldown());
             updatedCasterMana();
         }

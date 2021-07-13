@@ -5,6 +5,7 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.event.Event;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
@@ -22,12 +23,17 @@ public class MasterEnchanter extends XRPGPassiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PrepareItemEnchantEvent)) return;
-        PrepareItemEnchantEvent e = (PrepareItemEnchantEvent) event;
+        if (!(event instanceof PrepareItemEnchantEvent e)) return;
 
         float discount = (float) (1 - getSkillVariables().getDouble(getSkillLevel(), "enchanting-discount", 17.5) / 100);
         for (EnchantmentOffer offer:e.getOffers()) {
+            Enchantment enchantment = offer.getEnchantment();
+            final int level = offer.getEnchantmentLevel();
+
             offer.setCost(Math.round(offer.getCost() * discount));
+
+            offer.setEnchantment(enchantment);
+            offer.setEnchantmentLevel(level);
         }
     }
 

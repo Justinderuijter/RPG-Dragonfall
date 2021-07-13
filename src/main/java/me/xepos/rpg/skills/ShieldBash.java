@@ -70,7 +70,7 @@ public class ShieldBash extends XRPGActiveSkill {
             final double pushStrength = getSkillVariables().getDouble(getSkillLevel(), "push-strength", 1.5);
 
             if (result.getHitEntity() instanceof Player){
-                XRPGPlayer xrpgPlayer = getPlugin().getXRPGPlayer(result.getHitEntity().getUniqueId(), true);
+                XRPGPlayer xrpgPlayer = getPlugin().getPlayerManager().getXRPGPlayer(result.getHitEntity().getUniqueId(), true);
                 if (xrpgPlayer != null && xrpgPlayer.canBeStunned() && !canHurtTarget((Player) result.getHitEntity()))
                     new ApplyStunTask(xrpgPlayer, AttributeModifierManager.getInstance().get(ModifierType.NEGATIVE, stunAttributeName + getSkillLevel()).getAttributeModifier(), (long) duration * 20, getPlugin()).runTaskLater(getPlugin(), (long) castDelay * 20);
                 else

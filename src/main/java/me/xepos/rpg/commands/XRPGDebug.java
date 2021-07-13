@@ -29,6 +29,7 @@ public class XRPGDebug extends BaseCommand {
         add("skills");
         add("modifiers");
         add("dt");
+        add("logintasks");
     }};
 
     public XRPGDebug(XRPG plugin) {
@@ -46,7 +47,7 @@ public class XRPGDebug extends BaseCommand {
                         return true;
                     }else if (strings[0].equalsIgnoreCase("players")){
                         StringBuilder playerList = new StringBuilder();
-                        for (XRPGPlayer xrpgPlayer:plugin.getRPGPlayers().values()) {
+                        for (XRPGPlayer xrpgPlayer:plugin.getPlayerManager().getXRPGPlayers().values()) {
                             playerList.append(primaryColor).append(xrpgPlayer.getPlayer().getName()).append(ChatColor.WHITE).append(" (").append(secondaryColor).append(xrpgPlayer.getClassDisplayName()).append(ChatColor.WHITE).append(")").append(", ");
                         }
 
@@ -55,7 +56,7 @@ public class XRPGDebug extends BaseCommand {
                             playerList.delete(length - 2, length);
                         }
 
-                        commandSender.sendMessage(primaryColor + "Players tracked" + ChatColor.WHITE + "(" + secondaryColor + plugin.getRPGPlayers().size() + ChatColor.WHITE + ")" + primaryColor + ":");
+                        commandSender.sendMessage(primaryColor + "Players tracked" + ChatColor.WHITE + "(" + secondaryColor + plugin.getPlayerManager().getXRPGPlayers().size() + ChatColor.WHITE + ")" + primaryColor + ":");
                         commandSender.sendMessage(playerList.toString());
                         return true;
                     }else if (strings[0].equalsIgnoreCase("skills")){
@@ -71,6 +72,9 @@ public class XRPGDebug extends BaseCommand {
 
                         commandSender.sendMessage(primaryColor + "Loaded skills " + ChatColor.WHITE + "(" + secondaryColor + plugin.getSkillData().size() + ChatColor.WHITE + ")" + primaryColor + ":");
                         commandSender.sendMessage(skillList.toString());
+                        return true;
+                    }else if (strings[0].equalsIgnoreCase("logintasks")){
+                        commandSender.sendMessage(primaryColor + "Currently " + ChatColor.RED + plugin.getPlayerManager().getLoginTaskCount() + primaryColor + " login tasks in memory");
                         return true;
                     }
                 case 2:
@@ -94,7 +98,7 @@ public class XRPGDebug extends BaseCommand {
                         }
                         return true;
                     }else if(strings[0].equalsIgnoreCase("dt")){
-                        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
+                        XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(player, true);
                         if (xrpgPlayer == null){
                             commandSender.sendMessage(ChatColor.RED + StringUtils.capitalise(player.getName()) + ChatColor.RED + " is not a valid XRPG player!");
                             return true;

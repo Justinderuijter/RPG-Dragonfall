@@ -2,20 +2,24 @@ package me.xepos.rpg.listeners;
 
 import com.gmail.nossr50.datatypes.skills.PrimarySkillType;
 import com.gmail.nossr50.events.experience.McMMOPlayerXpGainEvent;
+import me.xepos.rpg.PlayerManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.HashSet;
 
 public class McMMOListener implements Listener {
-    private final XRPG plugin;
+    private final PlayerManager playerManager;
+    private final FileConfiguration config;
     private final HashSet<PrimarySkillType> blacklistedSkills;
 
     public McMMOListener(XRPG plugin){
-        this.plugin = plugin;
+        this.playerManager = plugin.getPlayerManager();
+        this.config = plugin.getConfig();
         this.blacklistedSkills = new HashSet<>();
 
         for (String skillString:plugin.getConfig().getStringList("exp.source-blacklist.mcmmo-skills")) {
@@ -29,10 +33,10 @@ public class McMMOListener implements Listener {
 
     @EventHandler
     public void onMcMMOEXPGain(McMMOPlayerXpGainEvent e){
-        XRPGPlayer gainer = plugin.getXRPGPlayer(e.getPlayer());
+        XRPGPlayer gainer = playerManager.getXRPGPlayer(e.getPlayer());
 
         if (gainer != null && gainer.canGainEXP() && !blacklistedSkills.contains(e.getSkill())){
-            gainer.addExp(e.getRawXpGained() * plugin.getConfig().getDouble("exp.global-multiplier", 1.0));
+            gainer.addExp(e.getRawXpGained() * config.getDouble("exp.global-multiplier", 1.0));
         }
     }
 }

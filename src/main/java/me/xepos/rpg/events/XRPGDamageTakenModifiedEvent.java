@@ -19,8 +19,8 @@ public class XRPGDamageTakenModifiedEvent extends Event {
     public XRPGDamageTakenModifiedEvent(Player sourcePlayer, Player targetPlayer, XRPGSkill skill) {
         super(!Bukkit.isPrimaryThread());
         final XRPG plugin = XRPG.getPlugin(XRPG.class);
-        this.xrpgPlayer = plugin.getXRPGPlayer(sourcePlayer);
-        this.targetPlayer = plugin.getXRPGPlayer(targetPlayer);
+        this.xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(sourcePlayer);
+        this.targetPlayer = plugin.getPlayerManager().getXRPGPlayer(targetPlayer);
         this.skill = skill;
 
         this.xrpgPlayer.recalculateDamageTakenMultiplier();

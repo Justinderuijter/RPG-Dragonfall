@@ -2,9 +2,11 @@ package me.xepos.rpg;
 
 import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.database.DatabaseManager;
+import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.events.classes.XRPGClassChangeEvent;
+import me.xepos.rpg.tasks.SetHealthCallable;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.apache.commons.lang.StringUtils;
@@ -83,6 +85,15 @@ public class ClassChangeManager {
             Bukkit.broadcast(text);
 
             skillLoader.loadPlayerSkills(data, xrpgPlayer);
+
+            ClassData classData = data.getClassData(data.getClassId());
+            if (classData != null){
+                final double health = 20;
+                double lastHealth = classData.getLastHealth();
+                if (lastHealth == 0) lastHealth = health;
+
+                Bukkit.getScheduler().callSyncMethod(plugin, new SetHealthCallable(xrpgPlayer.getPlayer(), lastHealth));
+            }
         });
 
         xrpgPlayer.getPlayer().closeInventory();

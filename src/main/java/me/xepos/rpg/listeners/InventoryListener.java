@@ -1,6 +1,7 @@
 package me.xepos.rpg.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
+import me.xepos.rpg.PlayerManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
@@ -32,11 +33,13 @@ import java.util.Set;
 public class InventoryListener implements Listener {
 
     private final XRPG plugin;
+    private final PlayerManager playerManager;
     private final DatabaseManager databaseManager;
     private final SkillLoader skillLoader;
 
     public InventoryListener(XRPG plugin, SkillLoader skillLoader, DatabaseManager databaseManager) {
         this.plugin = plugin;
+        this.playerManager = plugin.getPlayerManager();
         this.databaseManager = databaseManager;
         this.skillLoader = skillLoader;
     }
@@ -44,7 +47,7 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onItemClick(final InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
-        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
+        XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(player, true);
 
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled()) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> PacketUtils.sendSpellmodePacket(xrpgPlayer), 1);
@@ -61,8 +64,6 @@ public class InventoryListener implements Listener {
             }
 
             if (!(e.getClickedInventory() instanceof PlayerInventory)) {
-                e.getWhoClicked().sendMessage("Spellbook: " + e.getSlot());
-
                 if (e.getClick() == ClickType.SHIFT_LEFT || e.getClick() == ClickType.SHIFT_RIGHT) {
                     e.setCancelled(true);
                     return;
@@ -183,7 +184,7 @@ public class InventoryListener implements Listener {
 
 
         } else {
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getWhoClicked().getUniqueId(), true);
+            XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getWhoClicked().getUniqueId(), true);
             if (xrpgPlayer == null) return;
 
             if (xrpgPlayer.isSpellCastModeEnabled()) {
@@ -208,7 +209,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onItemSwap(final PlayerSwapHandItemsEvent e) {
-        final XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer(), true);
+        final XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getPlayer(), true);
 
         if (xrpgPlayer == null) return;
 
@@ -223,7 +224,7 @@ public class InventoryListener implements Listener {
     @EventHandler
     public void onBlockDispenseArmor(BlockDispenseArmorEvent e) {
         if (e.getTargetEntity() instanceof Player) {
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getTargetEntity().getUniqueId());
+            XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getTargetEntity().getUniqueId());
             if (xrpgPlayer != null){
                 if (xrpgPlayer.getPassiveHandlerList().containsKey("ARMOR_DISPENSE")){
                     xrpgPlayer.getPassiveEventHandler("ARMOR_DISPENSE").invoke(e);
@@ -234,7 +235,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onArmorChange(PlayerArmorChangeEvent e){
-        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
+        XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getPlayer());
         if (xrpgPlayer != null && xrpgPlayer.getPassiveHandlerList().containsKey("ARMOR_CHANGE")){
             xrpgPlayer.getPassiveEventHandler("ARMOR_CHANGE").invoke(e);
         }
@@ -242,7 +243,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onPrepareEnchant(final PrepareItemEnchantEvent e){
-        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getEnchanter());
+        XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getEnchanter());
         if (xrpgPlayer != null){
             if (xrpgPlayer.getPassiveHandlerList().containsKey("ENCHANT")){
                 xrpgPlayer.getPassiveEventHandler("ENCHANT").invoke(e);

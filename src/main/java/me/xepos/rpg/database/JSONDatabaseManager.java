@@ -2,22 +2,26 @@ package me.xepos.rpg.database;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import me.xepos.rpg.PlayerManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
+import me.xepos.rpg.datatypes.ClassData;
 import me.xepos.rpg.datatypes.PlayerData;
 import me.xepos.rpg.enums.DatabaseType;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class JSONDatabaseManager extends DatabaseManager {
-    private final static XRPG plugin = XRPG.getPlugin(XRPG.class);
+    private final static XRPG plugin = XRPG.getInstance();
     private final static String playerFolderName = "playerdata";
 
     private static File playerDataFolder;
@@ -52,8 +56,18 @@ public class JSONDatabaseManager extends DatabaseManager {
 
                 skillLoader.loadPlayerSkills(playerData, xrpgPlayer);
 
-                plugin.addRPGPlayer(playerId, xrpgPlayer);
+                PlayerManager playerManager = plugin.getPlayerManager();
 
+                playerManager.put(playerId, xrpgPlayer);
+
+                double health = 20;
+                ClassData classData = playerData.getClassData(playerData.getClassId());
+                if (classData != null) health = classData.getLastHealth();
+
+                double finalHealth = health;
+                Consumer<Player> consumer = p -> p.setHealth(finalHealth);
+
+                playerManager.addLoginConsumer(playerId, consumer);
 
 
             } catch (IOException ex) {
@@ -67,7 +81,7 @@ public class JSONDatabaseManager extends DatabaseManager {
             PlayerData data = new PlayerData("");
             XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, data);
             skillLoader.loadPlayerSkills(data, xrpgPlayer);
-            plugin.addRPGPlayer(playerId, xrpgPlayer);
+            plugin.getPlayerManager().put(playerId, xrpgPlayer);
         }
     }
 

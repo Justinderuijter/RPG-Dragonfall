@@ -31,37 +31,38 @@ public class ToggleSpellCommand implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (command.getName().equalsIgnoreCase("spellmode") || command.getName().equalsIgnoreCase("sm")) {
-            if (!(commandSender instanceof Player)) {
+            if (!(commandSender instanceof Player player)) {
                 commandSender.sendMessage("This command can only be executed by players!");
                 return true;
             }
             if (strings.length != 1) return false;
 
-            Player player = (Player) commandSender;
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
+            XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(player, true);
             if (xrpgPlayer == null) {
                 return true;
             }
 
             switch (strings[0].toLowerCase()) {
-                case "on":
-                case "enable":
+                case "on", "enable" -> {
                     SpellmodeUtils.enterSpellmode(xrpgPlayer);
                     return true;
-                case "off":
-                case "disable":
+                }
+                case "off", "disable" -> {
                     SpellmodeUtils.disableSpellmode(xrpgPlayer);
                     return true;
-                case "toggle":
-                    if (xrpgPlayer.isSpellCastModeEnabled()){
+                }
+                case "toggle" -> {
+                    if (xrpgPlayer.isSpellCastModeEnabled()) {
                         SpellmodeUtils.disableSpellmode(xrpgPlayer);
                         return true;
                     }
                     SpellmodeUtils.enterSpellmode(xrpgPlayer);
                     return true;
-                default:
+                }
+                default -> {
                     commandSender.sendMessage("Spellcast mode is " + (xrpgPlayer.isSpellCastModeEnabled() ? "enabled." : "disabled."));
                     return true;
+                }
             }
         }
         return false;

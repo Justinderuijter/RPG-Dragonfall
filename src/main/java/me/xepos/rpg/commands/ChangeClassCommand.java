@@ -1,6 +1,6 @@
 package me.xepos.rpg.commands;
 
-import me.xepos.rpg.XRPG;
+import me.xepos.rpg.PlayerManager;
 import me.xepos.rpg.XRPGPlayer;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChangeClassCommand extends BaseCommand {
-    private final XRPG plugin;
+    private final PlayerManager playerManager;
     private final List<ItemStack> baseItems;
 
     private final List<String> completions = new ArrayList<String>() {{
@@ -28,22 +28,21 @@ public class ChangeClassCommand extends BaseCommand {
         //add("toggle");
     }};
 
-    public ChangeClassCommand(XRPG plugin, List<ItemStack> itemStacks) {
+    public ChangeClassCommand(PlayerManager playerManager, List<ItemStack> itemStacks) {
         super("class");
-        this.plugin = plugin;
+        this.playerManager = playerManager;
         this.baseItems = itemStacks;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if (command.getName().equals("class")) {
-            if (!(commandSender instanceof Player)) {
+            if (!(commandSender instanceof Player player)) {
                 commandSender.sendMessage("This command can only be executed by players.");
                 return true;
             }
 
-            Player player = (Player) commandSender;
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
+            XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(player, true);
             if (xrpgPlayer == null) return true;
 
             final String enableMessage = ChatColor.GREEN + "Your class perks have been " + ChatColor.BOLD + "enabled!";
@@ -135,9 +134,9 @@ public class ChangeClassCommand extends BaseCommand {
             for (String tab : completions) {
                 if (tab.toLowerCase().startsWith(strings[0].toLowerCase())) {
                     result.add(tab);
-                    if (result.contains("change") && plugin.getXRPGPlayer((Player) commandSender).getClassId().equals("")){
+                    if (result.contains("change") && playerManager.getXRPGPlayer((Player) commandSender).getClassId().equals("")){
                         result.remove("change");
-                    }else if(result.contains("select") && !plugin.getXRPGPlayer((Player) commandSender).getClassId().equals("")){
+                    }else if(result.contains("select") && !playerManager.getXRPGPlayer((Player) commandSender).getClassId().equals("")){
                         result.remove("select");
                     }
                 }

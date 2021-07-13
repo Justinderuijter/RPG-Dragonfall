@@ -22,9 +22,6 @@ public class OverheatTask extends BukkitRunnable {
 
     @Override
     public void run() {
-
-        target.sendMessage(ChatColor.RED + "You've been hit by Overheat!");
-        target.sendMessage(ChatColor.RED + "Get in water to reduce the damage!");
         double armorValue = target.getAttribute(Attribute.GENERIC_ARMOR).getValue();
 
         ArrayList<ItemStack> armor = new ArrayList<ItemStack>() {{
@@ -47,13 +44,15 @@ public class OverheatTask extends BukkitRunnable {
         target.sendMessage("Protection Level: " + enchantLevel);
 
         double damage = 5;
+        target.setVisualFire(false);
+        target.setNoDamageTicks(0);
 
         if (!target.isInWater()) {
             damage = (5 + armorValue / 2) * 1 / (1 - enchantLevel * 0.04);
             ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.a, (float) damage);
         } else {
             ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.a, (float) damage);
-            target.sendMessage("Overheat damage was reduced by the water.");
+            target.sendMessage(ChatColor.GREEN + "Overheat damage was reduced by the water.");
         }
     }
 }

@@ -58,7 +58,7 @@ public class XRPGAdminCommand extends BaseCommand {
                 return true;
             }
 
-            final XRPGPlayer xrpgTarget = plugin.getXRPGPlayer(target, true);
+            final XRPGPlayer xrpgTarget = plugin.getPlayerManager().getXRPGPlayer(target, true);
             if (xrpgTarget == null) {
                 return true;
             }

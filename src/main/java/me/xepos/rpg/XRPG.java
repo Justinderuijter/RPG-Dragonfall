@@ -68,7 +68,7 @@ public final class XRPG extends JavaPlugin {
     private static HashMap<String, SkillTree> treeData;
 
     //Players
-    private static final ConcurrentHashMap<UUID, XRPGPlayer> RPGPlayers = new ConcurrentHashMap<>();
+    private static PlayerManager playerManager;
 
     //Tree viewer
     private static HashMap<UUID, TreeData> treeView;
@@ -105,6 +105,7 @@ public final class XRPG extends JavaPlugin {
 
 
         //Load database
+        this.playerManager = new PlayerManager();
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager(skillLoader);
 
         //Prevents throwing error if databaseManager shuts down this plugin.
@@ -147,7 +148,7 @@ public final class XRPG extends JavaPlugin {
         this.getCommand("tree").setExecutor(new TreeCommand(this));
         this.getCommand("xrpginfo").setExecutor(new XRPGInfoCommand(this));
         this.getCommand("xrpgadmin").setExecutor(new XRPGAdminCommand(this, skillLoader));
-        this.getCommand("class").setExecutor(new ChangeClassCommand(this, GUIBaseItems));
+        this.getCommand("class").setExecutor(new ChangeClassCommand(playerManager, GUIBaseItems));
         System.out.println("RPG classes loaded!");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -160,7 +161,7 @@ public final class XRPG extends JavaPlugin {
 
         if (useMana()) {
             long delay = (long) (this.getConfig().getDouble("mana.recovery-delay", 5.0) * 20);
-            new ManaTask(RPGPlayers, this.getConfig().getInt("mana.recovery-amount")).runTaskTimerAsynchronously(this, delay, delay);
+            new ManaTask(playerManager.getXRPGPlayers(), this.getConfig().getInt("mana.recovery-amount")).runTaskTimerAsynchronously(this, delay, delay);
         }
     }
 
@@ -169,8 +170,8 @@ public final class XRPG extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         new RemoveBlocklistTask(temporaryBlocks.keySet(), this).run();
-        for (UUID uuid : RPGPlayers.keySet()) {
-            XRPGPlayer xrpgPlayer = RPGPlayers.get(uuid);
+        for (UUID uuid : playerManager.getXRPGPlayers().keySet()) {
+            XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(uuid);
             Utils.removeAllModifiers(xrpgPlayer.getPlayer());
             this.databaseManager.savePlayerData(xrpgPlayer);
         }
@@ -223,50 +224,6 @@ public final class XRPG extends JavaPlugin {
 
     public IPvPToggle getPvpToggle() {
         return pvpToggle;
-    }
-
-    public XRPGPlayer getXRPGPlayer(Player player, boolean force) {
-        XRPGPlayer xrpgPlayer = RPGPlayers.get(player.getUniqueId());
-        if (xrpgPlayer == null) return null;
-        else if (force || xrpgPlayer.isClassEnabled()){
-            return xrpgPlayer;
-        }
-
-        return null;
-    }
-
-    public XRPGPlayer getXRPGPlayer(Player player){
-        return this.getXRPGPlayer(player, false);
-    }
-
-    public XRPGPlayer getXRPGPlayer(UUID playerUUID, boolean force) {
-        XRPGPlayer xrpgPlayer = RPGPlayers.get(playerUUID);
-        if (xrpgPlayer == null) return null;
-        else if (force || xrpgPlayer.isClassEnabled()){
-            return xrpgPlayer;
-        }
-
-        return null;
-    }
-
-    public XRPGPlayer getXRPGPlayer(UUID playerUUID) {
-        return this.getXRPGPlayer(playerUUID, false);
-    }
-
-    public void removeXRPGPlayer(Player player) {
-        RPGPlayers.remove(player.getUniqueId());
-    }
-
-    public void removeXRPGPlayer(UUID playerUUID) {
-        RPGPlayers.remove(playerUUID);
-    }
-
-    public ConcurrentHashMap<UUID, XRPGPlayer> getRPGPlayers() {
-        return RPGPlayers;
-    }
-
-    public void addRPGPlayer(UUID playerUUID, XRPGPlayer xrpgPlayer) {
-        RPGPlayers.put(playerUUID, xrpgPlayer);
     }
 
     public ClassInfo getClassInfo(String classId){
@@ -373,5 +330,9 @@ public final class XRPG extends JavaPlugin {
 
     public DatabaseManager getDatabaseManager() {
         return databaseManager;
+    }
+
+    public PlayerManager getPlayerManager(){
+        return playerManager;
     }
 }

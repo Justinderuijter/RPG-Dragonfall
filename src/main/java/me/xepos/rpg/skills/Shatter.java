@@ -92,7 +92,7 @@ public class Shatter extends XRPGActiveSkill {
                 Bukkit.getServer().getPluginManager().callEvent(event);
 
                 //Apply DTModifier if the event isn't cancelled
-                XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(targetPlayer, true);
+                XRPGPlayer xrpgTarget = getPlugin().getPlayerManager().getXRPGPlayer(targetPlayer, true);
                 if (xrpgTarget != null && !event.isCancelled()) {
                     Utils.addDTModifier(xrpgTarget, getSkillName(), shatterDTAmount);
                     new RemoveDTModifierTask(e.getPlayer(), xrpgTarget, this).runTaskLater(getPlugin(), (long) shatterDTDuration * 20L);

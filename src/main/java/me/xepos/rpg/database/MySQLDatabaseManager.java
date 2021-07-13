@@ -1,5 +1,6 @@
 package me.xepos.rpg.database;
 
+import me.xepos.rpg.PlayerManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
@@ -14,8 +15,8 @@ import java.util.UUID;
 
 public class MySQLDatabaseManager extends DatabaseManager {
 
-    private final static XRPG plugin = XRPG.getPlugin(XRPG.class);
-    private final static FileConfiguration config = plugin.getConfig();
+    private final static PlayerManager playerManager = XRPG.getInstance().getPlayerManager();
+    private final static FileConfiguration config = XRPG.getInstance().getConfig();
     private Connection connection;
     private final SkillLoader skillLoader;
 
@@ -81,7 +82,7 @@ public class MySQLDatabaseManager extends DatabaseManager {
             createPlayer(playerId);
         }
         XRPGPlayer xrpgPlayer = getPlayerData(playerId);
-        plugin.addRPGPlayer(playerId, xrpgPlayer);
+        playerManager.put(playerId, xrpgPlayer);
     }
 
     @Override

@@ -73,12 +73,11 @@ public class SpellbookCommand extends BaseCommand {
     }
 
     private boolean openSpellbook(CommandSender commandSender){
-        if (!(commandSender instanceof Player)) {
+        if (!(commandSender instanceof Player player)) {
             commandSender.sendMessage("This command can only be executed by players!");
             return true;
         }
-        Player player = (Player) commandSender;
-        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player, true);
+        XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(player, true);
 
         if (xrpgPlayer == null) return true;
 

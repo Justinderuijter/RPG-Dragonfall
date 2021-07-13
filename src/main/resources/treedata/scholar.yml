@@ -30,7 +30,7 @@ skills:
     requires: [ Intervention, HealingCircle ]
   Intervention:
     max-level: 3
-    requires: [ MasterEnchanter, Healer ]
+    requires: [ MasterEnchanter, ReverseGravity ]
   InnerStrength:
     max-level: 2
     requires: [ Intervention ]

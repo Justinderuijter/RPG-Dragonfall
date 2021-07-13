@@ -41,7 +41,7 @@ public class LevelledMobsListener implements Listener {
 
     @EventHandler
     public void onChangedWorld(PlayerChangedWorldEvent e){
-        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer(), false);
+        XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(e.getPlayer(), false);
         if (xrpgPlayer != null){
             levelledMobsManager.replaceLocation(xrpgPlayer);
         }

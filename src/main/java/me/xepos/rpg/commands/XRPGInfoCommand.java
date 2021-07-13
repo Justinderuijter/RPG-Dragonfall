@@ -86,7 +86,7 @@ public class XRPGInfoCommand implements TabExecutor {
     private boolean displayPlayerStats(CommandSender commandSender, Player target) {
         final ChatColor primaryColor = ChatColor.YELLOW;
 
-        XRPGPlayer xrpgTarget = plugin.getXRPGPlayer(target, true);
+        XRPGPlayer xrpgTarget = plugin.getPlayerManager().getXRPGPlayer(target, true);
         boolean querySelf = false;
         if ((commandSender instanceof Player && commandSender.equals(target)) || commandSender.isOp()) {
             querySelf = true;
