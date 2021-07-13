@@ -481,8 +481,30 @@ public class XRPGPlayer {
         byte unlockPointsToRefund = 0;
         Set<String> processedSkills = new HashSet<>();
 
+        Iterator<Map.Entry<String, XRPGSkill>> activeIterator = this.getActiveHandler().getSkills().entrySet().iterator();
+        while(activeIterator.hasNext()){
+            Map.Entry<String, XRPGSkill> skillEntry = activeIterator.next();
 
-        for (String skillId :this.getActiveHandler().getSkills().keySet()) {
+            final XRPGSkill skill = skillEntry.getValue();
+            final String skillId = skillEntry.getKey();
+
+            if (skill.isEventSkill()) continue;
+
+            if (!processedSkills.contains(skillId)) {
+                final int skillLevel = skill.getSkillLevel();
+
+                if (skillLevel > 1) {
+                    upgradePointsToRefund += skillLevel - 1;
+                    unlockPointsToRefund++;
+                } else if (skillLevel == 1) {
+                    unlockPointsToRefund++;
+                }
+                processedSkills.add(skillId);
+            }
+            activeIterator.remove();
+        }
+
+        /*for (String skillId :this.getActiveHandler().getSkills().keySet()) {
 
             final XRPGSkill skill = this.getActiveHandler().getSkills().get(skillId);
 
@@ -500,11 +522,40 @@ public class XRPGPlayer {
                 processedSkills.add(skillId);
             }
             this.getActiveHandler().removeSkill(skillId);
-        }
+        }*/
 
         for (String handlerName :this.getPassiveHandlerList().keySet()) {
             PassiveEventHandler handler = this.getPassiveEventHandler(handlerName);
-            for (String skillId:handler.getSkills().keySet()) {
+
+            if (handler instanceof BowEventHandler bowEventHandler){
+                bowEventHandler.setActiveBowSkill(null);
+            }
+
+            Iterator<Map.Entry<String, XRPGSkill>> passiveIterator = handler.getSkills().entrySet().iterator();
+            while (passiveIterator.hasNext()){
+                Map.Entry<String, XRPGSkill> skillEntry = passiveIterator.next();
+
+                final XRPGSkill skill = skillEntry.getValue();
+                final String skillId = skillEntry.getKey();
+
+                if (skill.isEventSkill()) continue;
+
+                if (!processedSkills.contains(skillId)) {
+                    final int skillLevel = skill.getSkillLevel();
+
+                    if (skillLevel > 1) {
+                        upgradePointsToRefund += skillLevel - 1;
+                        unlockPointsToRefund++;
+                    } else if (skillLevel == 1) {
+                        unlockPointsToRefund++;
+                    }
+                    processedSkills.add(skillId);
+                }
+
+                passiveIterator.remove();
+            }
+
+            /*for (String skillId:handler.getSkills().keySet()) {
                 final XRPGSkill skill = handler.getSkills().get(skillId);
 
                 if (skill.isEventSkill()) continue;
@@ -521,7 +572,7 @@ public class XRPGPlayer {
                     processedSkills.add(skillId);
                 }
                 handler.removeSkill(skillId);
-            }
+            }*/
         }
 
         upgradePointsToRefund += this.getHealthLevel();
