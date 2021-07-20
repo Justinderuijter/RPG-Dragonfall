@@ -55,7 +55,8 @@ public class Fireball extends XRPGActiveSkill {
 
         if (!getPlugin().projectiles.containsKey(fireball.getUniqueId())) {
             //For some reason damage is halved so doubling it to get proper value
-            ProjectileData data = new ProjectileData(fireball, getDamage(),20);
+            ProjectileData data = new ProjectileData(fireball, getXRPGPlayer().getLevel(), getRawDamage(),20);
+            data.setFireTicks((int)(getSkillVariables().getDouble(getSkillLevel(), "fire-duration", 3.0) * 20));
 
             getPlugin().projectiles.put(fireball.getUniqueId(), data);
         }

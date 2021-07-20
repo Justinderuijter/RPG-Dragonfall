@@ -5,6 +5,7 @@ import me.xepos.rpg.datatypes.BaseProjectileData;
 import me.xepos.rpg.datatypes.ExplosiveProjectileData;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
+import me.xepos.rpg.utils.DamageUtils;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -42,9 +43,7 @@ public class ProjectileListener implements Listener {
         //Only triggers if potion effect is added to the data
         pData.summonCloud();
 
-        if (pData instanceof ProjectileData) {
-            ProjectileData projectileData = (ProjectileData) pData;
-
+        if (pData instanceof ProjectileData projectileData) {
 
             if (e.getHitEntity() != null) {
                 //Section for all projectiles
@@ -59,25 +58,24 @@ public class ProjectileListener implements Listener {
 
                 projectileBounceLogic(e, projectileData);
 
-                //Section exclusively for projectiles that aren't arrows
-                if (!(e.getEntity() instanceof Arrow)) {
-                    if (e.getHitEntity() instanceof LivingEntity) {
-                        LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
-                        livingEntity.damage(projectileData.getDamage() * projectileData.getDamageMultiplier(), (Player) projectileData.getProjectile().getShooter());
+
+                if (e.getHitEntity() instanceof LivingEntity livingEntity) {
+
+                    //Section exclusively for projectiles that aren't arrows
+                    if (!(e.getEntity() instanceof Arrow)) {
+                        final double damage = DamageUtils.calculateSpellDamage(projectileData.getDamage(), projectileData.getShooterLevel(), (LivingEntity) e.getHitEntity());
+                        livingEntity.damage(damage * projectileData.getDamageMultiplier(), (Player) projectileData.getProjectile().getShooter());
+                        return;
                     }
-                    return;
-                }
 
-                //section exclusively for arrows.
-                if (e.getHitEntity() instanceof LivingEntity && !(e.getHitEntity() instanceof Enderman)) {
-                    LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
+                    //section exclusively for arrows.
+                    if (livingEntity instanceof Enderman) return;
                     if (projectileData.getDamageMultiplier() < 1.0) {
-
                         livingEntity.setHealth(livingEntity.getHealth() * projectileData.getDamageMultiplier());
                     }
 
                     if (projectileData.getDamage() != 0) {
-                        Utils.decreaseHealth(livingEntity, projectileData.getDamage());
+                        Utils.decreaseHealth(livingEntity, DamageUtils.calculateSpellDamage(projectileData.getDamage(), projectileData.getShooterLevel(), livingEntity));
                         livingEntity.setNoDamageTicks(1);
                         projectile.remove();
                     }
@@ -119,8 +117,7 @@ public class ProjectileListener implements Listener {
                 }
             }
 
-        } else if (pData instanceof ExplosiveProjectileData) {
-            ExplosiveProjectileData explosiveData = (ExplosiveProjectileData) pData;
+        } else if (pData instanceof ExplosiveProjectileData explosiveData) {
 
             //Determining location
             Location location = null;
@@ -172,10 +169,9 @@ public class ProjectileListener implements Listener {
         }
 
         if (data.shouldBounce()) {
-            if (e.getHitEntity() != null && e.getHitEntity() instanceof LivingEntity) {
-                LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
+            if (e.getHitEntity() != null && e.getHitEntity() instanceof LivingEntity livingEntity) {
 
-                livingEntity.damage(data.getDamage(), data.getShooter());
+                livingEntity.damage(DamageUtils.calculateSpellDamage(data.getDamage(), data.getShooterLevel(), livingEntity), data.getShooter());
                 LivingEntity newTarget = Utils.getRandomLivingEntity(livingEntity, 20.0, 4.0, data.getShooter(), true);
                 if (newTarget != null) {
                     Vector vector = newTarget.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
@@ -183,7 +179,7 @@ public class ProjectileListener implements Listener {
                     newProjectile.setShooter(data.getProjectile().getShooter());
 
                     if (!plugin.projectiles.containsKey(newProjectile.getUniqueId())) {
-                        ProjectileData projectileData = new ProjectileData(newProjectile, data.getDamage(), 20);
+                        ProjectileData projectileData = new ProjectileData(newProjectile, data.getShooterLevel(), data.getDamage(), 20);
                         projectileData.setSummonsLightning(data.summonsLightning());
                         projectileData.shouldTeleport(data.shouldTeleport());
 
@@ -195,21 +191,24 @@ public class ProjectileListener implements Listener {
         }
     }
 
-    private double getHeadShotHeight(LivingEntity livingEntity){
-        if (livingEntity instanceof Player){
-            if (((Player) livingEntity).isSneaking()){
+    private double getHeadShotHeight(LivingEntity livingEntity) {
+        if (livingEntity instanceof Player) {
+            if (((Player) livingEntity).isSneaking()) {
                 return 1.1D;
             }
             return 1.4D;
-        }else if(livingEntity instanceof Giant) return 9.0D;
+        } else if (livingEntity instanceof Giant) return 9.0D;
         else if (livingEntity instanceof IronGolem || livingEntity instanceof WitherSkeleton) return 2.0D;
-        //For these mobs the entire body is considered the head
-        else if (livingEntity instanceof Slime || livingEntity instanceof Ghast || livingEntity instanceof Guardian) return -1.0D;
+            //For these mobs the entire body is considered the head
+        else if (livingEntity instanceof Slime || livingEntity instanceof Ghast || livingEntity instanceof Guardian)
+            return -1.0D;
 
-        else if(livingEntity instanceof Ageable){
+        else if (livingEntity instanceof Ageable) {
             if (!((Ageable) livingEntity).isAdult()) return 0.6D;
         }
 
         return 1.4D;
     }
+
+
 }

@@ -3,17 +3,15 @@ icon: "LEATHER_CHESTPLATE"
 
 levels:
   1:
-    attack-speed-multiplier: 25.0
-    move-speed-multiplier: 30.0
+    attack-speed-multiplier: 25
+    move-speed-multiplier: 25
     description:
-      - "CURRENTLY WIP"
-      - "When you're holding nothing in your offhand"
-      - "You gain %attack-speed-multiplier%  % bonus attack speed"
+      - "When wearing leather or no armor"
+      - "you gain %attack-speed-multiplier%% bonus attack speed"
   2:
-    attack-speed-multiplier: 25.0
-    move-speed-multiplier: 30.0
+    attack-speed-multiplier: 25
+    move-speed-multiplier: 25
     description:
-      - "CURRENTLY WIP"
-      - "When you're holding nothing in your offhand"
-      - "You gain %attack-speed-multiplier%  % bonus attack speed"
-      - "and %move-speed-multiplier% % bonus move speed"
+      - "When wearing leather or no armor"
+      - "you gain %attack-speed-multiplier%% bonus attack speed"
+      - "and %move-speed-multiplier%% bonus move speed"

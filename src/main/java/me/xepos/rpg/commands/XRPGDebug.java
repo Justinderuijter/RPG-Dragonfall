@@ -84,6 +84,7 @@ public class XRPGDebug extends BaseCommand {
                         return true;
                     }
 
+
                     if (strings[0].equalsIgnoreCase("modifiers")){
                         for (Attribute attribute:Attribute.values()) {
                             AttributeInstance attributeInstance = player.getAttribute(attribute);
@@ -106,6 +107,25 @@ public class XRPGDebug extends BaseCommand {
 
                         commandSender.sendMessage(ChatColor.RED + "Damage Taken multiplier for " + player.getPlayer() + ChatColor.RED + ": " + String.format("%.2f", xrpgPlayer.getDamageTakenMultiplier()));
                         return true;
+                    }else if(strings[0].equalsIgnoreCase("activeskills")){
+                        XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(player, true);
+                        if (xrpgPlayer == null){
+                            commandSender.sendMessage(ChatColor.RED + StringUtils.capitalise(player.getName()) + ChatColor.RED + " is not a valid XRPG player!");
+                            return true;
+                        }
+
+                        StringBuilder skillList = new StringBuilder();
+                        for (String skillId:xrpgPlayer.getActiveHandler().getSkills().keySet()) {
+                            skillList.append(secondaryColor).append(skillId).append(ChatColor.WHITE).append(", ");
+                        }
+
+                        int length = skillList.length();
+                        if (length < 1){
+                            skillList.delete(length - 2, length);
+                        }
+
+                        commandSender.sendMessage(primaryColor + "Loaded active skills for " + player.getName() + ChatColor.WHITE + "(" + secondaryColor + plugin.getSkillData().size() + ChatColor.WHITE + ")" + primaryColor + ":");
+                        commandSender.sendMessage(skillList.toString());
                     }
                 default:
                     return false;

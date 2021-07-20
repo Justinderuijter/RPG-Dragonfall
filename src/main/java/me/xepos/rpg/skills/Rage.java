@@ -42,9 +42,8 @@ public class Rage extends XRPGPassiveSkill implements IMessenger {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof EntityDamageByEntityEvent)) return;
+        if (!(event instanceof EntityDamageByEntityEvent e)) return;
         if (!getXRPGPlayer().getPlayer().getInventory().getItemInMainHand().getType().toString().endsWith("_AXE")) return;
-        EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 
         rageLevel = getRageLevel(currentRage);
 
@@ -71,7 +70,7 @@ public class Rage extends XRPGPassiveSkill implements IMessenger {
     private void applyDamageRageEffect(EntityDamageByEntityEvent e) {
         Player player = (Player) e.getDamager();
         SkillData skillVariable = getSkillVariables();
-        AttributeModifierData attackSpeedModifierData = AttributeModifierManager.getInstance().get(ModifierType.POSITIVE, "RAGE_ATK_SPD");
+        AttributeModifierData attackSpeedModifierData = AttributeModifierManager.getInstance().get(ModifierType.POSITIVE, attackSpeedAttributeName);
 
         switch (rageLevel) {
             case 0:

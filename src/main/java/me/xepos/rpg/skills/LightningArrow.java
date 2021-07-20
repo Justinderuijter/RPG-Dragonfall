@@ -33,7 +33,7 @@ public class LightningArrow extends XRPGBowSkill {
 
         Arrow arrow = (Arrow) e.getProjectile();
 
-        ProjectileData data = new ProjectileData(arrow, 20);
+        ProjectileData data = new ProjectileData(arrow, getXRPGPlayer().getLevel(), 20);
         data.setSummonsLightning(true);
 
         getPlugin().projectiles.put(arrow.getUniqueId(), data);

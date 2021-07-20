@@ -45,6 +45,9 @@ public final class XRPG extends JavaPlugin {
     public static final String permissionPrefix = "xrpg.";
     public static final String modifierPrefix = "XRPG_";
 
+    private double damageMultiplier;
+    private double spellDamageMultiplier;
+
     private List<ItemStack> GUIBaseItems;
     private SkillLoader skillLoader;
     private TreeLoader treeLoader;
@@ -140,6 +143,8 @@ public final class XRPG extends JavaPlugin {
 
         this.pvpToggle = PvPToggleFactory.getPvPToggle(usePvPToggle);
 
+        this.damageMultiplier = getConfig().getDouble("level-damage-multiplier", 0.021);
+        this.spellDamageMultiplier = getConfig().getDouble("level-spell-damage-multiplier", 0.042);
 
         this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this));
         this.getCommand("xrpgreload").setExecutor(new XRPGReload(this, skillLoader));
@@ -334,5 +339,13 @@ public final class XRPG extends JavaPlugin {
 
     public PlayerManager getPlayerManager(){
         return playerManager;
+    }
+
+    public double getDamageMultiplier() {
+        return damageMultiplier;
+    }
+
+    public double getSpellDamageMultiplier() {
+        return spellDamageMultiplier;
     }
 }

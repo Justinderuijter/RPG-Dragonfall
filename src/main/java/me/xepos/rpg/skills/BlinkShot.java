@@ -34,7 +34,7 @@ public class BlinkShot extends XRPGBowSkill {
         Arrow arrow = (Arrow) e.getProjectile();
 
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
-        ProjectileData data = new ProjectileData(arrow, 30);
+        ProjectileData data = new ProjectileData(arrow, getXRPGPlayer().getLevel(), 30);
         data.shouldTeleport(true);
 
         getPlugin().projectiles.put(arrow.getUniqueId(), data);

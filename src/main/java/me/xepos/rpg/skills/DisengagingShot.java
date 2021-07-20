@@ -33,7 +33,7 @@ public class DisengagingShot extends XRPGBowSkill {
         if (e.getProjectile() instanceof Arrow) {
             Arrow arrow = (Arrow) e.getProjectile();
 
-            ProjectileData data = new ProjectileData(arrow, 10);
+            ProjectileData data = new ProjectileData(arrow, getXRPGPlayer().getLevel(), 10);
             data.setDisengage(true);
             getPlugin().projectiles.put(e.getProjectile().getUniqueId(), data);
 

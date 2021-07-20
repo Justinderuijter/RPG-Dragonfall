@@ -70,7 +70,7 @@ public class ExposeWeakness extends XRPGBowSkill {
                     Arrow arrow = (Arrow) e.getProjectile();
                     arrow.setDamage(0);
 
-                    ProjectileData data =  new ProjectileData(arrow, 20);
+                    ProjectileData data =  new ProjectileData(arrow, getXRPGPlayer().getLevel(), 20);
                     data.setDamageMultiplier(1 + (getMaxHealthDamage()/100));
 
                     getPlugin().projectiles.put(arrow.getUniqueId(), data);

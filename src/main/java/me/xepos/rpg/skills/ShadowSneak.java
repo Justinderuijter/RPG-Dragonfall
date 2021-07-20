@@ -31,8 +31,7 @@ public class ShadowSneak extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemHeldEvent)) return;
-        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (!(event instanceof PlayerItemHeldEvent e)) return;
         doShadowSneak(e.getPlayer());
 
     }
@@ -65,9 +64,9 @@ public class ShadowSneak extends XRPGActiveSkill {
             Vector direction = livingEntity.getLocation().getDirection().setY(0.).normalize().multiply(-2.);
             player.teleport(livingEntity.getLocation().add(direction), PlayerTeleportEvent.TeleportCause.PLUGIN);
             if (livingEntity instanceof Player && getProtectionSet().isLocationValid(player.getLocation(), livingEntity.getLocation()) && !getPartySet().isPlayerAllied(player, (Player) livingEntity)) {
-                livingEntity.damage(getDamage(), player);
+                livingEntity.damage(getRawDamage(), player);
 
-                new BleedTask(livingEntity, player, maxProcs, getDamage()).runTaskTimer(getPlugin(), 11, (long) interval * 20L);
+                new BleedTask(livingEntity, player, maxProcs, getRawDamage()).runTaskTimer(getPlugin(), 11, (long) interval * 20L);
             }
             setRemainingCooldown(getCooldown());
             updatedCasterMana();

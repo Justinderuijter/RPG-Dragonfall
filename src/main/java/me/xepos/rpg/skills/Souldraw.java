@@ -21,8 +21,7 @@ public class Souldraw extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemHeldEvent)) return;
-        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (!(event instanceof PlayerItemHeldEvent e)) return;
 
         doSouldraw(e.getPlayer());
 
@@ -42,7 +41,7 @@ public class Souldraw extends XRPGActiveSkill {
                 double healRatio = getSkillVariables().getDouble(getSkillLevel(), "heal-per-damage", 0.5);
 
                 LivingEntity target = (LivingEntity) result.getHitEntity();
-                target.damage(getDamage(), caster);
+                target.damage(getDamage(target), caster);
                 //Heal the attacker for half of the damage dealt
                 Utils.healLivingEntity(caster, target.getLastDamage() * healRatio);
                 setRemainingCooldown(getCooldown());

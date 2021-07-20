@@ -25,8 +25,7 @@ public class PurgatoryBat extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemHeldEvent)) return;
-        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (!(event instanceof PlayerItemHeldEvent e)) return;
 
         doPurgatoryBat(e.getPlayer());
     }
@@ -64,7 +63,7 @@ public class PurgatoryBat extends XRPGActiveSkill {
             bat.setCustomName("Purgatory bat");
             bat.setCustomNameVisible(false);
 
-            new PurgatoryBatTask(bat, player, getDamage(), maxCount, this, dtAmount, getPlugin(), (long) duration * 20L)
+            new PurgatoryBatTask(bat, player, getRawDamage(), maxCount, this, dtAmount, getPlugin(), (long) duration * 20L)
                     .runTaskTimer(getPlugin(), 10, (long) interval * 20L);
 
             setRemainingCooldown(getCooldown());

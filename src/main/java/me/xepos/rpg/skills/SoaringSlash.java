@@ -22,8 +22,7 @@ public class SoaringSlash extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemHeldEvent)) return;
-        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (!(event instanceof PlayerItemHeldEvent e)) return;
 
         if (!isSkillReady()) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));

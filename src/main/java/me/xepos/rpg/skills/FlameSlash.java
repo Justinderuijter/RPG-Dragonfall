@@ -20,8 +20,7 @@ public class FlameSlash extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemHeldEvent)) return;
-        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (!(event instanceof PlayerItemHeldEvent e)) return;
 
         doFlameSlash(e);
     }
@@ -44,7 +43,7 @@ public class FlameSlash extends XRPGActiveSkill {
         Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
 
         if (!getPlugin().projectiles.containsKey(fireball.getUniqueId())) {
-            ProjectileData projectileData = new ProjectileData(fireball, getDamage(), 10);
+            ProjectileData projectileData = new ProjectileData(fireball, getXRPGPlayer().getLevel(), getRawDamage(), 10);
             projectileData.setShouldBounce(true);
 
             getPlugin().projectiles.put(fireball.getUniqueId(), projectileData);

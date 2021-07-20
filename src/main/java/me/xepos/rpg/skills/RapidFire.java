@@ -39,7 +39,7 @@ public class RapidFire extends XRPGBowSkill {
 
         arrow.setDamage(0);
 
-        ProjectileData data = new ProjectileData(arrow, damage, 20);
+        ProjectileData data = new ProjectileData(arrow, getXRPGPlayer().getLevel(), damage, 20);
         getPlugin().projectiles.put(arrow.getUniqueId(), data);
 
         setRemainingCooldown(getCooldown());
@@ -52,7 +52,7 @@ public class RapidFire extends XRPGBowSkill {
                 extraArrow.setDamage(0);
                 extraArrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
 
-                ProjectileData extraData = new ProjectileData(extraArrow, damage, 20);
+                ProjectileData extraData = new ProjectileData(extraArrow, getXRPGPlayer().getLevel(), damage, 20);
                 getPlugin().projectiles.put(extraArrow.getUniqueId(), extraData);
             }, (i + 1) * 5L);
 

@@ -10,22 +10,22 @@ public class ProjectileData extends BaseProjectileData {
     private double headshotDamage = 1.0;
     private boolean doDisengage = false;
 
-    public ProjectileData(Projectile projectile, int secondsToLive){
-        super(projectile, secondsToLive);
+    public ProjectileData(Projectile projectile, int shooterLevel, int secondsToLive){
+        super(projectile, shooterLevel, secondsToLive);
     }
 
-    public ProjectileData(Projectile projectile, double damage, int secondsToLive){
-        super(projectile, secondsToLive);
+    public ProjectileData(Projectile projectile, int shooterLevel, double damage, int secondsToLive){
+        super(projectile, shooterLevel, secondsToLive);
 
         this.damage = damage;
     }
 
-    public ProjectileData(Projectile projectile, int secondsToLive, PotionEffect potionEffect){
-        super(projectile, secondsToLive, potionEffect);
+    public ProjectileData(Projectile projectile, int shooterLevel, int secondsToLive, PotionEffect potionEffect){
+        super(projectile, shooterLevel, secondsToLive, potionEffect);
     }
 
-    public ProjectileData(Projectile projectile, double damage, int secondsToLive, PotionEffect potionEffect){
-        super(projectile, secondsToLive, potionEffect);
+    public ProjectileData(Projectile projectile, int shooterLevel, double damage, int secondsToLive, PotionEffect potionEffect){
+        super(projectile, shooterLevel, secondsToLive, potionEffect);
 
         this.damage = damage;
     }

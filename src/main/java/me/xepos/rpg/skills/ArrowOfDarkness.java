@@ -40,7 +40,7 @@ public class ArrowOfDarkness extends XRPGBowSkill {
         final int duration = (int) (getSkillVariables().getDouble(getSkillLevel(), "duration", 10.0) * 20);
         final int amplifier = getSkillVariables().getInt(getSkillLevel(), "amplifier", 1);
 
-        ProjectileData data = new ProjectileData(arrow, 20, new PotionEffect(PotionEffectType.HARM, duration, amplifier, false, false, true));
+        ProjectileData data = new ProjectileData(arrow, getXRPGPlayer().getLevel(), 20, new PotionEffect(PotionEffectType.HARM, duration, amplifier, false, false, true));
 
         getPlugin().projectiles.put(arrow.getUniqueId(), data);
 

@@ -62,7 +62,7 @@ public class VoidParadox extends XRPGActiveSkill {
                     new ShowPlayerTask(getPlugin(), targetPlayer).runTaskLater(getPlugin(), (long) duration * 20L);
                 }
             } else {
-                target.damage(getDamage(), caster);
+                target.damage(getRawDamage(), caster);
             }
 
             setRemainingCooldown(getCooldown());

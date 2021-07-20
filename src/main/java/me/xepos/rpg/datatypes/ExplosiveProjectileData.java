@@ -8,14 +8,14 @@ public class ExplosiveProjectileData extends BaseProjectileData {
     private boolean destroysBlocks = false;
     private boolean setsFire = false;
 
-    public ExplosiveProjectileData(Projectile projectile, float yield, int secondsToLive){
-        super(projectile, secondsToLive);
+    public ExplosiveProjectileData(Projectile projectile, int shooterLevel, float yield, int secondsToLive){
+        super(projectile, shooterLevel, secondsToLive);
 
         this.yield = yield;
     }
 
-    public ExplosiveProjectileData(Projectile projectile, float yield, int secondsToLive, PotionEffect potionEffect){
-        super(projectile, secondsToLive, potionEffect);
+    public ExplosiveProjectileData(Projectile projectile, int shooterLevel, float yield, int secondsToLive, PotionEffect potionEffect){
+        super(projectile, shooterLevel, secondsToLive, potionEffect);
 
         this.yield = yield;
     }

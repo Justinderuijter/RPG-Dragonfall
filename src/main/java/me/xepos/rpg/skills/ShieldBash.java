@@ -83,7 +83,7 @@ public class ShieldBash extends XRPGActiveSkill {
             Vector unitVector = target.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
 
             target.setVelocity(unitVector.multiply(pushStrength));
-            target.damage(getDamage(), player);
+            target.damage(getDamage(target), player);
 
             setRemainingCooldown(getCooldown());
             updatedCasterMana();

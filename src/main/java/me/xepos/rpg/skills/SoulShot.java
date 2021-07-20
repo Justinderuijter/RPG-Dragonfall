@@ -36,7 +36,7 @@ public class SoulShot extends XRPGActiveSkill {
 
         double damageMultiplier = 1 - getSkillVariables().getDouble(getSkillLevel(), "percent-health-damage", 0.25);
 
-        getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, damageMultiplier, 20));
+        getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, getXRPGPlayer().getLevel(), damageMultiplier, 20));
         setRemainingCooldown(getCooldown());
         updatedCasterMana();
     }

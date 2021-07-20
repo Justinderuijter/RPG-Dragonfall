@@ -67,7 +67,7 @@ public class Meteor extends XRPGActiveSkill {
         fireball.setDirection(new Vector(0, -1, 0));
 
         if (!getPlugin().projectiles.containsKey(fireball.getUniqueId())){
-            ExplosiveProjectileData data = new ExplosiveProjectileData(fireball, explosionYield * (stacks + 1), 20);
+            ExplosiveProjectileData data = new ExplosiveProjectileData(fireball, getXRPGPlayer().getLevel(), explosionYield * (stacks + 1), 20);
             data.setsFire(setFire);
             data.destroysBlocks(breakBlocks);
 

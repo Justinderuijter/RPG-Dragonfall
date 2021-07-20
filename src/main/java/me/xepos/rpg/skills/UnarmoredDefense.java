@@ -14,6 +14,7 @@ import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.craftbukkit.libs.org.eclipse.sisu.Nullable;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockDispenseArmorEvent;
 import org.bukkit.inventory.ItemStack;
@@ -49,24 +50,34 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
         //Only executes if the player is already online
         //If the player is not already online, use the IAttributable interface
         if (xrpgPlayer.getPlayer() != null) {
-            //applyEffects(skillLevel);
+            isAllLeatherOrAir = true;
+
+            for (ItemStack armor : xrpgPlayer.getPlayer().getInventory().getArmorContents()) {
+                if (armor == null) continue;
+                if (armor.getType() != Material.AIR && !armor.getType().toString().toLowerCase().contains("leather")) {
+                    isAllLeatherOrAir = false;
+                    break;
+                }
+            }
+
+            applyEffects(skillLevel);
         }
 
     }
 
     @Override
     public void activate(Event event) {
-        if (event instanceof PlayerArmorChangeEvent) {
-            PlayerArmorChangeEvent e = (PlayerArmorChangeEvent) event;
+        if (event instanceof PlayerArmorChangeEvent e) {
 
+            checkIfAllLeatherOrBelow(e.getNewItem());
 
-            //applyEffects(getSkillLevel());
+            applyEffects(getSkillLevel());
 
-        } else if (event instanceof BlockDispenseArmorEvent) {
-            BlockDispenseArmorEvent e = (BlockDispenseArmorEvent) event;
+        } else if (event instanceof BlockDispenseArmorEvent e) {
 
+            checkIfAllLeatherOrBelow(e.getItem());
 
-            //applyEffects(getSkillLevel());
+            applyEffects(getSkillLevel());
         }
 
     }
@@ -90,16 +101,16 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
 
     @Override
     public List<AttributeModifierData> getModifiersToApply() {
-        registerAttributes(manager, getSkillLevel());
-
-        return new ArrayList<AttributeModifierData>()
-        {{
-            AttributeModifierData data = manager.get(ModifierType.POSITIVE, MVSPD_MOD_NAME);
-            add(data);
-            if (getSkillLevel() >= 2) {
-                add(manager.get(ModifierType.POSITIVE, ATKSPD_MOD_NAME));
-            }
-        }};
+//        registerAttributes(manager, getSkillLevel());
+//
+//        return new ArrayList<>() {{
+//            AttributeModifierData data = manager.get(ModifierType.POSITIVE, MVSPD_MOD_NAME);
+//            add(data);
+//            if (getSkillLevel() >= 2) {
+//                add(manager.get(ModifierType.POSITIVE, ATKSPD_MOD_NAME));
+//            }
+//        }};
+        return new ArrayList<>();
     }
 
     @Override
@@ -116,6 +127,22 @@ public class UnarmoredDefense extends XRPGPassiveSkill implements IAttributable 
             final AttributeModifier moveSpeedMod = new AttributeModifier(UUID.randomUUID(), MVSPD_MOD_NAME, moveSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
             attributeModifierManager.put(ModifierType.POSITIVE, moveSpeedMod.getName(), moveSpeedMod, Attribute.GENERIC_MOVEMENT_SPEED);
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void checkIfAllLeatherOrBelow(@Nullable ItemStack newItem) {
+        isAllLeatherOrAir = true;
+        if (newItem.getType() == Material.AIR || newItem.getType().toString().toLowerCase().contains("leather")) {
+            for (ItemStack armor : getXRPGPlayer().getPlayer().getInventory().getArmorContents()) {
+                if (armor != null && armor.getType() != Material.AIR && !armor.getType().toString().toLowerCase().contains("leather")) {
+                    isAllLeatherOrAir = false;
+                    break;
+                }
+
+            }
+        } else {
+            isAllLeatherOrAir = false;
         }
     }
 

@@ -27,8 +27,7 @@ public class Shockwave extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (event instanceof PlayerItemHeldEvent){
-            PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (event instanceof PlayerItemHeldEvent e){
 
             Player player = e.getPlayer();
 
@@ -41,7 +40,6 @@ public class Shockwave extends XRPGActiveSkill {
             }
 
             final Set<Entity> entitiesToDamage = new HashSet<>();
-            final double damage = getDamage();
 
             BlockIterator iter = new BlockIterator(player.getWorld(), player.getLocation().toVector(), player.getLocation().getDirection().setY(0), -1, 16);
             Block lastBlock;
@@ -59,13 +57,12 @@ public class Shockwave extends XRPGActiveSkill {
                 lastBlock.getWorld().playEffect(lastBlock.getLocation(), Effect.MOBSPAWNER_FLAMES, 2);
 
                 for (Entity entity:entitiesToDamage) {
-                    if (entity instanceof Player){
-                        Player target = (Player) entity;
+                    if (entity instanceof Player target){
                         if (canHurtTarget(target)){
-                            target.damage(damage, player);
+                            target.damage(getRawDamage(), player);
                         }
                     }else{
-                        ((LivingEntity)entity).damage(damage, player);
+                        ((LivingEntity)entity).damage(getDamage(), player);
                     }
                     entity.setVelocity(entity.getVelocity().setY(1));
                 }

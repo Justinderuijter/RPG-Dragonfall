@@ -588,6 +588,7 @@ public class XRPGPlayer {
 
         XRPG plugin = XRPG.getInstance();
 
+        this.spellKeybinds.clear();
         this.setBaseMana(plugin.getClassInfo(this.getClassId()).getBaseMana());
         if (this.getCurrentMana() > this.getBaseMana()) this.currentMana = this.getBaseMana();
 

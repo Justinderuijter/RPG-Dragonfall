@@ -40,7 +40,7 @@ public class Whirlwind extends XRPGActiveSkill {
 
         List<LivingEntity> targets = new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), horizontalRange, verticalRange, horizontalRange, p -> p instanceof LivingEntity && p != caster));
         for (LivingEntity target:targets) {
-            target.damage(getDamage(), caster);
+            target.damage(getDamage(target), caster);
         }
 
         setRemainingCooldown(getCooldown());

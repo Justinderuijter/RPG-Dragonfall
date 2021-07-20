@@ -1,16 +1,21 @@
 name: "Overheat"
-icon: GOLDEN_CHESTPLATE
+icon: BLAZE_POWDER
 
 levels:
   statics:
-    damage: 5.0
-    damage-per-armor: 0.5
+    damage: 10.0
+    damage-per-armor: 1
     range: 16.0
     delay: 5.0
     cooldown: 15.0
     mana: 15
     description:
       - "Set your target on fire, overheating them."
-      - "Deals %damage% fire damage to your target after %delay% seconds"
-      - "This damage is increase by %damage-per-armor% for every point of armor"
-      - "that your target has."
+      - "Deals %damage% fire damage to your target"
+      - "after %delay% seconds"
+      - "This damage is increase by %damage-per-armor%"
+      - "for every point of armor your target has."
+      - "This damage does not get mitigated by armor"
+      - "or the regular protection enchant"
+      - "and can instead be reduced by stepping"
+      - "into water and the fire protection enchantment."

@@ -7,22 +7,25 @@ import org.bukkit.potion.PotionEffect;
 
 public class BaseProjectileData implements IClearable {
     private final Projectile projectile;
+    private final int shooterLevel;
     private final long despawnTime;
     private boolean summonsLightning;
     private boolean shouldTeleport;
     private final PotionEffect potionEffect;
     private boolean shouldBounce = false;
 
-    public BaseProjectileData(Projectile projectile, int secondsToLive){
+    public BaseProjectileData(Projectile projectile, int shooterLevel, int secondsToLive){
         this.projectile = projectile;
         this.despawnTime = secondsToLive;
         this.potionEffect = null;
+        this.shooterLevel = shooterLevel;
     }
 
-    public BaseProjectileData(Projectile projectile, int secondsToLive, PotionEffect potionEffect){
+    public BaseProjectileData(Projectile projectile, int shooterLevel, int secondsToLive, PotionEffect potionEffect){
         this.projectile = projectile;
         this.despawnTime = secondsToLive;
         this.potionEffect = potionEffect;
+        this.shooterLevel = shooterLevel;
     }
 
 
@@ -72,5 +75,9 @@ public class BaseProjectileData implements IClearable {
 
     public Entity getShooter() {
         return (Entity) projectile.getShooter();
+    }
+
+    public int getShooterLevel() {
+        return shooterLevel;
     }
 }

@@ -36,7 +36,7 @@ public class ExplosiveShot extends XRPGActiveSkill {
         final boolean setFire = getSkillVariables().getBoolean(getSkillLevel(), "explosion-fire", false);
         final boolean breakBlocks = getSkillVariables().getBoolean(getSkillLevel(), "explosion-break-block", false);
 
-        ExplosiveProjectileData data = new ExplosiveProjectileData(arrow, yield, 20);
+        ExplosiveProjectileData data = new ExplosiveProjectileData(arrow, getXRPGPlayer().getLevel(), yield, 20);
         data.setsFire(setFire);
         data.destroysBlocks(breakBlocks);
 

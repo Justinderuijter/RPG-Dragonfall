@@ -57,7 +57,7 @@ public class Overheat extends XRPGActiveSkill {
             target.sendMessage(ChatColor.RED + "You've been hit by Overheat!");
             target.sendMessage(ChatColor.RED + "Get in water to reduce the damage!");
 
-            new OverheatTask(target, getDamage(), getSkillVariables().getDouble(getSkillLevel(),"damage-per-armor", 0.5)).runTaskLater(getPlugin(), (long) delay * 20L);
+            new OverheatTask(target, getDamage(target), getSkillVariables().getDouble(getSkillLevel(),"damage-per-armor", 0.5)).runTaskLater(getPlugin(), (long) delay * 20L);
             setRemainingCooldown(getCooldown());
             updatedCasterMana();
         }

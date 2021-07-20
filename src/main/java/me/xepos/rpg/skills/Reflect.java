@@ -19,12 +19,11 @@ public class Reflect extends XRPGPassiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof EntityDamageByEntityEvent)) return;
-        EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+        if (!(event instanceof EntityDamageByEntityEvent e)) return;
 
 
         if (((Player) e.getEntity()).isBlocking() && e.getDamager() instanceof LivingEntity) {
-            Utils.decreaseHealth((LivingEntity) e.getDamager(), getDamage());
+            Utils.decreaseHealth((LivingEntity) e.getDamager(), getRawDamage());
         }
     }
 

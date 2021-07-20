@@ -6,6 +6,7 @@ import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.dependencies.combat.parties.PartySet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
@@ -96,8 +97,18 @@ public abstract class XRPGSkill {
         return skillVariables.getCooldown(getSkillLevel());
     }
 
-    public double getDamage() {
+    public double getRawDamage() {
         return skillVariables.getDamage(getSkillLevel());
+    }
+
+    public double getDamage(){
+        return skillVariables.getDamage(getSkillLevel()) * (1 + xrpgPlayer.getLevel() * plugin.getSpellDamageMultiplier());
+    }
+
+    public double getDamage(LivingEntity entity){
+        if (entity instanceof Player) return getRawDamage();
+
+        return getDamage();
     }
 
     public double getDamageMultiplier() {

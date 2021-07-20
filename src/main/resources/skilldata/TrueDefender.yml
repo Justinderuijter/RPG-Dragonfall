@@ -1,4 +1,6 @@
 name: "True Defender"
+icon: TOTEM_OF_UNDYING
+
 levels:
   statics:
     cooldown: 15.0
@@ -9,3 +11,12 @@ levels:
       - "to all damage and reflect ALL damage back to the attacker"
   1:
     duration: 3.0
+  2:
+    duration: 3.0
+    description:
+      - "When activated you become a true defender."
+      - "For the next %duration% seconds you are immune"
+      - "to all damage and reflect ALL damage back to the attacker."
+      - "If you have not been attacked by"
+      - "a player during the initial skill duration"
+      - "the duration will be extended by another %duration% seconds."
