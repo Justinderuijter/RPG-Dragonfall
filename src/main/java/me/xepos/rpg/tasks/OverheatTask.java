@@ -15,10 +15,12 @@ public class OverheatTask extends BukkitRunnable {
 
     private final LivingEntity target;
     private double damage;
-    private double armorDamageRatio;
+    private final double armorDamageRatio;
 
     public OverheatTask(LivingEntity target, double damage, double armorToDamage) {
         this.target = target;
+        this.damage = damage;
+        this.armorDamageRatio = armorToDamage;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class OverheatTask extends BukkitRunnable {
         target.setNoDamageTicks(0);
 
         if (!target.isInWater()) {
-            damage = (5 + armorValue * armorDamageRatio) * 1 / (1 - enchantLevel * 0.04);
+            damage = (damage + armorValue * armorDamageRatio) * 1 / (1 - enchantLevel * 0.04);
             ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.a, (float) damage);
         } else {
             ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.a, (float) damage);
