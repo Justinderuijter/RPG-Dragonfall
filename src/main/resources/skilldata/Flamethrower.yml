@@ -1,0 +1,26 @@
+name: "Flamethrower"
+icon: "FLINT_AND_STEEL"
+levels:
+  statics:
+    interval: 4
+    damage: 10
+    cooldown: 10
+    mana: 3
+    description:
+      - "You shoot a flurry of fireballs"
+      - "dealing %damage% damage per shot."
+      - "Flamethrower drains %mana% mana"
+      - "per second while active."
+      - ""
+      - "Flamethrower will disable itself"
+      - "when out of mana and can be"
+      - "manually disabled by reactivating it"
+      - ""
+      - "Levelling this skill improves"
+      - "the accuracy of the shots."
+  1:
+    inaccuracy: 0.4
+  2:
+    inaccuracy: 0.3
+  3:
+    inaccuracy: 0.2

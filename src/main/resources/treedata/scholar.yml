@@ -12,13 +12,13 @@ skills:
     requires: [ MasterEnchanter, Fireball]
   ShortFuse:
     max-level: 3
-    requires: [ Fireball, TrailOfFlames ]
-  TrailOfFlames:
+    requires: [ Fireball, Flamethrower ]
+  Flamethrower:
     max-level: 3
     requires: [ ShortFuse, HotHead ]
   Overheat:
     max-level: 2
-    requires: [ TrailOfFlames ]
+    requires: [ Flamethrower ]
   HealingCircle:
     max-level: 3
     requires: [ Blessed ]
@@ -53,7 +53,7 @@ interface:
     r:
       skill: ShortFuse
     t:
-      skill: TrailOfFlames
+      skill: Flamethrower
     o:
       skill: Overheat
     c:

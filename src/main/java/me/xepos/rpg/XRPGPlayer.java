@@ -147,7 +147,7 @@ public class XRPGPlayer {
     }
 
     //For convenience
-    private transient List<IMessenger> messengerSkills = new ArrayList<>();
+    private final transient List<IMessenger> messengerSkills = new ArrayList<>();
 
     private transient ActiveEventHandler activeHandler;
     private final transient ConcurrentHashMap<String, PassiveEventHandler> handlerList = new ConcurrentHashMap<>();

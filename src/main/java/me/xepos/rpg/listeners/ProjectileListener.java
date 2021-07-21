@@ -63,6 +63,7 @@ public class ProjectileListener implements Listener {
 
                     //Section exclusively for projectiles that aren't arrows
                     if (!(e.getEntity() instanceof Arrow)) {
+                        livingEntity.setNoDamageTicks(0);
                         final double damage = DamageUtils.calculateSpellDamage(projectileData.getDamage(), projectileData.getShooterLevel(), (LivingEntity) e.getHitEntity());
                         livingEntity.damage(damage * projectileData.getDamageMultiplier(), (Player) projectileData.getProjectile().getShooter());
                         return;
