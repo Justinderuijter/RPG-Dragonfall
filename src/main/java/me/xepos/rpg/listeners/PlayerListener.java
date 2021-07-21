@@ -7,7 +7,6 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.DatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
-import me.xepos.rpg.utils.DamageUtils;
 import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.utils.SpellmodeUtils;
 import me.xepos.rpg.utils.Utils;
@@ -51,7 +50,9 @@ public class PlayerListener implements Listener {
                     if (xrpgPlayer.isStunned())
                         e.setCancelled(true);
                     else if (xrpgPlayer.isClassEnabled()) {
-                        e.setDamage(DamageUtils.calculateDamage(e.getDamage(), xrpgPlayer.getLevel(), livingEntity));
+/*                        if(e.getCause() != EntityDamageEvent.DamageCause.CUSTOM){
+                            e.setDamage(DamageUtils.calculateDamage(e.getDamage(), xrpgPlayer.getLevel(), livingEntity));
+                        }*/
                         xrpgPlayer.getPassiveEventHandler("DAMAGE_DEALT").invoke(e);
                     }
                 }

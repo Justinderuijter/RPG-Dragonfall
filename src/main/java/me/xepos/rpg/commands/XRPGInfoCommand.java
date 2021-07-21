@@ -102,7 +102,7 @@ public class XRPGInfoCommand implements TabExecutor {
             commandSender.sendMessage(primaryColor + "Class: " + ChatColor.GREEN + xrpgTarget.getClassDisplayName());
             commandSender.sendMessage(primaryColor + "Level: " + ChatColor.GREEN + xrpgTarget.getLevel());
             commandSender.sendMessage(primaryColor + "Experience: " + ChatColor.GREEN +  String.format("%.1f", xrpgTarget.getCurrentExp()) + ChatColor.WHITE + "/" + ChatColor.GREEN + xrpgTarget.getRequiredExpToLevel(xrpgTarget.getLevel()));
-            commandSender.sendMessage(primaryColor + "PvE Multiplier: " + ChatColor.GREEN + String.format("%.2f", 1 + xrpgTarget.getLevel() * plugin.getDamageMultiplier()));
+            //commandSender.sendMessage(primaryColor + "PvE Multiplier: " + ChatColor.GREEN + String.format("%.2f", 1 + xrpgTarget.getLevel() * plugin.getDamageMultiplier()));
             commandSender.sendMessage(primaryColor + "PvE Multiplier (spells): " + ChatColor.GREEN + String.format("%.2f", 1 + xrpgTarget.getLevel() * plugin.getSpellDamageMultiplier()));
             commandSender.sendMessage(primaryColor + "Health Level: " + ChatColor.GREEN + xrpgTarget.getHealthLevel() + ChatColor.WHITE + " | " + primaryColor + "Mana Level: " + ChatColor.GREEN + xrpgTarget.getManaLevel());
         }else{
