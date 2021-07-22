@@ -68,6 +68,7 @@ public class Flamethrower extends XRPGActiveSkill {
         }
 
         updatedCasterMana();
+        setRemainingCooldown(getCooldown());
         final int interval = getSkillVariables().getInt(getSkillLevel(), "interval", 4);
         final double inaccuracy = getSkillVariables().getDouble(getSkillLevel(), "inaccuracy", 1.5);
         flamethrowerTask = new FlamethrowerTask(getXRPGPlayer(), this, getSkillVariables().getDamage(getSkillLevel()), inaccuracy, interval).runTaskTimer(getPlugin(), 0, interval);

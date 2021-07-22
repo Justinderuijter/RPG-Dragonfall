@@ -52,6 +52,7 @@ public class FlamethrowerTask extends BukkitRunnable {
 
             if (count * interval >= 20){
                 count = 0;
+                flamethrowerSkill.setRemainingCooldown(flamethrowerSkill.getCooldown());
                 if (flamethrowerSkill.hasRequiredMana()){
                     flamethrowerSkill.updatedCasterMana();
                 }else{

@@ -4,7 +4,7 @@ levels:
   statics:
     interval: 4
     damage: 10
-    cooldown: 10
+    cooldown: 5
     mana: 3
     description:
       - "You shoot a flurry of fireballs"
