@@ -12,9 +12,11 @@ levels:
     description:
       - "Set your target on fire, overheating them."
       - "Deals %damage% fire damage to your target"
-      - "after %delay% seconds"
+      - "after %delay% seconds."
+      - ""
       - "This damage is increase by %damage-per-armor%"
       - "for every point of armor your target has."
+      - ""
       - "This damage does not get mitigated by armor"
       - "or the regular protection enchant"
       - "and can instead be reduced by stepping"
