@@ -6,6 +6,7 @@ import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.utils.Utils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -254,9 +255,11 @@ public class XRPGAdminCommand extends BaseCommand {
             }
             if (plugin.isTreeViewer(xrpgTarget.getPlayer())){
                 sender.sendMessage(ChatColor.RED + "This player is currently editing their skill tree!");
-                return true;
+            }else if (StringUtils.isNotBlank(xrpgTarget.getClassId())) {
+                xrpgTarget.resetSkillTree();
+            }else{
+                sender.sendMessage(ChatColor.RED + "Couldn't reset skilltree for " + xrpgTarget.getPlayer().getName() + " as they don't have a class selected!");
             }
-            xrpgTarget.resetSkillTree();
             return true;
         }
         return false;
