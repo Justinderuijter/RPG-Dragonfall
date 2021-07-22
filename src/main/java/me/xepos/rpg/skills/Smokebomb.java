@@ -4,12 +4,15 @@ import com.mojang.datafixers.util.Pair;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.EndInvisibilityTask;
 import me.xepos.rpg.utils.Utils;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityEquipment;
 import net.minecraft.world.entity.EnumItemSlot;
 import net.minecraft.world.item.ItemStack;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
@@ -26,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Smokebomb extends XRPGActiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.DAMAGE, SpellType.EXPLOSION};
+
 
     private int smokebombDuration = 10;
 
@@ -43,11 +48,15 @@ public class Smokebomb extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (event instanceof PlayerInteractEvent) {
-            PlayerInteractEvent e = (PlayerInteractEvent) event;
+        if (event instanceof PlayerInteractEvent e) {
             if (e.getHand() == EquipmentSlot.OFF_HAND) {
                 return;
             }
+
+            XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+            Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+            if (spellCastEvent.isCancelled()) return;
 
             if (!isSkillReady()) {
                 e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));

@@ -3,14 +3,19 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
+import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.event.Event;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 
 public class MasterEnchanter extends XRPGPassiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.PASSIVE};
+
     public MasterEnchanter(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
@@ -24,6 +29,11 @@ public class MasterEnchanter extends XRPGPassiveSkill {
     @Override
     public void activate(Event event) {
         if (!(event instanceof PrepareItemEnchantEvent e)) return;
+
+        XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+        Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+        if (spellCastEvent.isCancelled()) return;
 
         float discount = (float) (1 - getSkillVariables().getDouble(getSkillLevel(), "enchanting-discount", 17.5) / 100);
         for (EnchantmentOffer offer:e.getOffers()) {

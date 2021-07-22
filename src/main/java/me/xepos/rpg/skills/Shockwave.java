@@ -3,8 +3,11 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,6 +22,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Shockwave extends XRPGActiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.DAMAGE, SpellType.DISPLACEMENT};
+
     public Shockwave(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
@@ -28,6 +33,11 @@ public class Shockwave extends XRPGActiveSkill {
     @Override
     public void activate(Event event) {
         if (event instanceof PlayerItemHeldEvent e){
+
+            XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+            Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+            if (spellCastEvent.isCancelled()) return;
 
             Player player = e.getPlayer();
 

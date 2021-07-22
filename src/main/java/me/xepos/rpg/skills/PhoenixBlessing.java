@@ -3,8 +3,11 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.entity.LivingEntity;
@@ -17,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PhoenixBlessing extends XRPGActiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.BUFF, SpellType.DAMAGE_REDUCTION};
+
 
     public PhoenixBlessing(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
@@ -26,8 +31,12 @@ public class PhoenixBlessing extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemHeldEvent)) return;
-        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (!(event instanceof PlayerItemHeldEvent e)) return;
+
+        XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+        Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+        if (spellCastEvent.isCancelled()) return;
 
         Player player = e.getPlayer();
 

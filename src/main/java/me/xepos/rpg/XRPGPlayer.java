@@ -230,6 +230,10 @@ public class XRPGPlayer {
         //Clearing skills
         activeHandler.getSkills().clear();
         messengerSkills.clear();
+
+        //Don't keep our own event around if not required.
+        handlerList.remove("XRPG_SPELL_CAST");
+
         SpellmodeUtils.disableSpellmode(this);
         for (PassiveEventHandler handler : handlerList.values()) {
             if (handler instanceof BowEventHandler bowEventHandler){

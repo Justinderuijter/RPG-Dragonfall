@@ -3,7 +3,9 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.tasks.RemoveDTModifierTask;
 import me.xepos.rpg.utils.Utils;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Aegis extends XRPGPassiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.PASSIVE, SpellType.AOEBUFF};
 
     public Aegis(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
@@ -45,6 +48,11 @@ public class Aegis extends XRPGPassiveSkill {
             if (!isSkillReady()) {
                 return;
             }
+
+            XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+            Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+            if (spellCastEvent.isCancelled()) return;
 
             final double duration = getSkillVariables().getDouble(getSkillLevel(), "duration", 4.0);
             final double xRange = getSkillVariables().getDouble(getSkillLevel(), "x-range", 8);

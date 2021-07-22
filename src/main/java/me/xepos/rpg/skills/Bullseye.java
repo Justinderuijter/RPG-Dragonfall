@@ -21,8 +21,7 @@ public class Bullseye extends XRPGPassiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof EntityShootBowEvent)) return;
-        EntityShootBowEvent e = (EntityShootBowEvent) event;
+        if (!(event instanceof EntityShootBowEvent e)) return;
         if (e.getProjectile() instanceof Arrow) {
             int random = ThreadLocalRandom.current().nextInt(0, 100);
             if (random < getSkillVariables().getInt(getSkillLevel(), "activation-chance", 30)) {

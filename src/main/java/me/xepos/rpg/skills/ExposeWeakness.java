@@ -4,9 +4,12 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.handlers.BowEventHandler;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
@@ -17,6 +20,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class ExposeWeakness extends XRPGBowSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.DAMAGE};
+
     private boolean isActive = false;
     private final BowEventHandler bowHandler;
 
@@ -30,8 +35,12 @@ public class ExposeWeakness extends XRPGBowSkill {
 
     @Override
     public void activate(Event event) {
-        if(event instanceof PlayerItemHeldEvent) {
-            PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if(event instanceof PlayerItemHeldEvent e) {
+
+            XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+            Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+            if (spellCastEvent.isCancelled()) return;
 
             if (!isSkillReady()){
                 e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
@@ -66,8 +75,7 @@ public class ExposeWeakness extends XRPGBowSkill {
             if (isActive){
                 isActive = false;
                 EntityShootBowEvent e = (EntityShootBowEvent) event;
-                if (e.getProjectile() instanceof Arrow){
-                    Arrow arrow = (Arrow) e.getProjectile();
+                if (e.getProjectile() instanceof Arrow arrow){
                     arrow.setDamage(0);
 
                     ProjectileData data =  new ProjectileData(arrow, getXRPGPlayer().getLevel(), 20);

@@ -3,6 +3,8 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AceUpMySleeve extends XRPGPassiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.PASSIVE};
 
     public AceUpMySleeve(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
@@ -22,13 +25,16 @@ public class AceUpMySleeve extends XRPGPassiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof EntityShootBowEvent)) return;
-        EntityShootBowEvent e = (EntityShootBowEvent) event;
+        if (!(event instanceof EntityShootBowEvent e)) return;
 
         if (getSkillVariables().getInt(getSkillLevel(), "trigger-chance") >= ThreadLocalRandom.current().nextInt(100)) return;
 
-        if (e.getProjectile() instanceof Arrow){
-            Arrow arrow = (Arrow) e.getProjectile();
+        if (e.getProjectile() instanceof Arrow arrow){
+
+            XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+            Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+            if (spellCastEvent.isCancelled()) return;
 
             List<String> enchants = getSkillVariables().getStringList(getSkillLevel(), "enchantments");
             String enchant = enchants.get(ThreadLocalRandom.current().nextInt(enchants.size()));

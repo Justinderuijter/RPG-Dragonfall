@@ -3,9 +3,12 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.potion.PotionEffect;
@@ -15,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GoldenAppleAoE extends XRPGPassiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.PASSIVE, SpellType.AOEBUFF};
+
     private EnchantedGoldenAppleAoE GAppleAoE;
 
     public GoldenAppleAoE(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill, EnchantedGoldenAppleAoE GAppleAoE) {
@@ -32,8 +37,13 @@ public class GoldenAppleAoE extends XRPGPassiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemConsumeEvent)) return;
-        PlayerItemConsumeEvent e = (PlayerItemConsumeEvent) event;
+        if (!(event instanceof PlayerItemConsumeEvent e)) return;
+
+        XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+        Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+        if (spellCastEvent.isCancelled()) return;
+
         if (GAppleAoE != null) {
             if (!isSkillReady() || !GAppleAoE.isSkillReady()) {
                 e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), Math.max(GAppleAoE.getRemainingCooldown(), getRemainingCooldown())));

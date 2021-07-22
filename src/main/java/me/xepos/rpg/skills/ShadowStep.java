@@ -3,6 +3,8 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
@@ -23,6 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashMap;
 
 public class ShadowStep extends XRPGActiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.TELEPORT};
 
     private ArmorStand substitute = null;
 
@@ -36,6 +39,12 @@ public class ShadowStep extends XRPGActiveSkill {
     @Override
     public void activate(Event event) {
         if (event instanceof PlayerItemHeldEvent) {
+
+            XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+            Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+            if (spellCastEvent.isCancelled()) return;
+
             doSub((PlayerItemHeldEvent) event);
         }
     }

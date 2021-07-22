@@ -3,9 +3,12 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -17,6 +20,8 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class Zephyr extends XRPGActiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.DISPLACEMENT};
+
     private Fireball fireball;
 
     public Zephyr(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
@@ -27,8 +32,12 @@ public class Zephyr extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemHeldEvent)) return;
-        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (!(event instanceof PlayerItemHeldEvent e)) return;
+
+        XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+        Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+        if (spellCastEvent.isCancelled()) return;
 
         doZephyr(e);
     }

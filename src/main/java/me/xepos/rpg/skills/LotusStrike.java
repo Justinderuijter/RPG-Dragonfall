@@ -3,7 +3,10 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -20,6 +23,8 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.*;
 
 public class LotusStrike extends XRPGPassiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.PASSIVE, SpellType.DAMAGE, SpellType.BUFF};
+
     public LotusStrike(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
@@ -29,7 +34,7 @@ public class LotusStrike extends XRPGPassiveSkill {
     private final double potionDuration = getSkillVariables().getDouble(getSkillLevel(), "duration", 6);
     private int hitCount = 0;
 
-    private final List<PotionEffect> dmgEffects = new ArrayList<PotionEffect>() {{
+    private final List<PotionEffect> dmgEffects = new ArrayList<>() {{
         add(new PotionEffect(PotionEffectType.SATURATION, (int) (potionDuration * 20), 0, false, false, true));
         add(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, (int) (potionDuration * 20), 0, false, false, true));
         add(new PotionEffect(PotionEffectType.FAST_DIGGING, (int) (potionDuration * 20), 1, false, false, true));
@@ -38,8 +43,12 @@ public class LotusStrike extends XRPGPassiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof EntityDamageByEntityEvent)) return;
-        EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+        if (!(event instanceof EntityDamageByEntityEvent e)) return;
+
+        XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+        Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+        if (spellCastEvent.isCancelled()) return;
 
         Player player = (Player) e.getDamager();
         double armor = player.getAttribute(Attribute.GENERIC_ARMOR).getValue();

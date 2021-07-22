@@ -4,14 +4,19 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class Fireball extends XRPGActiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.DAMAGE};
+
     private byte fireBallStacks = 0;
     private final byte maxFireballStacks = (byte) getSkillVariables().getInt(getSkillLevel(),"max-stacks", 2);
     private long lastStackGained = System.currentTimeMillis();
@@ -25,6 +30,11 @@ public class Fireball extends XRPGActiveSkill {
     @Override
     public void activate(Event event) {
         if (!(event instanceof PlayerItemHeldEvent e)) return;
+
+        XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+        Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+        if (spellCastEvent.isCancelled()) return;
 
         doFireball(e);
     }

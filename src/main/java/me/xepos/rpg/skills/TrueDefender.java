@@ -3,6 +3,8 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
@@ -17,6 +19,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class TrueDefender extends XRPGActiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.DAMAGE_REDUCTION};
+
     private boolean isActive = false;
     private boolean tookPlayerDamage = false;
 
@@ -54,6 +58,10 @@ public class TrueDefender extends XRPGActiveSkill {
             ((Cancellable)event).setCancelled(true);
 
         } else if (event instanceof PlayerItemHeldEvent e){
+            XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+            Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+            if (spellCastEvent.isCancelled()) return;
 
             if (!isSkillReady()){
                 e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));

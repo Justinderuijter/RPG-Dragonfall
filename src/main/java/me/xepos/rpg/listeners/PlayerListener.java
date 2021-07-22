@@ -7,6 +7,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.DatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.utils.SpellmodeUtils;
 import me.xepos.rpg.utils.Utils;
@@ -259,6 +260,14 @@ public class PlayerListener implements Listener {
         XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getPlayer(), true);
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled() && e.getNewGameMode() != GameMode.SURVIVAL) {
             SpellmodeUtils.disableSpellmode(xrpgPlayer);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onXRPGSpellCast(XRPGSpellCastEvent e){
+        XRPGPlayer xrpgPlayer = e.getSkill().getXRPGPlayer();
+        if (xrpgPlayer != null) {
+            xrpgPlayer.getPassiveEventHandler("XRPG_SPELL_CAST").invoke(e);
         }
     }
 }

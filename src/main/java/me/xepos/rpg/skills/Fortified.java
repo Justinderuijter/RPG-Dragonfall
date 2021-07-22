@@ -22,8 +22,7 @@ public class Fortified extends XRPGPassiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof EntityDamageByEntityEvent)) return;
-        EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+        if (!(event instanceof EntityDamageByEntityEvent e)) return;
 
         double dmg = e.getDamage() * getDamageMultiplier();
         e.setDamage(dmg);

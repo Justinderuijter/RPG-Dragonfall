@@ -3,9 +3,12 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.BleedTask;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.EntityType;
@@ -22,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShadowSneak extends XRPGActiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.DAMAGE, SpellType.DOT, SpellType.TELEPORT};
+
 
     public ShadowSneak(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
@@ -32,8 +37,13 @@ public class ShadowSneak extends XRPGActiveSkill {
     @Override
     public void activate(Event event) {
         if (!(event instanceof PlayerItemHeldEvent e)) return;
-        doShadowSneak(e.getPlayer());
 
+        XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+        Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+        if (spellCastEvent.isCancelled()) return;
+
+        doShadowSneak(e.getPlayer());
     }
 
     @Override

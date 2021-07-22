@@ -3,9 +3,12 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
+import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -17,7 +20,7 @@ import java.util.List;
 import java.util.Random;
 
 public class InnerStrength extends XRPGActiveSkill {
-    //TODO: doesn't update potionduration
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.HEAL, SpellType.BUFF};
 
     private LotusStrike lotusStrike;
     private final double potionDuration = getSkillVariables().getDouble(getSkillLevel(), "duration", 6.0);
@@ -45,8 +48,7 @@ public class InnerStrength extends XRPGActiveSkill {
 
     @Override
     public void activate(Event event) {
-        if (event instanceof PlayerItemHeldEvent) {
-            PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (event instanceof PlayerItemHeldEvent e) {
             if (lotusStrike == null){
                 useInnerStrength(e.getPlayer());
             }else if (lotusStrike.canUseLotus(e.getPlayer())) {
@@ -66,6 +68,12 @@ public class InnerStrength extends XRPGActiveSkill {
     }
 
     private void useInnerStrength(Player player) {
+
+        XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
+        Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
+        if (spellCastEvent.isCancelled()) return;
+
         if (!isSkillReady()){
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
