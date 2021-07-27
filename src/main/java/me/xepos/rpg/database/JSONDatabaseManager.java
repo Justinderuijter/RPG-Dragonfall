@@ -65,6 +65,9 @@ public class JSONDatabaseManager extends DatabaseManager {
                 if (classData != null) health = classData.getLastHealth();
 
                 double finalHealth = health;
+
+                Bukkit.getLogger().info("Setting HP to " + finalHealth + " for " + playerId);
+
                 Consumer<Player> consumer = p -> p.setHealth(finalHealth);
 
                 playerManager.addLoginConsumer(playerId, consumer);
