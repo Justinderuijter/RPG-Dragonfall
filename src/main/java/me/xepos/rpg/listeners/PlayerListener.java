@@ -257,6 +257,16 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onPrepareEnchant(PlayerExpChangeEvent e){
+        XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getPlayer());
+        if (xrpgPlayer != null){
+            if (xrpgPlayer.getPassiveHandlerList().containsKey("EXP_CHANGE")){
+                xrpgPlayer.getPassiveEventHandler("EXP_CHANGE").invoke(e);
+            }
+        }
+    }
+
+    @EventHandler
     public void onPlayerGamemodeChange(PlayerGameModeChangeEvent e){
         XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getPlayer(), true);
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled() && e.getNewGameMode() != GameMode.SURVIVAL) {

@@ -24,23 +24,23 @@ skills:
     requires: [ Blessed ]
   MasterEnchanter:
     max-level: 3
-    requires: [ Intervention, ShortFuse, HealingCircle ]
+    requires: [ Intervention, ReverseGravity ]
   ReverseGravity:
     max-level: 3
     requires: [ Intervention, HealingCircle ]
   Intervention:
     max-level: 3
-    requires: [ MasterEnchanter, ReverseGravity ]
+    requires: [ MasterEnchanter, HealingCircle, ShortFuse ]
   InnerStrength:
     max-level: 2
-    requires: [ Intervention ]
+    requires: [ MasterEnchanter ]
 
 interface:
   order:
     - "xxsxxxoxx"
     - "xx#xxx#xx"
-    - "xxixxxtxx"
-    - "xl#m#h#rx"
+    - "xxmxxxtxx"
+    - "xl#i#h#rx"
     - "xxcxxxfxx"
     - "xx##b##xx"
   legend:

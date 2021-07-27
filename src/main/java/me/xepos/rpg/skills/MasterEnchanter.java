@@ -4,14 +4,10 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.enums.SpellType;
-import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.XRPGPassiveSkill;
-import org.bukkit.Bukkit;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.event.Event;
-import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 
 public class MasterEnchanter extends XRPGPassiveSkill {
     private final static SpellType[] spelltypes = new SpellType[]{SpellType.PASSIVE};
@@ -19,32 +15,18 @@ public class MasterEnchanter extends XRPGPassiveSkill {
     public MasterEnchanter(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
-        if (!xrpgPlayer.getPassiveHandlerList().containsKey("ENCHANT")){
-            xrpgPlayer.getPassiveHandlerList().put("ENCHANT", new PassiveEventHandler());
+        if (!xrpgPlayer.getPassiveHandlerList().containsKey("EXP_GAIN")){
+            xrpgPlayer.getPassiveHandlerList().put("EXP_GAIN", new PassiveEventHandler());
         }
 
-        xrpgPlayer.getPassiveEventHandler("ENCHANT").addSkill(this.getClass().getSimpleName(), this);
+        xrpgPlayer.getPassiveEventHandler("EXP_GAIN").addSkill(this.getClass().getSimpleName(), this);
     }
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PrepareItemEnchantEvent e)) return;
+        if (!(event instanceof PlayerExpChangeEvent e)) return;
 
-        XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
-        Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
-
-        if (spellCastEvent.isCancelled()) return;
-
-        float discount = (float) (1 - getSkillVariables().getDouble(getSkillLevel(), "enchanting-discount", 17.5) / 100);
-        for (EnchantmentOffer offer:e.getOffers()) {
-            Enchantment enchantment = offer.getEnchantment();
-            final int level = offer.getEnchantmentLevel();
-
-            offer.setCost(Math.round(offer.getCost() * discount));
-
-            offer.setEnchantment(enchantment);
-            offer.setEnchantmentLevel(level);
-        }
+        e.setAmount((int)(e.getAmount() * (1 + getSkillVariables().getDouble(getSkillLevel(), "", 25) / 100)));
     }
 
     @Override

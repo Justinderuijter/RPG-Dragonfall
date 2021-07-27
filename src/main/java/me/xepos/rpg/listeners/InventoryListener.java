@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseArmorEvent;
-import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -238,16 +237,6 @@ public class InventoryListener implements Listener {
         XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getPlayer());
         if (xrpgPlayer != null && xrpgPlayer.getPassiveHandlerList().containsKey("ARMOR_CHANGE")){
             xrpgPlayer.getPassiveEventHandler("ARMOR_CHANGE").invoke(e);
-        }
-    }
-
-    @EventHandler
-    public void onPrepareEnchant(final PrepareItemEnchantEvent e){
-        XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getEnchanter());
-        if (xrpgPlayer != null){
-            if (xrpgPlayer.getPassiveHandlerList().containsKey("ENCHANT")){
-                xrpgPlayer.getPassiveEventHandler("ENCHANT").invoke(e);
-            }
         }
     }
 

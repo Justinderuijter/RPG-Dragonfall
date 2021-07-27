@@ -42,7 +42,7 @@ public class RapidFire extends XRPGBowSkill {
         }
 
         Arrow arrow = (Arrow) e.getProjectile();
-        double damage = arrow.getDamage();
+        double damage = calculateDamage(arrow);
         final Vector velocity = arrow.getVelocity();
 
         arrow.setDamage(0);
@@ -68,6 +68,14 @@ public class RapidFire extends XRPGBowSkill {
 
 
 
+    }
+
+    private double calculateDamage(Arrow arrow){
+        if (arrow.isCritical() && getSkillVariables().getBoolean(getSkillLevel(), "can-crit", false)){
+            return arrow.getDamage() * 2;
+        }
+
+        return arrow.getDamage();
     }
 
     @Override
