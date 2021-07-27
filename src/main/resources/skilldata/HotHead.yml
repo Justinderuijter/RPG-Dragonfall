@@ -4,12 +4,17 @@ levels:
   statics:
     trigger-chance: 25
     description:
-      - "Attacking an enemy has a %trigger-chance% % chance"
+      - "Attacking an enemy has a %trigger-chance%% chance"
       - "to set them on fire."
-      - "You take %fire-damage-reduction-multiplier%% less damage from fire."
+      - "You take %fire-damage-reduction-multiplier%% less damage from all fire damage."
   1:
-    fire-damage-reduction-multiplier: 17.5
+    fire-damage-reduction-multiplier: 25
   2:
-    fire-damage-reduction-multiplier: 25.0
+    fire-damage-reduction-multiplier: 50
   3:
-    fire-damage-reduction-multiplier: 50.0
+    description:
+      - "Attacking an enemy has a %trigger-chance%% chance"
+      - "to set them on fire."
+      - "You take %fire-damage-reduction-multiplier%% less damage from all fire damage."
+      - "(Sorry Overheat users.)"
+    fire-damage-reduction-multiplier: 100

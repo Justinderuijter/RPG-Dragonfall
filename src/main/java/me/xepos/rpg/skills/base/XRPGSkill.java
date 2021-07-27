@@ -6,6 +6,8 @@ import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.dependencies.combat.parties.PartySet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -106,9 +108,17 @@ public abstract class XRPGSkill {
     }
 
     public double getDamage(LivingEntity entity){
-        if (entity instanceof Player) return getRawDamage();
+        double toughness = 0;
 
-        return getDamage();
+        AttributeInstance instance = entity.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
+        if (instance != null){
+            if (instance.getValue() > 0) {
+                toughness = instance.getValue() + 8;
+            }
+        }
+        if (entity instanceof Player) return toughness + getRawDamage();
+
+        return toughness + getDamage();
     }
 
     public double getDamageMultiplier() {

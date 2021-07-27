@@ -4,7 +4,7 @@ levels:
     range: 16.0
     max-procs: 5
     interval: 1.0
-    damage: 4.0
+    damage: 6.0
     dt-duration: 5
     dt-amount: 1.2
     cooldown: 6.0

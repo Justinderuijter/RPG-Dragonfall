@@ -8,8 +8,8 @@ levels:
       - "Jump into the air, slamming down on nearby enemies"
       - "deals %damage% damage and slows them."
   1:
-    damage: 8.0
+    damage: 5.0
   2:
-    damage: 16.0
+    damage: 10.0
   3:
-    damage: 32.0
+    damage: 20.0
