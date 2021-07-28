@@ -25,8 +25,9 @@ public class MasterEnchanter extends XRPGPassiveSkill {
     @Override
     public void activate(Event event) {
         if (!(event instanceof PlayerExpChangeEvent e)) return;
+        if (e.getAmount() >= 0) return;
 
-        e.setAmount((int)(e.getAmount() * (1 + getSkillVariables().getDouble(getSkillLevel(), "", 25) / 100)));
+        e.setAmount((int)(e.getAmount() * (1 + getSkillVariables().getDouble(getSkillLevel(), "experience-multiplier", 25) / 100)));
     }
 
     @Override
