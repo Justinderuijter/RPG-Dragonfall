@@ -60,17 +60,21 @@ public class JSONDatabaseManager extends DatabaseManager {
 
                 playerManager.put(playerId, xrpgPlayer);
 
-                double health = 20;
-                ClassData classData = playerData.getClassData(playerData.getClassId());
-                if (classData != null) health = classData.getLastHealth();
+                String classId = playerData.getClassId();
 
-                double finalHealth = health;
+                if (StringUtils.isNotBlank(classId)) {
+                    double health = 20;
+                    ClassData classData = playerData.getClassData(playerData.getClassId());
+                    if (classData != null) health = classData.getLastHealth();
 
-                Bukkit.getLogger().info("Setting HP to " + finalHealth + " for " + playerId);
+                    double finalHealth = health;
 
-                Consumer<Player> consumer = p -> p.setHealth(finalHealth);
+                    Bukkit.getLogger().info("Setting HP to " + finalHealth + " for " + playerId);
 
-                playerManager.addLoginConsumer(playerId, consumer);
+                    Consumer<Player> consumer = p -> p.setHealth(finalHealth);
+
+                    playerManager.addLoginConsumer(playerId, consumer);
+                }
 
 
             } catch (IOException ex) {

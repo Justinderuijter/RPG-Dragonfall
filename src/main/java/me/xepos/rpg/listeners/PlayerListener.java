@@ -256,8 +256,8 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPrepareEnchant(PlayerExpChangeEvent e){
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onExpChange(PlayerExpChangeEvent e){
         XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getPlayer());
         if (xrpgPlayer != null){
             if (xrpgPlayer.getPassiveHandlerList().containsKey("EXP_CHANGE")){
