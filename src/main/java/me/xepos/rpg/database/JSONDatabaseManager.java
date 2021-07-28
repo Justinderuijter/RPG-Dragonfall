@@ -60,11 +60,11 @@ public class JSONDatabaseManager extends DatabaseManager {
 
                 playerManager.put(playerId, xrpgPlayer);
 
-                String classId = playerData.getClassId();
+                final String classId = playerData.getClassId();
 
                 if (StringUtils.isNotBlank(classId)) {
                     double health = 20;
-                    ClassData classData = playerData.getClassData(playerData.getClassId());
+                    ClassData classData = playerData.getClassData(classId);
                     if (classData != null) health = classData.getLastHealth();
 
                     double finalHealth = health;
