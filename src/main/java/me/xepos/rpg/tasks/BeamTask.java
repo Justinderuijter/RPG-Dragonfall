@@ -1,18 +1,23 @@
 package me.xepos.rpg.tasks;
 
+import me.xepos.rpg.XRPG;
 import me.xepos.rpg.dependencies.combat.parties.PartySet;
+import me.xepos.rpg.tasks.particles.Laser;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 public class BeamTask extends BukkitRunnable {
     private final Player beamCaster;
     private final double maxDistance;
     private final Particle particle;
     private final PartySet partySet;
+    private Laser laser;
 
     private double currentRange;
 
@@ -22,10 +27,21 @@ public class BeamTask extends BukkitRunnable {
         this.currentRange = maxDistance;
         this.particle = particle;
         this.partySet = partySet;
+
+        try {
+            this.laser = new Laser(beamCaster.getEyeLocation(), beamCaster.getEyeLocation().getDirection().toLocation(beamCaster.getWorld()), -1, 8);
+        }catch(Exception e){
+            this.laser = null;
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void run() {
+        if (laser == null) {
+            this.cancel();
+            return;
+        }
         RayTraceResult result = Utils.rayTrace(beamCaster, currentRange, FluidCollisionMode.NEVER);
 
         LivingEntity target = (LivingEntity) result.getHitEntity();
@@ -56,7 +72,18 @@ public class BeamTask extends BukkitRunnable {
             }
         }
 
-        //draw particles
+        if (!laser.isStarted()){
+            laser.start(XRPG.getInstance());
+        }else{
+            Vector vector = beamCaster.getEyeLocation().getDirection().normalize().multiply(currentRange);
+            Location location = beamCaster.getEyeLocation();
+            try{
+                laser.moveStart(location);
+                laser.moveEnd(location.add(vector));
+            } catch (ReflectiveOperationException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 }
