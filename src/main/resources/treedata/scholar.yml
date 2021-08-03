@@ -31,7 +31,7 @@ skills:
   Intervention:
     max-level: 3
     requires: [ MasterEnchanter, HealingCircle, ShortFuse ]
-  InnerStrength:
+  HealingBeam:
     max-level: 2
     requires: [ MasterEnchanter ]
 
@@ -65,6 +65,6 @@ interface:
     i:
       skill: Intervention
     s:
-      skill: InnerStrength
+      skill: HealingBeam
     '#':
       path-item: BLUE_STAINED_GLASS_PANE

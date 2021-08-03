@@ -1,0 +1,28 @@
+name: "Healing Beam"
+icon: "BARRIER"
+
+levels:
+  1:
+    heal-per-proc: 1.0
+    tick-delay: 5
+    heal-per-tick: 1
+    damage-per-tick: 2
+    range: 8
+    mana: 3
+    cooldown: 5
+    description:
+      - "You project a beam with the"
+      - "power to heal allies and damage enemies."
+      - ""
+      - "Allies are healed for %heal-per-tick%"
+      - "every time the beam ticks."
+      - "Enemies take %damage-per-tick% damage"
+      - "every time the beam ticks."
+      - ""
+      - "Healing Beam drains %mana% mana"
+      - "per second while active and"
+      - "prohibits the usage of other skills."
+      - ""
+      - "Healing Beam will disable itself"
+      - "when out of mana and can be"
+      - "manually disabled by reactivating it."

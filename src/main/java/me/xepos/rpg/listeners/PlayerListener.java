@@ -96,11 +96,9 @@ public class PlayerListener implements Listener {
                             //section exclusively for arrows.
                             boolean damageBoosted = false;
 
-                            Bukkit.getLogger().info("Arrow found with dmp: " + projectileData.getDamageMultiplier());
                             if (projectileData.getDamageMultiplier() < 1.0) {
                                 final double multiplier = DamageUtils.getSpellDamageMultiplier(baseProjectileData.getShooterLevel(), livingEntity);
                                 final double damage = (livingEntity.getHealth() - livingEntity.getHealth() * projectileData.getDamageMultiplier()) * multiplier;
-                                Bukkit.getLogger().info("Dealt " + damage + " damage.");
                                 Utils.decreaseHealth(livingEntity, damage);
                                 projectile.remove();
                                 e.setCancelled(true);

@@ -7,7 +7,7 @@ import me.xepos.rpg.enums.SpellType;
 import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.handlers.PassiveEventHandler;
 import me.xepos.rpg.skills.base.XRPGActiveSkill;
-import me.xepos.rpg.tasks.FlamethrowerTask;
+import me.xepos.rpg.tasks.BeamTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,15 +15,14 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.scheduler.BukkitTask;
 
-public class Flamethrower extends XRPGActiveSkill {
-    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.DAMAGE};
+public class HealingBeam extends XRPGActiveSkill {
+    private final static SpellType[] spelltypes = new SpellType[]{SpellType.ACTIVE, SpellType.DAMAGE, SpellType.HEAL};
+    BukkitTask beamTask;
 
-    private BukkitTask flamethrowerTask;
-
-    public Flamethrower(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
+    public HealingBeam(XRPGPlayer xrpgPlayer, SkillData skillVariables, XRPG plugin, int skillLevel, boolean isEventSkill) {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
-        this.flamethrowerTask = null;
+        this.beamTask = null;
         xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
         if (!xrpgPlayer.getPassiveHandlerList().containsKey("XRPG_SPELL_CAST")){
             xrpgPlayer.getPassiveHandlerList().put("XRPG_SPELL_CAST", new PassiveEventHandler());
@@ -41,9 +40,9 @@ public class Flamethrower extends XRPGActiveSkill {
 
                 if (spellCastEvent.isCancelled()) return;
 
-                doFlamethrower(e.getPlayer());
+                doHealingBeam(e.getPlayer());
             }else{
-                flamethrowerTask.cancel();
+                beamTask.cancel();
             }
         }else if (event instanceof XRPGSpellCastEvent e){
             if (isInUse()){
@@ -57,7 +56,7 @@ public class Flamethrower extends XRPGActiveSkill {
 
     }
 
-    private void doFlamethrower(Player caster) {
+    private void doHealingBeam(Player caster){
         if (!isSkillReady()) {
             caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
@@ -68,13 +67,15 @@ public class Flamethrower extends XRPGActiveSkill {
 
         updatedCasterMana();
         setRemainingCooldown(getCooldown());
-        final int interval = getSkillVariables().getInt(getSkillLevel(), "interval", 4);
-        final double inaccuracy = getSkillVariables().getDouble(getSkillLevel(), "inaccuracy", 1.5);
-        flamethrowerTask = new FlamethrowerTask(getXRPGPlayer(), this, getSkillVariables().getDamage(getSkillLevel()), inaccuracy, interval).runTaskTimer(getPlugin(), 0, interval);
 
+        final double range = getSkillVariables().getDouble(getSkillLevel(), "range", 8);
+        final double heal = getSkillVariables().getDouble(getSkillLevel(), "heal-per-tick", 2.0);
+        final double damage = getSkillVariables().getDouble(getSkillLevel(), "damage-per-tick", 2.0);
+
+        beamTask = new BeamTask(caster, heal, damage, range, getPartySet()).runTaskTimer(getPlugin(), 0, 5);
     }
 
     public boolean isInUse() {
-        return flamethrowerTask != null && !flamethrowerTask.isCancelled();
+        return beamTask != null && !beamTask.isCancelled();
     }
 }

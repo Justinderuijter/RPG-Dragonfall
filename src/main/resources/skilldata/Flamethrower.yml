@@ -15,7 +15,7 @@ levels:
       - ""
       - "Flamethrower will disable itself"
       - "when out of mana and can be"
-      - "manually disabled by reactivating it"
+      - "manually disabled by reactivating it."
       - ""
       - "Levelling this skill improves"
       - "the accuracy of the shots."
