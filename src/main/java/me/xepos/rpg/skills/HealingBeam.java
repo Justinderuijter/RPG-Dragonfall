@@ -71,8 +71,9 @@ public class HealingBeam extends XRPGActiveSkill {
         final double range = getSkillVariables().getDouble(getSkillLevel(), "range", 8);
         final double heal = getSkillVariables().getDouble(getSkillLevel(), "heal-per-tick", 2.0);
         final double damage = getSkillVariables().getDouble(getSkillLevel(), "damage-per-tick", 2.0);
+        final int interval = getSkillVariables().getInt(getSkillLevel(), "tick-delay", 5);
 
-        beamTask = new BeamTask(caster, heal, damage, range, getPartySet()).runTaskTimer(getPlugin(), 0, 5);
+        beamTask = new BeamTask(caster, this, heal, damage, range, interval, getPartySet()).runTaskTimer(getPlugin(), 0, interval);
     }
 
     public boolean isInUse() {

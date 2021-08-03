@@ -1,6 +1,7 @@
 package me.xepos.rpg.tasks;
 
 import me.xepos.rpg.dependencies.combat.parties.PartySet;
+import me.xepos.rpg.skills.HealingBeam;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -12,19 +13,24 @@ import org.bukkit.util.Vector;
 
 public class BeamTask extends BukkitRunnable {
     private final Player beamCaster;
+    private final HealingBeam healingBeam;
     private final double heal;
     private final double damage;
     private final double maxDistance;
+    private final int interval;
     private final PartySet partySet;
 
     private double currentRange;
+    private int count = 0;
 
-    public BeamTask(Player beamCaster, double heal, double damage, double maxDistance, PartySet partySet){
+    public BeamTask(Player beamCaster, HealingBeam healingBeam, double heal, double damage, double maxDistance, int interval, PartySet partySet){
         this.beamCaster = beamCaster;
+        this.healingBeam = healingBeam;
         this.heal = heal;
         this.damage = damage;
         this.maxDistance = maxDistance;
         this.currentRange = maxDistance;
+        this.interval = interval;
         this.partySet = partySet;
     }
 
@@ -70,5 +76,17 @@ public class BeamTask extends BukkitRunnable {
             start.getWorld().spawnParticle(Particle.SCRAPE, start, 1);
         }
 
+
+        count++;
+
+        if (count * interval >= 20){
+            count = 0;
+            healingBeam.setRemainingCooldown(healingBeam.getCooldown());
+            if (healingBeam.hasRequiredMana()){
+                healingBeam.updatedCasterMana();
+            }else{
+                this.cancel();
+            }
+        }
     }
 }
