@@ -60,16 +60,18 @@ public class Overheat extends XRPGActiveSkill {
         if (result != null && result.getHitEntity() != null) {
 
             LivingEntity target = (LivingEntity) result.getHitEntity();
-            double delay = getSkillVariables().getDouble(getSkillLevel(), "delay", 5.0);
+            if (!(target instanceof Player) || canHurtTarget((Player) target)) {
+                double delay = getSkillVariables().getDouble(getSkillLevel(), "delay", 5.0);
 
-            result.getHitEntity().setVisualFire(true);
-            //Utils.rayTrace only returns livingEntities so no need to check
-            target.sendMessage(ChatColor.RED + "You've been hit by Overheat!");
-            target.sendMessage(ChatColor.RED + "Get in water to reduce the damage!");
+                result.getHitEntity().setVisualFire(true);
+                //Utils.rayTrace only returns livingEntities so no need to check
+                target.sendMessage(ChatColor.RED + "You've been hit by Overheat!");
+                target.sendMessage(ChatColor.RED + "Get in water to reduce the damage!");
 
-            new OverheatTask(target, getDamage(target), getSkillVariables().getDouble(getSkillLevel(),"damage-per-armor", 0.5)).runTaskLater(getPlugin(), (long) delay * 20L);
-            setRemainingCooldown(getCooldown());
-            updatedCasterMana();
+                new OverheatTask(target, getDamage(target), getSkillVariables().getDouble(getSkillLevel(), "damage-per-armor", 0.5)).runTaskLater(getPlugin(), (long) delay * 20L);
+                setRemainingCooldown(getCooldown());
+                updatedCasterMana();
+            }
         }
     }
 

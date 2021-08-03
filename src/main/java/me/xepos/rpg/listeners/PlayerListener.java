@@ -7,16 +7,21 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.DatabaseManager;
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
+import me.xepos.rpg.datatypes.BaseProjectileData;
+import me.xepos.rpg.datatypes.ExplosiveProjectileData;
+import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.handlers.PassiveEventHandler;
+import me.xepos.rpg.utils.DamageUtils;
 import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.utils.SpellmodeUtils;
 import me.xepos.rpg.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.Location;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -29,6 +34,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
 
 
 public class PlayerListener implements Listener {
@@ -52,11 +58,96 @@ public class PlayerListener implements Listener {
                     if (xrpgPlayer.isStunned())
                         e.setCancelled(true);
                     else if (xrpgPlayer.isClassEnabled()) {
-/*                        if(e.getCause() != EntityDamageEvent.DamageCause.CUSTOM){
-                            e.setDamage(DamageUtils.calculateDamage(e.getDamage(), xrpgPlayer.getLevel(), livingEntity));
-                        }*/
                         xrpgPlayer.getPassiveEventHandler("DAMAGE_DEALT").invoke(e);
                     }
+                }
+            } else if (e.getDamager() instanceof Projectile projectile) {
+                //This block deals with projectile handling
+                BaseProjectileData baseProjectileData = plugin.projectiles.get(projectile.getUniqueId());
+                if (baseProjectileData != null) {
+
+                    if (baseProjectileData.summonsLightning()) {
+                        e.getEntity().getWorld().strikeLightning(e.getEntity().getLocation());
+                    }
+
+                    if (baseProjectileData.shouldTeleport()) {
+                        baseProjectileData.getShooter().teleport(e.getEntity(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                    }
+
+                    if (baseProjectileData instanceof ProjectileData projectileData) {
+                        projectileData.summonCloud();
+                        e.getEntity().setFireTicks(projectileData.getFireTicks());
+
+                        if (e.getEntity() instanceof LivingEntity livingEntity) {
+                            projectileBounceLogic(e, projectileData);
+                            //Section exclusively for projectiles that aren't arrows
+                            if (!(e.getDamager() instanceof Arrow)) {
+                                livingEntity.setNoDamageTicks(0);
+                                final double damage = DamageUtils.calculateSpellDamage(projectileData.getDamage(), projectileData.getShooterLevel(), livingEntity);
+                                if (damage <= 0){
+                                    e.setCancelled(true);
+                                }else{
+                                    e.setDamage(damage);
+                                }
+                                plugin.projectiles.remove(projectileData.getProjectile().getUniqueId());
+                                return;
+                            }
+
+                            //section exclusively for arrows.
+                            boolean damageBoosted = false;
+
+                            Bukkit.getLogger().info("Arrow found with dmp: " + projectileData.getDamageMultiplier());
+                            if (projectileData.getDamageMultiplier() < 1.0) {
+                                final double multiplier = DamageUtils.getSpellDamageMultiplier(baseProjectileData.getShooterLevel(), livingEntity);
+                                final double damage = (livingEntity.getHealth() - livingEntity.getHealth() * projectileData.getDamageMultiplier()) * multiplier;
+                                Bukkit.getLogger().info("Dealt " + damage + " damage.");
+                                Utils.decreaseHealth(livingEntity, damage);
+                                projectile.remove();
+                                e.setCancelled(true);
+                            }
+
+                            if (projectileData.getDamage() != 0) {
+                                Utils.decreaseHealth(livingEntity, DamageUtils.calculateSpellDamage(projectileData.getDamage(), projectileData.getShooterLevel(), livingEntity));
+                                livingEntity.setNoDamageTicks(1);
+                                projectile.remove();
+                                e.setCancelled(true);
+                            }
+
+                            if (projectileData.getHeadshotDamage() != 1.0) {
+                                if (projectile.getLocation().getY() - livingEntity.getLocation().getY() > getHeadShotHeight(livingEntity)) {
+                                    Arrow arrow = (Arrow) projectile;
+                                    if (damageBoosted){
+                                        e.setDamage(e.getDamage() * projectileData.getHeadshotDamage());
+                                    }else{
+                                        e.setDamage(projectileData.getHeadshotDamage() * DamageUtils.calculateDamage(e.getDamage(), baseProjectileData.getShooterLevel(), livingEntity));
+                                        damageBoosted = true;
+                                    }
+
+
+                                    ((LivingEntity) arrow.getShooter()).sendMessage(ChatColor.DARK_GREEN + "You headshot " + livingEntity.getName() + "!");
+                                }
+                            }
+
+                            if (projectileData.shouldDisengage()) {
+                                LivingEntity shooter = (LivingEntity) projectile.getShooter();
+                                Vector unitVector = shooter.getLocation().toVector().subtract(livingEntity.getLocation().toVector()).normalize();
+                                if (!damageBoosted){
+                                    e.setDamage(DamageUtils.calculateSpellDamage(e.getDamage(), baseProjectileData.getShooterLevel(), livingEntity));
+                                }
+
+                                shooter.setVelocity(unitVector.multiply(1.5));
+                            }
+                        }
+                    }else if(baseProjectileData instanceof ExplosiveProjectileData explosiveProjectileData){
+                        Location location = e.getEntity().getLocation();
+
+                        location.getWorld().createExplosion(location, explosiveProjectileData.getYield(), explosiveProjectileData.setsFire(), explosiveProjectileData.destroysBlocks(), explosiveProjectileData.getShooter());
+
+                        if (explosiveProjectileData.getProjectile() instanceof Arrow) {
+                            explosiveProjectileData.getProjectile().remove();
+                        }
+                    }
+                    plugin.projectiles.remove(baseProjectileData.getProjectile().getUniqueId());
                 }
             }
 
@@ -71,7 +162,7 @@ public class PlayerListener implements Listener {
             }
 
         } else {
-            if(event.getEntity() instanceof Player player) {
+            if (event.getEntity() instanceof Player player) {
                 XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(player);
 
                 if (xrpgPlayer != null) {
@@ -151,7 +242,6 @@ public class PlayerListener implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
             ItemStack item = e.getItem();
-            //Cancel using shield if not allowed
             if (item != null) {
 
                 if (item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(plugin.getKey("spellbook"), PersistentDataType.BYTE)) {
@@ -165,7 +255,7 @@ public class PlayerListener implements Listener {
                 }
             }
 
-
+            //TODO: These might actually be ancient and need removal, needs checking
             if (e.getPlayer().isSneaking()) {
                 xrpgPlayer.getPassiveEventHandler("SNEAK_RIGHT_CLICK").invoke(e);
             } else {
@@ -257,17 +347,17 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onExpChange(PlayerExpChangeEvent e){
+    public void onExpChange(PlayerExpChangeEvent e) {
         XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getPlayer());
-        if (xrpgPlayer != null){
-            if (xrpgPlayer.getPassiveHandlerList().containsKey("EXP_CHANGE")){
+        if (xrpgPlayer != null) {
+            if (xrpgPlayer.getPassiveHandlerList().containsKey("EXP_CHANGE")) {
                 xrpgPlayer.getPassiveEventHandler("EXP_CHANGE").invoke(e);
             }
         }
     }
 
     @EventHandler
-    public void onPlayerGamemodeChange(PlayerGameModeChangeEvent e){
+    public void onPlayerGamemodeChange(PlayerGameModeChangeEvent e) {
         XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(e.getPlayer(), true);
         if (xrpgPlayer != null && xrpgPlayer.isSpellCastModeEnabled() && e.getNewGameMode() != GameMode.SURVIVAL) {
             SpellmodeUtils.disableSpellmode(xrpgPlayer);
@@ -275,11 +365,60 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onXRPGSpellCast(XRPGSpellCastEvent e){
+    public void onXRPGSpellCast(XRPGSpellCastEvent e) {
         XRPGPlayer xrpgPlayer = e.getSkill().getXRPGPlayer();
         PassiveEventHandler passiveEventHandler = xrpgPlayer.getPassiveEventHandler("XRPG_SPELL_CAST");
         if (passiveEventHandler != null) {
             passiveEventHandler.invoke(e);
         }
+    }
+
+    private void projectileBounceLogic(EntityDamageByEntityEvent e, ProjectileData data) {
+
+        //if (e.getHitBlock() != null) {
+        //    plugin.projectiles.remove(data.getProjectile().getUniqueId());
+        //    return;
+        //}
+
+        if (data.shouldBounce()) {
+            if (e.getEntity() instanceof LivingEntity livingEntity) {
+
+                livingEntity.damage(DamageUtils.calculateSpellDamage(data.getDamage(), data.getShooterLevel(), livingEntity), data.getShooter());
+                LivingEntity newTarget = Utils.getRandomLivingEntity(livingEntity, 20.0, 4.0, data.getShooter(), true);
+                if (newTarget != null) {
+                    Vector vector = newTarget.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
+                    Projectile newProjectile = livingEntity.launchProjectile(data.getProjectile().getClass(), vector.normalize());
+                    newProjectile.setShooter(data.getProjectile().getShooter());
+
+                    if (!plugin.projectiles.containsKey(newProjectile.getUniqueId())) {
+                        ProjectileData projectileData = new ProjectileData(newProjectile, data.getShooterLevel(), data.getDamage(), 20);
+                        projectileData.setSummonsLightning(data.summonsLightning());
+                        projectileData.shouldTeleport(data.shouldTeleport());
+
+                        projectileData.setShouldBounce(true);
+                        plugin.projectiles.put(newProjectile.getUniqueId(), projectileData);
+                    }
+                }
+            }
+        }
+    }
+
+    private double getHeadShotHeight(LivingEntity livingEntity) {
+        if (livingEntity instanceof Player) {
+            if (((Player) livingEntity).isSneaking()) {
+                return 1.1D;
+            }
+            return 1.4D;
+        } else if (livingEntity instanceof Giant) return 9.0D;
+        else if (livingEntity instanceof IronGolem || livingEntity instanceof WitherSkeleton) return 2.0D;
+            //For these mobs the entire body is considered the head
+        else if (livingEntity instanceof Slime || livingEntity instanceof Ghast || livingEntity instanceof Guardian)
+            return -1.0D;
+
+        else if (livingEntity instanceof Ageable) {
+            if (!((Ageable) livingEntity).isAdult()) return 0.6D;
+        }
+
+        return 1.4D;
     }
 }

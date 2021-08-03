@@ -8,6 +8,7 @@ import me.xepos.rpg.enums.SpellType;
 import me.xepos.rpg.events.XRPGSpellCastEvent;
 import me.xepos.rpg.handlers.BowEventHandler;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
+import me.xepos.rpg.utils.DamageUtils;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -29,6 +30,7 @@ public class ExposeWeakness extends XRPGBowSkill {
         super(xrpgPlayer, skillVariables, plugin, skillLevel, isEventSkill);
 
         bowHandler = (BowEventHandler) getXRPGPlayer().getPassiveEventHandler("SHOOT_BOW");
+        getXRPGPlayer().getPassiveEventHandler("DAMAGE_DEALT").addSkill(this.getClass().getSimpleName(), this);
         getXRPGPlayer().getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
 
     }
@@ -39,6 +41,7 @@ public class ExposeWeakness extends XRPGBowSkill {
 
             XRPGSpellCastEvent spellCastEvent = new XRPGSpellCastEvent(this, spelltypes);
             Bukkit.getServer().getPluginManager().callEvent(spellCastEvent);
+
 
             if (spellCastEvent.isCancelled()) return;
 
@@ -79,7 +82,7 @@ public class ExposeWeakness extends XRPGBowSkill {
                     arrow.setDamage(0);
 
                     ProjectileData data =  new ProjectileData(arrow, getXRPGPlayer().getLevel(), 20);
-                    data.setDamageMultiplier(1 + (getMaxHealthDamage()/100));
+                    data.setDamageMultiplier(1 - (getMaxHealthDamage()/100));
 
                     getPlugin().projectiles.put(arrow.getUniqueId(), data);
                 }
@@ -100,7 +103,7 @@ public class ExposeWeakness extends XRPGBowSkill {
     private double calculateDamage(LivingEntity target){
         double maxHealth = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 
-        return maxHealth / (100 / getMaxHealthDamage());
+        return (maxHealth / (100 / getMaxHealthDamage())) * DamageUtils.getSpellDamageMultiplier(getSkillLevel(), target);
     }
 
     private double getMaxHealthDamage(){

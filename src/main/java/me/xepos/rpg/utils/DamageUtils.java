@@ -31,5 +31,9 @@ public final class DamageUtils {
         return rawDamage * (1 + level * plugin.getDamageMultiplier());
     }
 
+    public static double getSpellDamageMultiplier(int level, LivingEntity target){
+        if (target instanceof Player) return 1.0;
 
+        return 1 + level * plugin.getSpellDamageMultiplier();
+    }
 }

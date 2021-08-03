@@ -421,7 +421,9 @@ public class XRPGPlayer {
 
     public void addLevels(int amount) {
         if (amount < 1) return;
-        this.level += amount;
+        for (int i = 0; i < amount; i++) {
+            addExp(this.getRequiredExpToLevel(this.level));
+        }
     }
 
     public void addExp(double amount) {

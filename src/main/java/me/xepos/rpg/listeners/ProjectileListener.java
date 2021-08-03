@@ -5,9 +5,6 @@ import me.xepos.rpg.datatypes.BaseProjectileData;
 import me.xepos.rpg.datatypes.ExplosiveProjectileData;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
-import me.xepos.rpg.utils.DamageUtils;
-import me.xepos.rpg.utils.Utils;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -28,6 +25,7 @@ public class ProjectileListener implements Listener {
 
     @EventHandler
     public void projectileHit(ProjectileHitEvent e) {
+        if (e.getHitBlock() == null) return;
         if (!plugin.projectiles.containsKey(e.getEntity().getUniqueId())) return;
         final Projectile projectile = e.getEntity();
 
@@ -38,98 +36,27 @@ public class ProjectileListener implements Listener {
             return;
         }
 
-        plugin.projectiles.remove(e.getEntity().getUniqueId());
-
         //Only triggers if potion effect is added to the data
         pData.summonCloud();
 
         if (pData instanceof ProjectileData projectileData) {
+            if (projectileData.summonsLightning()) {
+                e.getHitBlock().getWorld().strikeLightning(e.getHitBlock().getLocation());
+            }
 
-            if (e.getHitEntity() != null) {
-                //Section for all projectiles
-                e.getHitEntity().setFireTicks(projectileData.getFireTicks());
-                if (projectileData.summonsLightning()) {
-                    e.getHitEntity().getWorld().strikeLightning(e.getEntity().getLocation());
-                }
+            if (projectileData.shouldTeleport()) {
+                projectileData.getShooter().teleport(e.getHitBlock().getLocation().add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            }
 
-                if (projectileData.shouldTeleport()) {
-                    projectileData.getShooter().teleport(e.getEntity(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                }
+            if (projectileData.shouldDisengage()) {
+                Player shooter = (Player) projectile.getShooter();
+                Vector unitVector = shooter.getLocation().toVector().subtract(e.getHitBlock().getLocation().toVector()).normalize();
 
-                projectileBounceLogic(e, projectileData);
-
-
-                if (e.getHitEntity() instanceof LivingEntity livingEntity) {
-
-                    //Section exclusively for projectiles that aren't arrows
-                    if (!(e.getEntity() instanceof Arrow)) {
-                        livingEntity.setNoDamageTicks(0);
-                        final double damage = DamageUtils.calculateSpellDamage(projectileData.getDamage(), projectileData.getShooterLevel(), (LivingEntity) e.getHitEntity());
-                        livingEntity.damage(damage * projectileData.getDamageMultiplier(), (Player) projectileData.getProjectile().getShooter());
-                        return;
-                    }
-
-                    //section exclusively for arrows.
-                    if (livingEntity instanceof Enderman) return;
-                    if (projectileData.getDamageMultiplier() < 1.0) {
-                        livingEntity.setHealth(livingEntity.getHealth() * projectileData.getDamageMultiplier());
-                    }
-
-                    if (projectileData.getDamage() != 0) {
-                        Utils.decreaseHealth(livingEntity, DamageUtils.calculateSpellDamage(projectileData.getDamage(), projectileData.getShooterLevel(), livingEntity));
-                        livingEntity.setNoDamageTicks(1);
-                        projectile.remove();
-                    }
-
-                    if (projectileData.getHeadshotDamage() != 1.0) {
-                        if (projectile.getLocation().getY() - e.getHitEntity().getLocation().getY() > getHeadShotHeight(livingEntity)) {
-                            Arrow arrow = (Arrow) projectile;
-                            double damage = arrow.getDamage() * projectileData.getHeadshotDamage();
-                            double damageDifference = damage - arrow.getDamage();
-                            arrow.setDamage(damage);
-
-                            ((Player) arrow.getShooter()).sendMessage(ChatColor.DARK_GREEN + "You headshot " + e.getHitEntity().getName() + " and dealt " + damageDifference + " bonus damage!");
-                        }
-                    }
-
-                    if (projectileData.shouldDisengage()) {
-                        Player shooter = (Player) projectile.getShooter();
-                        Vector unitVector = shooter.getLocation().toVector().subtract(livingEntity.getLocation().toVector()).normalize();
-
-                        shooter.setVelocity(unitVector.multiply(1.5));
-                    }
-                }
-
-            } else if (e.getHitBlock() != null) {
-
-                if (projectileData.summonsLightning()) {
-                    e.getHitBlock().getWorld().strikeLightning(e.getHitBlock().getLocation());
-                }
-
-                if (projectileData.shouldTeleport()) {
-                    projectileData.getShooter().teleport(e.getHitBlock().getLocation().add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                }
-
-                if (projectileData.shouldDisengage()) {
-                    Player shooter = (Player) projectile.getShooter();
-                    Vector unitVector = shooter.getLocation().toVector().subtract(e.getHitBlock().getLocation().toVector()).normalize();
-
-                    shooter.setVelocity(unitVector.multiply(1.5));
-                }
+                shooter.setVelocity(unitVector.multiply(1.5));
             }
 
         } else if (pData instanceof ExplosiveProjectileData explosiveData) {
-
-            //Determining location
-            Location location = null;
-            if (e.getHitBlock() != null) {
-                location = e.getHitBlock().getLocation();
-            } else if (e.getHitEntity() != null) {
-                location = e.getHitEntity().getLocation();
-            }
-
-            if (location == null || location.getWorld() == null) return;
-
+            Location location = e.getHitBlock().getLocation();
 
             //actual execution of skill
             if (explosiveData.summonsLightning()) {
@@ -145,8 +72,9 @@ public class ProjectileListener implements Listener {
             if (explosiveData.getProjectile() instanceof Arrow) {
                 explosiveData.getProjectile().remove();
             }
-
         }
+
+        plugin.projectiles.remove(projectile.getUniqueId());
     }
 
     @EventHandler
@@ -161,55 +89,4 @@ public class ProjectileListener implements Listener {
         plugin.projectiles.remove(explosiveData.getProjectile().getUniqueId());
 
     }
-
-
-    private void projectileBounceLogic(ProjectileHitEvent e, ProjectileData data) {
-        if (e.getHitBlock() != null) {
-            plugin.projectiles.remove(data.getProjectile().getUniqueId());
-            return;
-        }
-
-        if (data.shouldBounce()) {
-            if (e.getHitEntity() != null && e.getHitEntity() instanceof LivingEntity livingEntity) {
-
-                livingEntity.damage(DamageUtils.calculateSpellDamage(data.getDamage(), data.getShooterLevel(), livingEntity), data.getShooter());
-                LivingEntity newTarget = Utils.getRandomLivingEntity(livingEntity, 20.0, 4.0, data.getShooter(), true);
-                if (newTarget != null) {
-                    Vector vector = newTarget.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
-                    Projectile newProjectile = livingEntity.launchProjectile(data.getProjectile().getClass(), vector.normalize());
-                    newProjectile.setShooter(data.getProjectile().getShooter());
-
-                    if (!plugin.projectiles.containsKey(newProjectile.getUniqueId())) {
-                        ProjectileData projectileData = new ProjectileData(newProjectile, data.getShooterLevel(), data.getDamage(), 20);
-                        projectileData.setSummonsLightning(data.summonsLightning());
-                        projectileData.shouldTeleport(data.shouldTeleport());
-
-                        projectileData.setShouldBounce(true);
-                        plugin.projectiles.put(newProjectile.getUniqueId(), projectileData);
-                    }
-                }
-            }
-        }
-    }
-
-    private double getHeadShotHeight(LivingEntity livingEntity) {
-        if (livingEntity instanceof Player) {
-            if (((Player) livingEntity).isSneaking()) {
-                return 1.1D;
-            }
-            return 1.4D;
-        } else if (livingEntity instanceof Giant) return 9.0D;
-        else if (livingEntity instanceof IronGolem || livingEntity instanceof WitherSkeleton) return 2.0D;
-            //For these mobs the entire body is considered the head
-        else if (livingEntity instanceof Slime || livingEntity instanceof Ghast || livingEntity instanceof Guardian)
-            return -1.0D;
-
-        else if (livingEntity instanceof Ageable) {
-            if (!((Ageable) livingEntity).isAdult()) return 0.6D;
-        }
-
-        return 1.4D;
-    }
-
-
 }

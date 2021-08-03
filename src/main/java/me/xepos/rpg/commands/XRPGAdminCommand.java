@@ -150,7 +150,7 @@ public class XRPGAdminCommand extends BaseCommand {
                 try {
                     final int level = Integer.parseInt(strings[3]);
                     xrpgTarget.addLevels(level);
-                    xrpgTarget.getPlayer().sendMessage("You gained " + level + " experience for " + xrpgTarget.getClassDisplayName() + "!");
+                    xrpgTarget.getPlayer().sendMessage("You gained " + level + " level(s) for " + xrpgTarget.getClassDisplayName() + "!");
                     return true;
                 } catch (NumberFormatException exception) {
                     sender.sendMessage(strings[3] + " is not a valid number!");

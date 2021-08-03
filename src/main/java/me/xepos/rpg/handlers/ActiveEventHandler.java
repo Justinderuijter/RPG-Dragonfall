@@ -43,9 +43,9 @@ public class ActiveEventHandler extends EventHandler{
             if (getSkills().get(getXRPGPlayer().getSkillForSlot(slot)) instanceof XRPGBowSkill){
                 getXRPGPlayer().getPlayer().sendMessage(ChatColor.DARK_GREEN + "You loaded a special arrow into your bow");
                 bowEventHandler.setActiveBowSkill(getXRPGPlayer().getSkillForSlot(slot));
-            }else{
-                getSkills().get(getXRPGPlayer().getSkillForSlot(slot)).activate(e);
             }
+            getSkills().get(getXRPGPlayer().getSkillForSlot(slot)).activate(e);
+
         }
     }
 
