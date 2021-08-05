@@ -1,21 +1,21 @@
 package me.xepos.rpg;
 
 import me.xepos.rpg.commands.*;
+import me.xepos.rpg.configuration.ArmorLoader;
 import me.xepos.rpg.configuration.ClassLoader;
 import me.xepos.rpg.configuration.SkillLoader;
 import me.xepos.rpg.configuration.TreeLoader;
 import me.xepos.rpg.database.DatabaseManager;
 import me.xepos.rpg.database.DatabaseManagerFactory;
-import me.xepos.rpg.datatypes.BaseProjectileData;
-import me.xepos.rpg.datatypes.ClassInfo;
-import me.xepos.rpg.datatypes.SkillData;
-import me.xepos.rpg.datatypes.TreeData;
+import me.xepos.rpg.datatypes.*;
+import me.xepos.rpg.dependencies.DependencyManager;
 import me.xepos.rpg.dependencies.combat.parties.PartyManagerFactory;
 import me.xepos.rpg.dependencies.combat.parties.PartySet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSetFactory;
 import me.xepos.rpg.dependencies.combat.pvptoggle.IPvPToggle;
 import me.xepos.rpg.dependencies.combat.pvptoggle.PvPToggleFactory;
+import me.xepos.rpg.dependencies.hooks.AEnchantsHook;
 import me.xepos.rpg.listeners.*;
 import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.tasks.ManaTask;
@@ -60,6 +60,9 @@ public final class XRPG extends JavaPlugin {
     //Data manager
     private DatabaseManager databaseManager;
 
+    //
+    private DependencyManager dependencyManager;
+
     //Classes
     private static HashMap<String, ClassInfo> classInfo;
     private static ClassChangeManager classChangeManager;
@@ -72,6 +75,9 @@ public final class XRPG extends JavaPlugin {
 
     //Players
     private static PlayerManager playerManager;
+
+    //Armor
+    private static ArmorManager armorManager;
 
     //Tree viewer
     private static HashMap<UUID, TreeData> treeView;
@@ -110,6 +116,12 @@ public final class XRPG extends JavaPlugin {
         //Load database
         this.playerManager = new PlayerManager();
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager(skillLoader);
+        this.dependencyManager = new DependencyManager();
+        this.armorManager = new ArmorManager();
+
+        for (Map.Entry<String, ArmorSet> entry :new ArmorLoader(this).initialize().entrySet()) {
+            armorManager.addArmorSet(entry.getKey(), entry.getValue());
+        }
 
         //Prevents throwing error if databaseManager shuts down this plugin.
         if (!this.isEnabled()) return;
@@ -139,6 +151,11 @@ public final class XRPG extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new McMMOListener(this), this);
         }else{
             getServer().getPluginManager().registerEvents(new EXPListener(this), this);
+        }
+
+        Plugin AE = Bukkit.getPluginManager().getPlugin("AdvancedEnchantments");
+        if (AE != null && AE.isEnabled()){
+            this.dependencyManager.addHook("AdvancedEnchantments", new AEnchantsHook());
         }
 
         this.pvpToggle = PvPToggleFactory.getPvPToggle(usePvPToggle);
@@ -339,6 +356,14 @@ public final class XRPG extends JavaPlugin {
 
     public PlayerManager getPlayerManager(){
         return playerManager;
+    }
+
+    public DependencyManager getDependencyManager(){
+        return dependencyManager;
+    }
+
+    public static ArmorManager getArmorManager() {
+        return armorManager;
     }
 
     public double getDamageMultiplier() {

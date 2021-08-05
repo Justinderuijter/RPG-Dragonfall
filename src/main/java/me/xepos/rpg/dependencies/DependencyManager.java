@@ -15,8 +15,7 @@ public class DependencyManager {
 
     public static boolean isPluginEnabled(String pluginName){
         Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
-        if (plugin == null) return false;
-        if (!plugin.isEnabled()) return false;
+        if (plugin == null || !plugin.isEnabled()) return false;
 
         return true;
     }

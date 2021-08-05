@@ -153,6 +153,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.gc-spigot</groupId>
+            <artifactId>AdvancedEnchantmentsAPI</artifactId>
+            <version>8.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.aasmus</groupId>
             <artifactId>PvPToggle</artifactId>
             <version>1.0</version>

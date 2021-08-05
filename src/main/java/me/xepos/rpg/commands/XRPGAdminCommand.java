@@ -242,6 +242,7 @@ public class XRPGAdminCommand extends BaseCommand {
                     }
                     return true;
                 }
+            }else if(strings[2].equalsIgnoreCase("armorset")){
             }
         }
         return false;
