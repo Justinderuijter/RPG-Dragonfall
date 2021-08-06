@@ -3,6 +3,7 @@ package me.xepos.rpg.commands;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
+import me.xepos.rpg.datatypes.ArmorSet;
 import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.utils.Utils;
@@ -105,6 +106,7 @@ public class XRPGAdminCommand extends BaseCommand {
                     case "create":
                         return new ArrayList<String>() {{
                             add("eventspell");
+                            add("armorset");
                         }};
                     case "reset":
                         return new ArrayList<String>() {{
@@ -132,8 +134,26 @@ public class XRPGAdminCommand extends BaseCommand {
                             result.add(tab);
                         }
                     }
+                }else if(strings[1].equalsIgnoreCase("create") && strings[2].equalsIgnoreCase("armorset")){
+                    for (String tab : plugin.getArmorManager().getAllSetIds()){
+                        if (tab.toLowerCase().startsWith(strings[3].toLowerCase())) {
+                            result.add(tab);
+                        }
+                    }
                 }
                 return result;
+            case 5:
+                if (strings[1].equalsIgnoreCase("create") && strings[2].equalsIgnoreCase("armorset")){
+                    ArmorSet armorSet = plugin.getArmorManager().getArmorSet(strings[3]);
+                    if (armorSet != null){
+                        for (String tab : armorSet.getValidPieces()){
+                            if (tab.toLowerCase().startsWith(strings[4].toLowerCase())) {
+                                result.add(tab);
+                            }
+                        }
+                        return result;
+                    }
+                }
         }
         return Collections.emptyList();
 
@@ -203,7 +223,7 @@ public class XRPGAdminCommand extends BaseCommand {
     }
 
     public boolean subCommandCreate(CommandSender sender, XRPGPlayer xrpgTarget, String[] strings){
-        if (strings.length == 4){
+        if (strings.length >= 4){
             if (strings[2].equalsIgnoreCase("eventspell")){
                 if(!checkPermissions(sender, "create.eventspell")){
                     sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
@@ -243,6 +263,12 @@ public class XRPGAdminCommand extends BaseCommand {
                     return true;
                 }
             }else if(strings[2].equalsIgnoreCase("armorset")){
+                ArmorSet armorSet = plugin.getArmorManager().getArmorSet(strings[3]);
+                if (armorSet != null){
+                    ItemStack setItem = armorSet.generateArmorPiece(strings[4]);
+                    xrpgTarget.getPlayer().getInventory().addItem(setItem);
+                }
+
             }
         }
         return false;

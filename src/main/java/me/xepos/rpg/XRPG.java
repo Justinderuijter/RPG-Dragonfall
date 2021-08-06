@@ -362,7 +362,7 @@ public final class XRPG extends JavaPlugin {
         return dependencyManager;
     }
 
-    public static ArmorManager getArmorManager() {
+    public ArmorManager getArmorManager() {
         return armorManager;
     }
 

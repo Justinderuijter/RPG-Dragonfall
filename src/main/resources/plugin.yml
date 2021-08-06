@@ -9,6 +9,7 @@ softdepend:
   - mcMMO
   - LevelledMobs
   - Essentials
+  - AdvancedEnchantments
 commands:
   xrpgdebug:
     description: debug command
