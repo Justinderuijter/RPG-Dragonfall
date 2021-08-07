@@ -106,7 +106,7 @@ public final class XRPG extends JavaPlugin {
         this.treeView = new HashMap<>();
 
 
-        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook", "requires", "level", "maxLevel", "attribute"};
+        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook", "requires", "level", "maxLevel", "attribute", "set"};
 
         for (String name:keyNames) {
             this.keyRegistry.put(name, new NamespacedKey(this, name));

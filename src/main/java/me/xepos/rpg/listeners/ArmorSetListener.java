@@ -1,5 +1,8 @@
 package me.xepos.rpg.listeners;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
+import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.events.XRPGBaseProjectileFireEvent;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -10,8 +13,37 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public class ArmorSetListener implements Listener {
+    private final XRPG plugin;
+
+    public ArmorSetListener(XRPG plugin){
+        this.plugin = plugin;
+    }
+
+    @EventHandler
+    public void onChangeArmor(PlayerArmorChangeEvent event){
+        ItemStack newItem = event.getNewItem();
+        ItemStack oldItem = event.getOldItem();
+
+        XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(event.getPlayer(), true);
+
+        if (newItem != null && newItem.hasItemMeta() && hasSetPDC(newItem.getItemMeta())){
+            if (oldItem != null){
+                if (!oldItem.hasItemMeta() || !hasSetPDC(oldItem.getItemMeta())){
+                    xrpgPlayer.increaseSetLevel(getSetId(newItem.getItemMeta()));
+                }else if(hasSetPDC(oldItem.getItemMeta())){
+                    String newSetId = getSetId(newItem.getItemMeta();
+                    if (!newSetId.equals(getSetId(oldItem.getItemMeta()))){
+                        xrpgPlayer.increaseSetLevel(newSetId);
+                    }
+                }
+            }
+        }
+    }
 
     //Trigger before main event handler
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -43,6 +75,14 @@ public class ArmorSetListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onCustomProjectile(XRPGBaseProjectileFireEvent e){
 
+    }
+
+    private boolean hasSetPDC(ItemMeta meta){
+        return meta.getPersistentDataContainer().has(plugin.getKey("set"), PersistentDataType.STRING);
+    }
+
+    private String getSetId(ItemMeta meta){
+        return meta.getPersistentDataContainer().get(plugin.getKey("set"), PersistentDataType.STRING);
     }
 
 

@@ -1,10 +1,8 @@
 package me.xepos.rpg;
 
 import me.xepos.rpg.database.tasks.SavePlayerDataTask;
-import me.xepos.rpg.datatypes.AttributeModifierData;
-import me.xepos.rpg.datatypes.ClassData;
-import me.xepos.rpg.datatypes.PlayerData;
-import me.xepos.rpg.datatypes.SavedSkillProperties;
+import me.xepos.rpg.datatypes.*;
+import me.xepos.rpg.enums.ArmorSetTriggerType;
 import me.xepos.rpg.handlers.ActiveEventHandler;
 import me.xepos.rpg.handlers.BowEventHandler;
 import me.xepos.rpg.handlers.PassiveEventHandler;
@@ -17,6 +15,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -53,8 +52,13 @@ public class XRPGPlayer {
     private transient long lastStunTime = 0;
 
     //This will ever only be called when joining
+    //Should be moved to playermanager
     private List<AttributeModifierData> modifiersToApply = new ArrayList<>();
     private final Set<PotionEffectType> permanentEffects = new HashSet<>();
+
+    //Armor
+    private final HashMap<String, Integer> armorSetLevels = new HashMap<>();
+    private final HashMap<String, HashMap<ArmorSetTriggerType, ArmorEffect>> armorSetEffects = new HashMap<>();
 
     public XRPGPlayer(UUID playerId, PlayerData playerData) {
         XRPG plugin = XRPG.getInstance();
@@ -604,6 +608,46 @@ public class XRPGPlayer {
         player.sendMessage(ChatColor.GREEN + "You have been refunded " + upgradePointsToRefund + " upgrade points and " + unlockPointsToRefund + " unlock points!");
 
         return true;
+    }
+
+    //////////////////////////////////
+    //                              //
+    //   Armors getters & setters   //
+    //                              //
+    //////////////////////////////////
+
+    public int getSetLevel(String setId){
+        Integer level = armorSetLevels.get(setId);
+
+        if (level != null) return level;
+
+        return 0;
+    }
+
+    public int increaseSetLevel(String setId){
+        Integer level = armorSetLevels.get(setId);
+        if (level != null){
+            level += 1;
+            armorSetLevels.put(setId, level);
+            return level;
+        }
+        armorSetLevels.put(setId, 1);
+        return 1;
+    }
+
+    public int decreaseSetLevel(String setId){
+        final int level = armorSetLevels.get(setId) - 1;
+        if (level == 0){
+            armorSetLevels.remove(setId);
+        }
+        armorSetLevels.put(setId, level);
+        return level;
+    }
+
+    public void runArmorEffects(Event event, ArmorSetTriggerType type){
+        for (HashMap<ArmorSetTriggerType, ArmorEffect> e :this.armorSetEffects.values()) {
+            e.get(type).activate(event);
+        }
     }
 
     //////////////////////////////////
