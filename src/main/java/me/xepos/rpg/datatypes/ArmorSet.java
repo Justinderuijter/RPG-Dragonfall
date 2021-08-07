@@ -5,6 +5,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.dependencies.hooks.AEnchantsHook;
 import me.xepos.rpg.enums.ArmorSetTriggerType;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -98,9 +99,12 @@ public class ArmorSet {
                 Bukkit.getLogger().info("Applied: " + vanillaEntry.getKey().getName() + " " + vanillaEntry.getValue());
             }
 
-            meta.setDisplayName(specificItemSection.getString("name", getSetName() + name));
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', specificItemSection.getString("name", getSetName() + name)));
             List<String> lore = specificItemSection.getStringList("lore");
             lore.addAll(0, meta.getLore() == null ? Collections.emptyList() : meta.getLore());
+            for (ListIterator<String> i = lore.listIterator(); i.hasNext();) {
+                i.set(ChatColor.translateAlternateColorCodes('&', i.next()));
+            }
             meta.setLore(lore);
             meta.getPersistentDataContainer().set(new NamespacedKey(XRPG.getInstance(), "set"), PersistentDataType.STRING, this.setId);
             material.setItemMeta(meta);
