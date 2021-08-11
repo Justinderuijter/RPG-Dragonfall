@@ -1,5 +1,6 @@
 package me.xepos.rpg.dependencies;
 
+import me.lokka30.levelledmobs.LevelledMobs;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.LocationInformation;
@@ -8,7 +9,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.Collection;
 import java.util.Random;
@@ -16,13 +19,15 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LevelledMobsManager {
+    private final LevelledMobs levelledMobs;
     private final ConcurrentHashMap<UUID, LocationInformation> locationLevelMap;
     private final int lowerBound;
     private final int upperBound;
     private final Random random;
     private final boolean useEssentialsHook;
 
-    public LevelledMobsManager(XRPG plugin, int lowerBound, int upperBound){
+    public LevelledMobsManager(XRPG plugin, Plugin LM, int lowerBound, int upperBound){
+        this.levelledMobs = (LevelledMobs) LM;
         this.locationLevelMap = new ConcurrentHashMap<>();
         this.random = new Random();
         this.lowerBound = lowerBound;
@@ -83,6 +88,10 @@ public class LevelledMobsManager {
 
     public void replaceLocation(XRPGPlayer xrpgPlayer){
         this.locationLevelMap.put(xrpgPlayer.getPlayerId(), new LocationInformation(xrpgPlayer.getPlayer().getLocation(), xrpgPlayer.getLevel()));
+    }
+
+    public int getMobLevel(LivingEntity livingEntity){
+        return levelledMobs.levelManager.getLevelOfMob(livingEntity);
     }
 
 }

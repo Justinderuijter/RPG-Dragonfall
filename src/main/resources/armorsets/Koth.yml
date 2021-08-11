@@ -169,6 +169,8 @@ bonuses:
       effects:
         - 'INCREASE_DAMAGE:20'
     ATTACK_MOB:
+      conditions:
+        - "BOSS"
       chance: 100
       effects:
         - 'INCREASE_DAMAGE:50'

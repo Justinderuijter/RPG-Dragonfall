@@ -34,13 +34,21 @@ public class ArmorSetListener implements Listener {
         if (newItem != null && newItem.hasItemMeta() && hasSetPDC(newItem.getItemMeta())){
             if (oldItem != null){
                 if (!oldItem.hasItemMeta() || !hasSetPDC(oldItem.getItemMeta())){
+                    //Old item does not have setId
                     xrpgPlayer.increaseSetLevel(getSetId(newItem.getItemMeta()));
                 }else if(hasSetPDC(oldItem.getItemMeta())){
-                    String newSetId = getSetId(newItem.getItemMeta();
-                    if (!newSetId.equals(getSetId(oldItem.getItemMeta()))){
+                    //Old item has setId
+                    String oldSetId = getSetId(oldItem.getItemMeta());
+                    String newSetId = getSetId(newItem.getItemMeta());
+                    if (!newSetId.equals(oldSetId)){
+                        xrpgPlayer.decreaseSetLevel(oldSetId);
                         xrpgPlayer.increaseSetLevel(newSetId);
                     }
                 }
+            }
+        }else{
+            if (oldItem != null && oldItem.hasItemMeta() && hasSetPDC(oldItem.getItemMeta())){
+                xrpgPlayer.decreaseSetLevel(getSetId(oldItem.getItemMeta()));
             }
         }
     }

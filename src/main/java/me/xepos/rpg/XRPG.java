@@ -9,6 +9,7 @@ import me.xepos.rpg.database.DatabaseManager;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.datatypes.*;
 import me.xepos.rpg.dependencies.DependencyManager;
+import me.xepos.rpg.dependencies.LevelledMobsManager;
 import me.xepos.rpg.dependencies.combat.parties.PartyManagerFactory;
 import me.xepos.rpg.dependencies.combat.parties.PartySet;
 import me.xepos.rpg.dependencies.combat.protection.ProtectionSet;
@@ -228,7 +229,20 @@ public final class XRPG extends JavaPlugin {
 
         Plugin LM = Bukkit.getPluginManager().getPlugin("LevelledMobs");
         if (LM != null && LM.isEnabled() && dependencyConfig.getBoolean("levelled-mobs.enable-hook", false)){
-            getServer().getPluginManager().registerEvents(new LevelledMobsListener(this), this);
+            final ConfigurationSection LMSection = this.getConfig().getConfigurationSection("general-dependencies.levelled-mobs");
+            if (LMSection != null){
+                int lowerBound = LMSection.getInt("max-negative-level-offset", 0);
+
+                if (lowerBound < 0) //force positive
+                    lowerBound = lowerBound * -1;
+
+                final int upperBound = LMSection.getInt("max-positive-level-offset", 0);
+
+                LevelledMobsManager levelledMobsManager = new LevelledMobsManager(this, LM, lowerBound, upperBound);
+                getServer().getPluginManager().registerEvents(new LevelledMobsListener(this, levelledMobsManager), this);
+            }else{
+                Bukkit.getLogger().warning("Could not find section \"levelled-mobs\" under \"general-dependencies\"!");
+            }
         }
     }
 
