@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class XRPGPlayer {
-    private static final int MAX_LEVEL = XRPG.getInstance().getConfig().getInt("leveling.max-level", 30);
+    public static final int MAX_LEVEL = XRPG.getInstance().getConfig().getInt("leveling.max-level", 30);
     private static final int UPGRADE_INTERVAL = XRPG.getInstance().getConfig().getInt("leveling.upgrade-point-interval", 5);
     private static final int UNLOCK_INTERVAL = XRPG.getInstance().getConfig().getInt("leveling.unlock-point-interval", 1);
 

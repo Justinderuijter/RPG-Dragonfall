@@ -140,7 +140,7 @@ public class TreeData {
                 for (String unlock : currentTree.getUnlocks(skillId)) {
                     final int slot = currentTree.getSlotForSkill(unlock);
 
-                    if (!hasRequired(unlock, false)) {
+                    if (!hasRequired(unlock, false, true)) {
                         revertSkill(unlock, true);
                         updateClickedIcon(inventory, slot, inventory.getItem(slot), getCurrentSkillLevel(unlock));
                     }
@@ -156,7 +156,7 @@ public class TreeData {
      * @param skillId The unique identifier for the skill that will be leveled
      */
     public void addSkillLevel(String skillId) {
-        if (hasRequired(skillId, false)) {
+        if (hasRequired(skillId, false, false)) {
             if (isNotMaxed(skillId)) {
                 if (progression.containsKey(skillId)) {
                     final int level = progression.get(skillId);
@@ -245,7 +245,7 @@ public class TreeData {
      * @param skillId The unique identifier for the skill that will be tested
      * @return true if the player has enough points to upgrade a skill, else false.
      */
-    public boolean hasRequired(String skillId, boolean sendMessage) {
+    public boolean hasRequired(String skillId, boolean sendMessage, boolean isRemoval) {
         final XRPGPlayer player = xrpgPlayer.get();
         final SkillInfo skillInfo = currentTree.getSkillInfo(skillId);
         if (skillInfo == null) return false;
@@ -257,6 +257,12 @@ public class TreeData {
 
         for (String string : requiredSkills) {
             if (skills.containsKey(string) || progression.containsKey(string)) {
+                if (isRemoval && requiredSkills.size() > 1) {
+                    final SkillInfo reqSkillInfo = currentTree.getSkillInfo(string);
+                    if (reqSkillInfo == null || reqSkillInfo.getRequired().contains(skillId)) {
+                        continue;
+                    }
+                }
                 return true;
             }
         }

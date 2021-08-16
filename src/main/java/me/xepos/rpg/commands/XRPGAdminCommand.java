@@ -12,8 +12,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -105,6 +107,7 @@ public class XRPGAdminCommand extends BaseCommand {
                     case "create":
                         return new ArrayList<String>() {{
                             add("eventspell");
+                            add("item");
                         }};
                     case "reset":
                         return new ArrayList<String>() {{
@@ -131,6 +134,12 @@ public class XRPGAdminCommand extends BaseCommand {
                         if (tab.toLowerCase().startsWith(strings[3].toLowerCase())) {
                             result.add(tab);
                         }
+                    }
+                }else if(strings[2].equalsIgnoreCase("item")){
+                    if ("divineHalberd".startsWith(strings[3].toLowerCase())){
+                        result.add("divineHalberd");
+                    }else if("levelBook".startsWith(strings[3].toLowerCase())){
+                        result.add("levelBook");
                     }
                 }
                 return result;
@@ -203,7 +212,7 @@ public class XRPGAdminCommand extends BaseCommand {
     }
 
     public boolean subCommandCreate(CommandSender sender, XRPGPlayer xrpgTarget, String[] strings){
-        if (strings.length == 4){
+        if (strings.length >= 4){
             if (strings[2].equalsIgnoreCase("eventspell")){
                 if(!checkPermissions(sender, "create.eventspell")){
                     sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
@@ -242,6 +251,21 @@ public class XRPGAdminCommand extends BaseCommand {
                     }
                     return true;
                 }
+            }else if(strings[2].equalsIgnoreCase("item")){
+                if (strings[3].equalsIgnoreCase("divineHalberd")){
+                    xrpgTarget.getPlayer().getInventory().addItem(generateHalberd());
+                }else if(strings[3].equalsIgnoreCase("levelBook")){
+                    try{
+                        byte level = 1;
+                        if (strings.length > 4){
+                            level = Byte.parseByte(strings[4]);
+                        }
+                        xrpgTarget.getPlayer().getInventory().addItem(generateLevelBook(level));
+                    }catch (NumberFormatException ignore){
+                        sender.sendMessage(strings[4] + " is not a valid number!");
+                    }
+                }
+                return true;
             }
         }
         return false;
@@ -263,5 +287,40 @@ public class XRPGAdminCommand extends BaseCommand {
             return true;
         }
         return false;
+    }
+
+    private ItemStack generateHalberd(){
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "Damaging an enemy with a Divine Halberd");
+        lore.add(ChatColor.GRAY + "Will instantly kill it, then break the Halberd");
+        lore.add(ChatColor.RED + "Cannot be used on players");
+
+        ItemStack halberd = Utils.buildItemStack(Material.GOLDEN_AXE, ChatColor.BLUE + "" + ChatColor.BOLD + "Divine Halberd", lore);
+        ItemMeta halberdMeta = halberd.getItemMeta();
+        halberdMeta.addEnchant(Enchantment.PIERCING, 1, true);
+        halberdMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        halberdMeta.getPersistentDataContainer().set(plugin.getKey("itemId"), PersistentDataType.STRING, "divineHalberd");
+        halberd.setItemMeta(halberdMeta);
+
+        return halberd;
+    }
+
+    private ItemStack generateLevelBook(byte levels){
+        List<String> lore = new ArrayList<>();
+        if (levels == 1){
+            lore.add(ChatColor.GRAY + "Will instantly level up your current class by 1 level");
+        }else{
+            lore.add(ChatColor.GRAY + "Will instantly level up your current class by " + levels + " levels");
+        }
+        lore.add(ChatColor.RED + "Cannot level you past the level cap");
+
+        ItemStack book = Utils.buildItemStack(Material.ENCHANTED_BOOK, ChatColor.GOLD + "Book of Knowledge", lore);
+        ItemMeta meta = book.getItemMeta();
+
+        meta.getPersistentDataContainer().set(plugin.getKey("levelBook"), PersistentDataType.BYTE, levels);
+
+        book.setItemMeta(meta);
+
+        return book;
     }
 }

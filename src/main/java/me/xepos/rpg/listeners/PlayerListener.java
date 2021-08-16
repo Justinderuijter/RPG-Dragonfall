@@ -17,10 +17,7 @@ import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.utils.SpellmodeUtils;
 import me.xepos.rpg.utils.Utils;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -52,8 +49,25 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent event) {
         if (event instanceof EntityDamageByEntityEvent e) {
-            if (e.getDamager() instanceof Player && e.getEntity() instanceof LivingEntity livingEntity) {
-                XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer((Player) e.getDamager(), true);
+            if (e.getDamager() instanceof Player damager && e.getEntity() instanceof LivingEntity livingEntity) {
+                ItemStack heldItem = damager.getInventory().getItemInMainHand();
+                if (heldItem.getType() != Material.AIR && heldItem.hasItemMeta()){
+                    String itemId = heldItem.getItemMeta().getPersistentDataContainer().get(plugin.getKey("itemId"), PersistentDataType.STRING);
+                    if (itemId != null && itemId.equalsIgnoreCase("divineHalberd") && !(livingEntity instanceof Player)){
+                        if (livingEntity.getPersistentDataContainer().has(plugin.getKey("itemId"), PersistentDataType.BYTE)) return;
+                        livingEntity.setNoDamageTicks(0);
+                        livingEntity.getPersistentDataContainer().set(plugin.getKey("itemId"), PersistentDataType.BYTE, (byte)1);
+                        livingEntity.damage(1, damager);
+                        livingEntity.setHealth(0);
+                        damager.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                        damager.playSound(damager.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0F, 1.0F);
+                        e.setCancelled(true);
+                        return;
+                    }
+                }
+
+
+                XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(damager, true);
                 if (xrpgPlayer != null) {
                     if (xrpgPlayer.isStunned())
                         e.setCancelled(true);
@@ -241,16 +255,27 @@ public class PlayerListener implements Listener {
 
             ItemStack item = e.getItem();
             if (item != null) {
-
-                if (item.getItemMeta() != null && item.getItemMeta().getPersistentDataContainer().has(plugin.getKey("spellbook"), PersistentDataType.BYTE)) {
-                    if (xrpgPlayer.isSpellCastModeEnabled()) {
-                        SpellmodeUtils.disableSpellmode(xrpgPlayer);
-                    } else {
-                        SpellmodeUtils.enterSpellmode(xrpgPlayer);
+                if (item.hasItemMeta()){
+                    if (item.getItemMeta().getPersistentDataContainer().has(plugin.getKey("spellbook"), PersistentDataType.BYTE)) {
+                        if (xrpgPlayer.isSpellCastModeEnabled()) {
+                            SpellmodeUtils.disableSpellmode(xrpgPlayer);
+                        } else {
+                            SpellmodeUtils.enterSpellmode(xrpgPlayer);
+                        }
+                        return;
+                    }else if(item.getItemMeta().getPersistentDataContainer().has(plugin.getKey("levelBook"), PersistentDataType.BYTE)){
+                        if (xrpgPlayer.getLevel() < XRPGPlayer.MAX_LEVEL) {
+                            final byte level = item.getItemMeta().getPersistentDataContainer().get(plugin.getKey("levelBook"), PersistentDataType.BYTE);
+                            player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                            xrpgPlayer.addLevels(level);
+                        }else{
+                            player.sendMessage(ChatColor.RED + "You're already level " + XRPGPlayer.MAX_LEVEL + "!");
+                            player.sendMessage(ChatColor.RED + "Try using this on a class that is not max level.");
+                        }
+                        return;
                     }
-                    return;
-
                 }
+
             }
 
             //TODO: These might actually be ancient and need removal, needs checking
