@@ -2,6 +2,8 @@ package me.xepos.rpg.datatypes.armorconditions;
 
 import me.lokka30.levelledmobs.LevelInterface;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class LMCondition implements IConditionComponent{
     private final LevelInterface levelInterface;
@@ -15,8 +17,10 @@ public class LMCondition implements IConditionComponent{
     }
 
     @Override
-    public boolean isMet(LivingEntity livingEntity) {
-        final int mobLevel = levelInterface.getLevelOfMob(livingEntity);
+    public boolean isMet(Event event) {
+        if (!(event instanceof EntityDamageByEntityEvent e)) return false;
+
+        final int mobLevel = levelInterface.getLevelOfMob((LivingEntity) e.getEntity());
         if (isBiggerThan){
             return mobLevel > level;
         }else{

@@ -23,18 +23,18 @@ public class ArmorEffect {
         }
     }
 
-    private boolean canTriggerAND(){
+    private boolean canTriggerAND(Event event){
         for (IConditionComponent condition:conditionComponents) {
-            if (!condition.isMet()){
+            if (!condition.isMet(event)){
                 return false;
             }
         }
         return true;
     }
 
-    private boolean canTriggerOR(){
+    private boolean canTriggerOR(Event event){
         for (IConditionComponent condition:conditionComponents) {
-            if (condition.isMet()){
+            if (condition.isMet(event)){
                 return true;
             }
         }

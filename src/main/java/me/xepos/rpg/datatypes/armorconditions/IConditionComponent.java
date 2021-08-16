@@ -1,7 +1,7 @@
 package me.xepos.rpg.datatypes.armorconditions;
 
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
 
 public interface IConditionComponent {
-    boolean isMet(LivingEntity livingEntity);
+    boolean isMet(Event event);
 }
