@@ -155,8 +155,12 @@ public final class XRPG extends JavaPlugin {
         }
 
         Plugin AE = Bukkit.getPluginManager().getPlugin("AdvancedEnchantments");
+        Plugin LM = Bukkit.getPluginManager().getPlugin("LevelledMobs");
         if (AE != null && AE.isEnabled()){
             this.dependencyManager.addHook("AdvancedEnchantments", new AEnchantsHook());
+        }
+        if (LM != null && LM.isEnabled()){
+
         }
 
         this.pvpToggle = PvPToggleFactory.getPvPToggle(usePvPToggle);

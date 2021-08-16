@@ -10,10 +10,10 @@ public class LMCondition implements IConditionComponent{
     private final boolean isBiggerThan;
     private final int level;
 
-    public LMCondition(LevelInterface levelInterface, String effect){
+    public LMCondition(LevelInterface levelInterface, String arg){
         this.levelInterface = levelInterface;
-        this.isBiggerThan = effect.contains(">");
-        this.level = Integer.parseInt(effect.substring(1));
+        this.isBiggerThan = arg.contains(">");
+        this.level = Integer.parseInt(arg.substring(1));
     }
 
     @Override
