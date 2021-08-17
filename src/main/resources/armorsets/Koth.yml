@@ -174,4 +174,4 @@ bonuses:
       condition-type: "AND"
       chance: 100
       effects:
-        - 'INCREASE_DAMAGE:50'
+        - 'INCREASE_DAMAGE:400'

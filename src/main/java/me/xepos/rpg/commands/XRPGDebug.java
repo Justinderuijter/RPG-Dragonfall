@@ -29,7 +29,7 @@ public class XRPGDebug extends BaseCommand {
         add("skills");
         add("modifiers");
         add("dt");
-        add("logintasks");
+        add("armorEffects");
     }};
 
     public XRPGDebug(XRPG plugin) {
@@ -73,8 +73,11 @@ public class XRPGDebug extends BaseCommand {
                         commandSender.sendMessage(primaryColor + "Loaded skills " + ChatColor.WHITE + "(" + secondaryColor + plugin.getSkillData().size() + ChatColor.WHITE + ")" + primaryColor + ":");
                         commandSender.sendMessage(skillList.toString());
                         return true;
-                    }else if (strings[0].equalsIgnoreCase("logintasks")){
-                        commandSender.sendMessage(primaryColor + "Currently " + ChatColor.RED + plugin.getPlayerManager().getLoginTaskCount() + primaryColor + " login tasks in memory");
+                    }else if (strings[0].equalsIgnoreCase("armorEffects")){
+                        if (commandSender instanceof Player playerSender){
+                            XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(playerSender, true);
+                            xrpgPlayer.getArmorSetAmount();
+                        }
                         return true;
                     }
                 case 2:

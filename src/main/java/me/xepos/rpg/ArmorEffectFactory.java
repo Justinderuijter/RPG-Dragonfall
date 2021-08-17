@@ -1,32 +1,22 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.datatypes.ArmorEffect;
-import me.xepos.rpg.datatypes.armorconditions.*;
+import me.xepos.rpg.datatypes.armorconditions.BossCondition;
+import me.xepos.rpg.datatypes.armorconditions.HealthCondition;
+import me.xepos.rpg.datatypes.armorconditions.IConditionComponent;
+import me.xepos.rpg.datatypes.armorconditions.LMCondition;
 import me.xepos.rpg.datatypes.armoreffects.*;
 import me.xepos.rpg.enums.ArmorSetTriggerType;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class ArmorEffectFactory {
-    public static HashMap<ArmorSetTriggerType, ArmorEffect> getTriggers(ConfigurationSection eventSection){
-        HashMap<ArmorSetTriggerType, ArmorEffect> armorEffects = new HashMap<>();
-        for (String key:eventSection.getKeys(false)) {
-            ConfigurationSection eventVariables = eventSection.getConfigurationSection(key);
-            if (eventVariables == null) continue;
-            ArmorSetTriggerType triggerType = ArmorSetTriggerType.valueOf(key.toUpperCase());
-
-            List<IEffectComponent> effectComponents = getEffects(eventVariables, triggerType);
-            List<IConditionComponent> effectConditions = getConditions(eventVariables);
-
-            ConditionType conditionType = ConditionType.valueOf(eventVariables.getString("condition-type", "AND").toUpperCase());
-            ArmorEffect armorEffect = new ArmorEffect(eventVariables.getDouble("chance", 100), conditionType, effectConditions, effectComponents);
-            armorEffects.put(triggerType, armorEffect);
-        }
-        return armorEffects;
-    }
-
-    private static List<IEffectComponent> getEffects(ConfigurationSection eventVariables, ArmorSetTriggerType triggerType){
+    private static NamespacedKey levelledKey = NamespacedKey.fromString("LevelledMobs:level");
+    public static List<IEffectComponent> getEffects(ConfigurationSection eventVariables, ArmorSetTriggerType triggerType){
         List<IEffectComponent> effectComponents = new ArrayList<>();
         eventVariables.getStringList("effects").forEach(effect -> {
             switch (triggerType){
@@ -134,7 +124,7 @@ public class ArmorEffectFactory {
         return effectComponents;
     }
 
-    private static List<IConditionComponent> getConditions(ConfigurationSection eventVariables){
+    public static List<IConditionComponent> getConditions(ConfigurationSection eventVariables){
         List<IConditionComponent> conditionComponents = new ArrayList<>();
 
         for (String condition:eventVariables.getStringList("conditions")) {
@@ -156,8 +146,7 @@ public class ArmorEffectFactory {
                     conditionComponents.add(new HealthCondition(conditionArgs));
                     break;
                 case "LMCondition":
-                    XRPG.getInstance().getDependencyManager().getHook()
-                    conditionComponents.add(new LMCondition( conditionArgs));
+                    conditionComponents.add(new LMCondition(levelledKey, conditionArgs));
                     break;
             }
         }

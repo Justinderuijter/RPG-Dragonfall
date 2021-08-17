@@ -1,17 +1,17 @@
 package me.xepos.rpg.datatypes.armorconditions;
 
-import me.lokka30.levelledmobs.LevelInterface;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.persistence.PersistentDataType;
 
 public class LMCondition implements IConditionComponent{
-    private final LevelInterface levelInterface;
     private final boolean isBiggerThan;
     private final int level;
+    private NamespacedKey levelledKey;
 
-    public LMCondition(LevelInterface levelInterface, String arg){
-        this.levelInterface = levelInterface;
+    public LMCondition(NamespacedKey levelledKey, String arg){
+        this.levelledKey = levelledKey;
         this.isBiggerThan = arg.contains(">");
         this.level = Integer.parseInt(arg.substring(1));
     }
@@ -20,13 +20,16 @@ public class LMCondition implements IConditionComponent{
     public boolean isMet(Event event) {
         if (!(event instanceof EntityDamageByEntityEvent e)) return false;
 
-        final int mobLevel = levelInterface.getLevelOfMob((LivingEntity) e.getEntity());
-        if (isBiggerThan){
-            return mobLevel > level;
-        }else{
-            if (mobLevel == -1) return false;
+        Integer mobLevel = e.getEntity().getPersistentDataContainer().get(levelledKey, PersistentDataType.INTEGER);
+        if (mobLevel != null){
+            if (isBiggerThan){
+                return mobLevel > level;
+            }else{
+                if (mobLevel == -1) return false;
 
-            return mobLevel < level;
+                return mobLevel < level;
+            }
         }
+        return false;
     }
 }

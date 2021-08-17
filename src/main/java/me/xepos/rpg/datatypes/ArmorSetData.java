@@ -2,6 +2,9 @@ package me.xepos.rpg.datatypes;
 
 import me.xepos.rpg.ArmorEffectFactory;
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.datatypes.armorconditions.ConditionType;
+import me.xepos.rpg.datatypes.armorconditions.IConditionComponent;
+import me.xepos.rpg.datatypes.armoreffects.IEffectComponent;
 import me.xepos.rpg.dependencies.hooks.AEnchantsHook;
 import me.xepos.rpg.enums.ArmorSetTriggerType;
 import org.bukkit.Bukkit;
@@ -18,36 +21,31 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 @SuppressWarnings("unused")
-public class ArmorSet {
+public class ArmorSetData {
     private final String setId;
     private final String setName;
     private final ConfigurationSection itemSection;
-    private final HashMap<Integer, HashMap<ArmorSetTriggerType, ArmorEffect>> effects;
+    private final ConfigurationSection bonusSection;
     private int lowestBonus;
     private int highestBonus;
 
-    public ArmorSet(String setId, ConfigurationSection configurationSection){
+    public ArmorSetData(String setId, ConfigurationSection configurationSection){
         this.setId = setId;
         this.setName = configurationSection.getString("name");
         this.itemSection = configurationSection.getConfigurationSection("items");
-        this.effects = new HashMap<>();
 
-        ConfigurationSection bonusSection = configurationSection.getConfigurationSection("bonuses");
+        this.bonusSection = configurationSection.getConfigurationSection("bonuses");
         if (bonusSection != null) {
             boolean isFirst = true;
-            for (String key : bonusSection.getKeys(false)) {
-                Bukkit.getLogger().warning("key: " + key);
-                final int value = Integer.parseInt(key);
+            for (String levelKey : bonusSection.getKeys(false)) {
+                Bukkit.getLogger().warning("key: " + levelKey);
+                final int value = Integer.parseInt(levelKey);
 
                 if (isFirst) {
                     this.lowestBonus = value;
                     isFirst = false;
                 }
                 this.highestBonus = value;
-
-                ConfigurationSection triggerSection = bonusSection.getConfigurationSection(key);
-
-                effects.put(value, ArmorEffectFactory.getTriggers(triggerSection));
             }
         }
     }
@@ -140,9 +138,31 @@ public class ArmorSet {
     }
 
     @Nullable
-    public HashMap<ArmorSetTriggerType, ArmorEffect> getEffectsForLevel(int level){
-        if (level > highestBonus) return effects.get(highestBonus);
-        else return effects.get(level);
+    public HashMap<ArmorSetTriggerType, ArmorEffect> getEffectsForLevel(int oldLevel, int newLevel){
+        newLevel = getHighestAvailableLevel(newLevel);
+        if (oldLevel == newLevel) return null;
+
+        ConfigurationSection eventSection = bonusSection.getConfigurationSection(String.valueOf(newLevel));
+
+        HashMap<ArmorSetTriggerType, ArmorEffect> armorEffects = new HashMap<>();
+        if (eventSection == null) return armorEffects;
+
+        for (String eventKey:eventSection.getKeys(false)) {
+            ConfigurationSection eventVariables = eventSection.getConfigurationSection(eventKey);
+            if (eventVariables == null) continue;
+            ArmorSetTriggerType triggerType = ArmorSetTriggerType.valueOf(eventKey.toUpperCase());
+
+            HashMap<ArmorSetTriggerType, List<IConditionComponent>> conditions = new HashMap<>();
+            conditions.put(triggerType, ArmorEffectFactory.getConditions(eventVariables));
+
+            HashMap<ArmorSetTriggerType, List<IEffectComponent>> effects = new HashMap<>();
+            effects.put(triggerType, ArmorEffectFactory.getEffects(eventVariables, triggerType));
+
+            ArmorEffect armorEffect = new ArmorEffect(100, -1, ConditionType.AND, conditions.get(triggerType), effects.get(triggerType));
+            armorEffects.put(triggerType, armorEffect);
+        }
+
+        return armorEffects;
     }
 
     private int getLowerBound(String lower){
@@ -172,6 +192,17 @@ public class ArmorSet {
         if (intLevel < 1) return 1;
 
         return intLevel;
+    }
+
+    private int getHighestAvailableLevel(int level){
+        if (level > highestBonus) return highestBonus;
+
+        for (int i = level; i > lowestBonus; i--) {
+            if (bonusSection.contains(String.valueOf(i))){
+                return i;
+            }
+        }
+        return -1;
     }
 
 }

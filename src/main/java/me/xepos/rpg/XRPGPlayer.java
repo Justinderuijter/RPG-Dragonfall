@@ -625,10 +625,20 @@ public class XRPGPlayer {
     }
 
     public int increaseSetLevel(String setId){
+        ArmorSetData armorset = XRPG.getInstance().getArmorManager().getArmorSet(setId);
         Integer level = armorSetLevels.get(setId);
         if (level != null){
+
+            final int oldLevel = level;
             level += 1;
             armorSetLevels.put(setId, level);
+
+            if (armorset != null){
+                HashMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(oldLevel, level);
+                if (effects != null){
+                    armorSetEffects.put(setId, effects);
+                }
+            }
             return level;
         }
         armorSetLevels.put(setId, 1);
@@ -639,15 +649,29 @@ public class XRPGPlayer {
         final int level = armorSetLevels.get(setId) - 1;
         if (level == 0){
             armorSetLevels.remove(setId);
+            armorSetEffects.remove(setId);
+            return 0;
         }
         armorSetLevels.put(setId, level);
+        ArmorSetData armorset = XRPG.getInstance().getArmorManager().getArmorSet(setId);
+        if (armorset != null){
+            HashMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(level + 1, level);
+            if (effects != null){
+                armorSetEffects.put(setId, effects);
+            }
+        }
         return level;
     }
 
     public void runArmorEffects(Event event, ArmorSetTriggerType type){
         for (HashMap<ArmorSetTriggerType, ArmorEffect> e :this.armorSetEffects.values()) {
-            e.get(type).activate(event);
+            ArmorEffect effect = e.get(type);
+            if (effect != null) effect.activate(event);
         }
+    }
+
+    public void getArmorSetAmount(){
+        player.sendMessage("Amount: " + armorSetEffects.size());
     }
 
     //////////////////////////////////

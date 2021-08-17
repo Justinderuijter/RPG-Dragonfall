@@ -3,7 +3,7 @@ package me.xepos.rpg.commands;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
-import me.xepos.rpg.datatypes.ArmorSet;
+import me.xepos.rpg.datatypes.ArmorSetData;
 import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.utils.Utils;
@@ -29,7 +29,7 @@ public class XRPGAdminCommand extends BaseCommand {
     private final XRPG plugin;
     private final SkillLoader skillLoader;
 
-    private final List<String> modifiers = new ArrayList<String>() {{
+    private final List<String> modifiers = new ArrayList<>() {{
         add("add");
         //add("remove");
         add("set");
@@ -37,7 +37,7 @@ public class XRPGAdminCommand extends BaseCommand {
         add("reset");
     }};
 
-    private final List<String> options = new ArrayList<String>() {{
+    private final List<String> options = new ArrayList<>() {{
         add("level");
         add("experience");
         add("skill");
@@ -100,16 +100,16 @@ public class XRPGAdminCommand extends BaseCommand {
 
                 switch (strings[1].toLowerCase()){
                     case "set":
-                        return new ArrayList<String>() {{
+                        return new ArrayList<>() {{
                             add("class");
                         }};
                     case "create":
-                        return new ArrayList<String>() {{
+                        return new ArrayList<>() {{
                             add("eventspell");
                             add("armorset");
                         }};
                     case "reset":
-                        return new ArrayList<String>() {{
+                        return new ArrayList<>() {{
                             add("skilltree");
                         }};
                     default:
@@ -144,9 +144,9 @@ public class XRPGAdminCommand extends BaseCommand {
                 return result;
             case 5:
                 if (strings[1].equalsIgnoreCase("create") && strings[2].equalsIgnoreCase("armorset")){
-                    ArmorSet armorSet = plugin.getArmorManager().getArmorSet(strings[3]);
-                    if (armorSet != null){
-                        for (String tab : armorSet.getValidPieces()){
+                    ArmorSetData armorSetData = plugin.getArmorManager().getArmorSet(strings[3]);
+                    if (armorSetData != null){
+                        for (String tab : armorSetData.getValidPieces()){
                             if (tab.toLowerCase().startsWith(strings[4].toLowerCase())) {
                                 result.add(tab);
                             }
@@ -263,9 +263,9 @@ public class XRPGAdminCommand extends BaseCommand {
                     return true;
                 }
             }else if(strings[2].equalsIgnoreCase("armorset")){
-                ArmorSet armorSet = plugin.getArmorManager().getArmorSet(strings[3]);
-                if (armorSet != null){
-                    ItemStack setItem = armorSet.generateArmorPiece(strings[4]);
+                ArmorSetData armorSetData = plugin.getArmorManager().getArmorSet(strings[3]);
+                if (armorSetData != null){
+                    ItemStack setItem = armorSetData.generateArmorPiece(strings[4]);
                     xrpgTarget.getPlayer().getInventory().addItem(setItem);
                 }
 

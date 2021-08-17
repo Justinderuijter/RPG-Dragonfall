@@ -1,29 +1,24 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.datatypes.ArmorEffect;
-import me.xepos.rpg.datatypes.ArmorSet;
-import me.xepos.rpg.enums.ArmorSetTriggerType;
+import me.xepos.rpg.datatypes.ArmorSetData;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.UUID;
 
 public class ArmorManager {
-    private final HashMap<String, ArmorSet> armorSets;
-    private final HashMap<UUID, HashMap<ArmorSetTriggerType, ArmorEffect>> playerEffects;
+    private final HashMap<String, ArmorSetData> armorSets;
 
     public ArmorManager(){
         this.armorSets = new HashMap<>();
-        this.playerEffects = new HashMap<>();
     }
 
     @Nullable
-    public ArmorSet getArmorSet(String armorSetId){
+    public ArmorSetData getArmorSet(String armorSetId){
         return armorSets.get(armorSetId);
     }
 
-    public void addArmorSet(String armorSetId, ArmorSet set){
+    public void addArmorSet(String armorSetId, ArmorSetData set){
         armorSets.put(armorSetId, set);
     }
 

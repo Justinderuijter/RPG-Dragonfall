@@ -118,9 +118,13 @@ public final class XRPG extends JavaPlugin {
         this.playerManager = new PlayerManager();
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager(skillLoader);
         this.dependencyManager = new DependencyManager();
+
+        ConfigurationSection featureSection = getConfig().getConfigurationSection("extra-features");
+
         this.armorManager = new ArmorManager();
 
-        for (Map.Entry<String, ArmorSet> entry :new ArmorLoader(this).initialize().entrySet()) {
+
+        for (Map.Entry<String, ArmorSetData> entry :new ArmorLoader(this).initialize().entrySet()) {
             armorManager.addArmorSet(entry.getKey(), entry.getValue());
         }
 
@@ -145,7 +149,7 @@ public final class XRPG extends JavaPlugin {
 
         this.GUIBaseItems = generateBaseGUIItems();
         //registering listeners/commands
-        initEventListeners(dependencyConfig);
+        initEventListeners(dependencyConfig, featureSection);
 
         if (useMcMMO){
             Bukkit.getLogger().info("Using mcMMO for EXP calculations.");
@@ -225,11 +229,14 @@ public final class XRPG extends JavaPlugin {
         return instance;
     }
 
-    private void initEventListeners(ConfigurationSection dependencyConfig) {
+    private void initEventListeners(ConfigurationSection dependencyConfig, ConfigurationSection featureSection) {
         getServer().getPluginManager().registerEvents(new PlayerListener(this, databaseManager), this);
         getServer().getPluginManager().registerEvents(new InventoryListener(this, skillLoader, databaseManager), this);
         getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
         getServer().getPluginManager().registerEvents(new FollowerListener(this), this);
+        if (featureSection.getBoolean("armorsets")){
+            getServer().getPluginManager().registerEvents(new ArmorSetListener(this), this);
+        }
 
         Plugin LM = Bukkit.getPluginManager().getPlugin("LevelledMobs");
         if (LM != null && LM.isEnabled() && dependencyConfig.getBoolean("levelled-mobs.enable-hook", false)){

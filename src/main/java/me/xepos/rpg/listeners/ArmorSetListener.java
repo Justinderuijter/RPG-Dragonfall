@@ -3,6 +3,7 @@ package me.xepos.rpg.listeners;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.enums.ArmorSetTriggerType;
 import me.xepos.rpg.events.XRPGBaseProjectileFireEvent;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -35,12 +36,15 @@ public class ArmorSetListener implements Listener {
             if (oldItem != null){
                 if (!oldItem.hasItemMeta() || !hasSetPDC(oldItem.getItemMeta())){
                     //Old item does not have setId
+                    event.getPlayer().sendMessage("Added " + getSetId(newItem.getItemMeta()));
                     xrpgPlayer.increaseSetLevel(getSetId(newItem.getItemMeta()));
                 }else if(hasSetPDC(oldItem.getItemMeta())){
                     //Old item has setId
                     String oldSetId = getSetId(oldItem.getItemMeta());
                     String newSetId = getSetId(newItem.getItemMeta());
                     if (!newSetId.equals(oldSetId)){
+                        event.getPlayer().sendMessage("Added " + getSetId(newItem.getItemMeta()));
+                        event.getPlayer().sendMessage("removed " + getSetId(oldItem.getItemMeta()));
                         xrpgPlayer.decreaseSetLevel(oldSetId);
                         xrpgPlayer.increaseSetLevel(newSetId);
                     }
@@ -48,6 +52,7 @@ public class ArmorSetListener implements Listener {
             }
         }else{
             if (oldItem != null && oldItem.hasItemMeta() && hasSetPDC(oldItem.getItemMeta())){
+                event.getPlayer().sendMessage("removed " + getSetId(oldItem.getItemMeta()));
                 xrpgPlayer.decreaseSetLevel(getSetId(oldItem.getItemMeta()));
             }
         }
@@ -58,14 +63,21 @@ public class ArmorSetListener implements Listener {
     public void onDamage(EntityDamageEvent event){
         if (event instanceof EntityDamageByEntityEvent e){
             if (e.getEntity() instanceof Player player){
+                XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(player);
                 if (e.getDamager() instanceof LivingEntity){
-                    //Player is defending
+                    xrpgPlayer.runArmorEffects(e, ArmorSetTriggerType.DEFEND_MOB);
                 }else if (e.getDamager() instanceof Projectile){
                     //Player is defending from projectile
                 }
             }
 
             if (e.getDamager() instanceof Player player){
+                XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(player);
+                if (e.getEntity() instanceof Player){
+                    xrpgPlayer.runArmorEffects(e, ArmorSetTriggerType.ATTACK_PLAYER);
+                }else if (e.getEntity() instanceof LivingEntity){
+                    xrpgPlayer.runArmorEffects(e, ArmorSetTriggerType.ATTACK_MOB);
+                }
                 //Player is attacking
             }
         }else{

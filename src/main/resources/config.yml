@@ -76,6 +76,9 @@ general-dependencies:
     #This requires essentialsX hook to be active
     ignore-essentialsX-afk: true
 
+extra-features:
+  armorsets: true
+
 safety-options:
   #Checks if the player has modifiers that should have
   #been removed when they left the server.
