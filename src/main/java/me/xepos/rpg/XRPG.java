@@ -115,7 +115,7 @@ public final class XRPG extends JavaPlugin {
 
 
         //Load database
-        this.playerManager = new PlayerManager();
+        this.playerManager = new PlayerManager(this);
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager(skillLoader);
         this.dependencyManager = new DependencyManager();
 

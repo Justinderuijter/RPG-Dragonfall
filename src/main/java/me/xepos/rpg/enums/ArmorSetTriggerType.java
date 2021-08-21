@@ -11,5 +11,6 @@ public enum ArmorSetTriggerType {
     KILL_PLAYER,
     KILL_MOB,
     GAIN_EXP,
-    GAIN_MCMMO_EXP
+    GAIN_MCMMO_EXP,
+    DEATH
 }

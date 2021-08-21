@@ -3,20 +3,21 @@ package me.xepos.rpg;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class PlayerManager {
+    private final XRPG plugin;
     private final ConcurrentHashMap<UUID, XRPGPlayer> RPGPlayers;
     private final ConcurrentHashMap<UUID, List<Consumer<Player>>> consumerMap;
+    private final Set<UUID> hiddenPlayers;
 
-    protected PlayerManager(){
-        RPGPlayers = new ConcurrentHashMap<>();
-        consumerMap = new ConcurrentHashMap<>();
+    protected PlayerManager(XRPG plugin){
+        this.plugin = plugin;
+        this.hiddenPlayers = new HashSet<>();
+        this.RPGPlayers = new ConcurrentHashMap<>();
+        this.consumerMap = new ConcurrentHashMap<>();
     }
 
     public void put(UUID uuid, XRPGPlayer xrpgPlayer){
@@ -108,5 +109,31 @@ public class PlayerManager {
 
     public int getLoginTaskCount(){
         return consumerMap.size();
+    }
+
+    public void hidePlayer(Player playerToHide){
+        hiddenPlayers.add(playerToHide.getUniqueId());
+        for (Player player:Bukkit.getOnlinePlayers()) {
+            if (player == playerToHide) continue;
+            player.hidePlayer(plugin, playerToHide);
+        }
+    }
+
+    public void unhidePlayer(Player playerToUnhide){
+        if (isHidden(playerToUnhide.getUniqueId())) {
+            hiddenPlayers.remove(playerToUnhide.getUniqueId());
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player == playerToUnhide) continue;
+                player.showPlayer(plugin, playerToUnhide);
+            }
+        }
+    }
+
+    public boolean isHidden(Player player){
+        return hiddenPlayers.contains(player.getUniqueId());
+    }
+
+    public boolean isHidden(UUID uuid){
+        return hiddenPlayers.contains(uuid);
     }
 }

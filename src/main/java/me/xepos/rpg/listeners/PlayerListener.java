@@ -23,10 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -212,7 +209,10 @@ public class PlayerListener implements Listener {
         Utils.removeAllModifiers(player);
         XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(player, true);
         xrpgPlayer.clearAllPermanentPotionEffects();
+
         new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
+
+        playerManager.unhidePlayer(player);
         playerManager.remove(player);
     }
 
@@ -370,6 +370,13 @@ public class PlayerListener implements Listener {
         PassiveEventHandler passiveEventHandler = xrpgPlayer.getPassiveEventHandler("XRPG_SPELL_CAST");
         if (passiveEventHandler != null) {
             passiveEventHandler.invoke(e);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onEntityTarget(EntityTargetEvent e){
+        if (e.getTarget() != null && playerManager.isHidden(e.getTarget().getUniqueId())){
+            e.setCancelled(true);
         }
     }
 

@@ -97,6 +97,8 @@ public class ArmorEffectFactory {
                             effectComponents.add(new PotionComponent(effect));
                         }else if(effectType.get().equalsIgnoreCase("HEAL")){
                             effectComponents.add(new HealComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("SHADOW_STATE")){
+                            effectComponents.add(new ShadowStateComponent(effect));
                         }
                     }
                 }
@@ -109,6 +111,8 @@ public class ArmorEffectFactory {
                             effectComponents.add(new PotionComponent(effect));
                         }else if(effectType.get().equalsIgnoreCase("HEAL")){
                             effectComponents.add(new HealComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("SHADOW_STATE")){
+                            effectComponents.add(new ShadowStateComponent(effect));
                         }
                     }
                 }
@@ -119,6 +123,8 @@ public class ArmorEffectFactory {
                             effectComponents.add(new PotionComponent(effect));
                         }else if(effectType.get().equalsIgnoreCase("HEAL")){
                             effectComponents.add(new HealComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("SHADOW_STATE")){
+                            effectComponents.add(new ShadowStateComponent(effect));
                         }
                     }
                 }
@@ -131,6 +137,22 @@ public class ArmorEffectFactory {
                             effectComponents.add(new PotionComponent(effect));
                         }else if(effectType.get().equalsIgnoreCase("HEAL")){
                             effectComponents.add(new HealComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("SHADOW_STATE")){
+                            effectComponents.add(new ShadowStateComponent(effect));
+                        }
+                    }
+                }
+                case DEATH -> {
+                    Optional<String> effectType = Arrays.stream(effect.split(":")).findFirst();
+                    if (effectType.isPresent()){
+                        if (effectType.get().equalsIgnoreCase("REPLACE")){
+                            effectComponents.add(new ReplaceEntityComponent(effect));
+                        }else if (effectType.get().equalsIgnoreCase("POTION_EFFECT")){
+                            effectComponents.add(new PotionComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("SHADOW_STATE")){
+                            effectComponents.add(new ShadowStateComponent(effect));
                         }
                     }
                 }

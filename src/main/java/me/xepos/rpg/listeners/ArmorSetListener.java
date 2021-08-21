@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -96,6 +97,12 @@ public class ArmorSetListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerDeath(PlayerDeathEvent e){
+        XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(e.getEntity(), true);
+        xrpgPlayer.runArmorEffects(e, ArmorSetTriggerType.DEATH);
+    }
+
     //Trigger after main Event handler
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onShootBow(EntityShootBowEvent e){
@@ -106,7 +113,7 @@ public class ArmorSetListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onExpGain(PlayerExpChangeEvent e){
         if (e.getAmount() > 0){
-            XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(e.getPlayer());
+            XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(e.getPlayer(), true);
             xrpgPlayer.runArmorEffects(e, ArmorSetTriggerType.GAIN_EXP);
         }
     }

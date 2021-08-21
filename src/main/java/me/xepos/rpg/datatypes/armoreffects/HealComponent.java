@@ -6,6 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerEvent;
 
 public class HealComponent implements IEffectComponent{
@@ -29,15 +30,20 @@ public class HealComponent implements IEffectComponent{
 
     @Override
     public void activate(Event event) {
-        if (event instanceof EntityDamageByEntityEvent e){
+        if (event instanceof EntityDamageByEntityEvent e) {
             final LivingEntity livingEntity;
-            if (e.getDamager() instanceof Projectile projectile){
+            if (e.getDamager() instanceof Projectile projectile) {
                 livingEntity = (LivingEntity) projectile.getShooter();
-            }else{
+            } else {
                 livingEntity = (LivingEntity) e.getDamager();
             }
             e.getDamager().sendMessage("Heal: " + amount);
             doHeal(livingEntity);
+        }else if(event instanceof PlayerDeathEvent e){
+            if (amount > 0){
+                e.setCancelled(true);
+                doHeal(e.getEntity());
+            }
         }else if(event instanceof PlayerEvent e){
             doHeal(e.getPlayer());
         }
