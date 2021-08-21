@@ -15,6 +15,7 @@ import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -242,9 +243,11 @@ public class XRPGPlayer {
             handler.clear();
         }
 
-        Utils.removeAllModifiers(player);
-        clearAllPermanentPotionEffects();
-        AttributeModifierManager.getInstance().reapplyHealthAttribute(player, healthLevel);
+        Bukkit.getScheduler().runTask(XRPG.getInstance(), () -> {
+            Utils.removeAllModifiers(player);
+            clearAllPermanentPotionEffects();
+            AttributeModifierManager.getInstance().reapplyHealthAttribute(player, healthLevel);
+        });
     }
 
     public int getCurrentMana() {
