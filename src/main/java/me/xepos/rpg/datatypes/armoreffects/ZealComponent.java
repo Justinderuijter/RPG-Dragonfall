@@ -40,11 +40,13 @@ public class ZealComponent implements IEffectComponent{
                 attacker = (LivingEntity) e.getDamager();
             }
 
+            final double damage = e.getDamage();
             for (int i = 0; i < extraHits; i++) {
                 Bukkit.getScheduler().runTaskLater(XRPG.getInstance(), () -> {
+                    attacker.sendMessage("Attack launched");
                     target.setNoDamageTicks(0);
-                    attacker.attack(target);
-                }, i + 1);
+                    target.damage(damage, attacker);
+                }, (i + 1) * 5);
 
             }
         }

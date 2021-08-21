@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -36,7 +37,7 @@ public class ArmorSetListener implements Listener {
             if (oldItem != null){
                 if (!oldItem.hasItemMeta() || !hasSetPDC(oldItem.getItemMeta())){
                     //Old item does not have setId
-                    event.getPlayer().sendMessage("Added " + getSetId(newItem.getItemMeta()));
+                    event.getPlayer().sendMessage("(1) Added " + getSetId(newItem.getItemMeta()));
                     xrpgPlayer.increaseSetLevel(getSetId(newItem.getItemMeta()));
                 }else if(hasSetPDC(oldItem.getItemMeta())){
                     //Old item has setId
@@ -63,7 +64,7 @@ public class ArmorSetListener implements Listener {
     public void onDamage(EntityDamageEvent event){
         if (event instanceof EntityDamageByEntityEvent e){
             if (e.getEntity() instanceof Player player){
-                XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(player);
+                XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(player, true);
                 if (e.getDamager() instanceof LivingEntity){
                     xrpgPlayer.runArmorEffects(e, ArmorSetTriggerType.DEFEND_MOB);
                 }else if (e.getDamager() instanceof Projectile){
@@ -72,13 +73,23 @@ public class ArmorSetListener implements Listener {
             }
 
             if (e.getDamager() instanceof Player player){
-                XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(player);
+                XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(player, true);
                 if (e.getEntity() instanceof Player){
                     xrpgPlayer.runArmorEffects(e, ArmorSetTriggerType.ATTACK_PLAYER);
                 }else if (e.getEntity() instanceof LivingEntity){
+                    player.sendMessage("Hit entity!");
                     xrpgPlayer.runArmorEffects(e, ArmorSetTriggerType.ATTACK_MOB);
                 }
                 //Player is attacking
+            }else if(e.getDamager() instanceof Projectile projectile){
+                if (projectile.getShooter() instanceof Player player){
+                    XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(player, true);
+                    if (e.getEntity() instanceof Player){
+                        xrpgPlayer.runArmorEffects(e, ArmorSetTriggerType.BOW_PLAYER);
+                    }else if (e.getEntity() instanceof LivingEntity){
+                        xrpgPlayer.runArmorEffects(e, ArmorSetTriggerType.BOW_MOB);
+                    }
+                }
             }
         }else{
             //Natural damage
@@ -90,6 +101,14 @@ public class ArmorSetListener implements Listener {
     public void onShootBow(EntityShootBowEvent e){
         if (!(e.getEntity() instanceof Player player)) return;
 
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onExpGain(PlayerExpChangeEvent e){
+        if (e.getAmount() > 0){
+            XRPGPlayer xrpgPlayer = plugin.getPlayerManager().getXRPGPlayer(e.getPlayer());
+            xrpgPlayer.runArmorEffects(e, ArmorSetTriggerType.GAIN_EXP);
+        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

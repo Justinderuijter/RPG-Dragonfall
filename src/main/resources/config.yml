@@ -78,6 +78,7 @@ general-dependencies:
 
 extra-features:
   armorsets: true
+  disable-milk-drinking: true
 
 safety-options:
   #Checks if the player has modifiers that should have

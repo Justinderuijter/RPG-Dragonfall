@@ -27,6 +27,10 @@ public class ArmorEffectFactory {
                             effectComponents.add(new IncreaseDamageComponent(effect));
                         }else if (effectType.get().equalsIgnoreCase("POTION_EFFECT")){
                             effectComponents.add(new PotionComponent(effect));
+                        }else if (effectType.get().equalsIgnoreCase("ZEAL")){
+                            effectComponents.add(new ZealComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
                         }
                     }
                 }
@@ -37,6 +41,10 @@ public class ArmorEffectFactory {
                             effectComponents.add(new IncreaseDamageComponent(effect));
                         }else if (effectType.get().equalsIgnoreCase("POTION_EFFECT")){
                             effectComponents.add(new PotionComponent(effect));
+                        }else if (effectType.get().equalsIgnoreCase("ZEAL")){
+                            effectComponents.add(new ZealComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
                         }
                     }
                 }
@@ -47,6 +55,8 @@ public class ArmorEffectFactory {
                             effectComponents.add(new ReplaceEntityComponent(effect));
                         }else if (effectType.get().equalsIgnoreCase("POTION_EFFECT")) {
                             effectComponents.add(new PotionComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
                         }
                     }
                 }
@@ -57,6 +67,10 @@ public class ArmorEffectFactory {
                             effectComponents.add(new IncreaseDamageComponent(effect));
                         }else if (effectType.get().equalsIgnoreCase("POTION_EFFECT")){
                             effectComponents.add(new PotionComponent(effect));
+                        }else if (effectType.get().equalsIgnoreCase("ZEAL")){
+                            effectComponents.add(new ZealComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
                         }
                     }
                 }
@@ -67,6 +81,10 @@ public class ArmorEffectFactory {
                             effectComponents.add(new IncreaseDamageComponent(effect));
                         }else if (effectType.get().equalsIgnoreCase("POTION_EFFECT")){
                             effectComponents.add(new PotionComponent(effect));
+                        }else if (effectType.get().equalsIgnoreCase("ZEAL")){
+                            effectComponents.add(new ZealComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
                         }
                     }
                 }
@@ -77,6 +95,8 @@ public class ArmorEffectFactory {
                             effectComponents.add(new IncreaseDamageComponent(effect));
                         }else if (effectType.get().equalsIgnoreCase("POTION_EFFECT")){
                             effectComponents.add(new PotionComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
                         }
                     }
                 }
@@ -87,6 +107,8 @@ public class ArmorEffectFactory {
                             effectComponents.add(new IncreaseDamageComponent(effect));
                         }else if (effectType.get().equalsIgnoreCase("POTION_EFFECT")){
                             effectComponents.add(new PotionComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
                         }
                     }
                 }
@@ -95,6 +117,8 @@ public class ArmorEffectFactory {
                     if (effectType.isPresent()){
                         if (effectType.get().equalsIgnoreCase("POTION_EFFECT")){
                             effectComponents.add(new PotionComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
                         }
                     }
                 }
@@ -105,6 +129,8 @@ public class ArmorEffectFactory {
                             effectComponents.add(new ReplaceEntityComponent(effect));
                         }else if (effectType.get().equalsIgnoreCase("POTION_EFFECT")){
                             effectComponents.add(new PotionComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
                         }
                     }
                 }
@@ -115,6 +141,20 @@ public class ArmorEffectFactory {
                             effectComponents.add(new IncreaseExpComponent(effect));
                         }else if (effectType.get().equalsIgnoreCase("POTION_EFFECT")){
                             effectComponents.add(new PotionComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
+                        }
+                    }
+                }
+                case GAIN_MCMMO_EXP -> {
+                    Optional<String> effectType = Arrays.stream(effect.split(":")).findFirst();
+                    if (effectType.isPresent()){
+                        if (effectType.get().equalsIgnoreCase("INCREASE_MCMMO_EXP")) {
+                            effectComponents.add(new IncreaseMcMMOExpComponent(effect));
+                        }else if (effectType.get().equalsIgnoreCase("POTION_EFFECT")){
+                            effectComponents.add(new PotionComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("HEAL")){
+                            effectComponents.add(new HealComponent(effect));
                         }
                     }
                 }

@@ -13,6 +13,7 @@ import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -240,7 +241,7 @@ public class XRPGPlayer {
 
         SpellmodeUtils.disableSpellmode(this);
         for (PassiveEventHandler handler : handlerList.values()) {
-            if (handler instanceof BowEventHandler bowEventHandler){
+            if (handler instanceof BowEventHandler bowEventHandler) {
                 bowEventHandler.setActiveBowSkill(null);
             }
             handler.clear();
@@ -373,18 +374,18 @@ public class XRPGPlayer {
         this.healthLevel = healthLevel;
     }
 
-    public void addPermanentPotionEffect(PotionEffectType potionEffectType, int amplifier){
+    public void addPermanentPotionEffect(PotionEffectType potionEffectType, int amplifier) {
         this.permanentEffects.add(potionEffectType);
         player.addPotionEffect(new PotionEffect(potionEffectType, Integer.MAX_VALUE, amplifier, false, false, true));
     }
 
-    public void removePermanentPotionEffect(PotionEffectType potionEffectType){
+    public void removePermanentPotionEffect(PotionEffectType potionEffectType) {
         this.permanentEffects.remove(potionEffectType);
         player.removePotionEffect(potionEffectType);
     }
 
-    public void clearAllPermanentPotionEffects(){
-        for (PotionEffectType potionEffectType:this.permanentEffects) {
+    public void clearAllPermanentPotionEffects() {
+        for (PotionEffectType potionEffectType : this.permanentEffects) {
             removePermanentPotionEffect(potionEffectType);
         }
     }
@@ -395,7 +396,7 @@ public class XRPGPlayer {
     //                              //
     //////////////////////////////////
 
-    public boolean canGainEXP(){
+    public boolean canGainEXP() {
         return !StringUtils.isBlank(this.classId) && this.isClassEnabled;
     }
 
@@ -470,7 +471,7 @@ public class XRPGPlayer {
         this.skillUnlockPoints = skillUnlockPoints;
     }
 
-    public void addSkillUnlockPoints(byte skillUnlockPoints){
+    public void addSkillUnlockPoints(byte skillUnlockPoints) {
         this.skillUnlockPoints += skillUnlockPoints;
     }
 
@@ -482,17 +483,17 @@ public class XRPGPlayer {
         this.skillUpgradePoints = skillUpgradePoints;
     }
 
-    public void addSkillUpgradePoints(byte skillUpgradePoints){
+    public void addSkillUpgradePoints(byte skillUpgradePoints) {
         this.skillUpgradePoints += skillUpgradePoints;
     }
 
-    public boolean resetSkillTree(){
+    public boolean resetSkillTree() {
         byte upgradePointsToRefund = 0;
         byte unlockPointsToRefund = 0;
         Set<String> processedSkills = new HashSet<>();
 
         Iterator<Map.Entry<String, XRPGSkill>> activeIterator = this.getActiveHandler().getSkills().entrySet().iterator();
-        while(activeIterator.hasNext()){
+        while (activeIterator.hasNext()) {
             Map.Entry<String, XRPGSkill> skillEntry = activeIterator.next();
 
             final XRPGSkill skill = skillEntry.getValue();
@@ -534,15 +535,15 @@ public class XRPGPlayer {
             this.getActiveHandler().removeSkill(skillId);
         }*/
 
-        for (String handlerName :this.getPassiveHandlerList().keySet()) {
+        for (String handlerName : this.getPassiveHandlerList().keySet()) {
             PassiveEventHandler handler = this.getPassiveEventHandler(handlerName);
 
-            if (handler instanceof BowEventHandler bowEventHandler){
+            if (handler instanceof BowEventHandler bowEventHandler) {
                 bowEventHandler.setActiveBowSkill(null);
             }
 
             Iterator<Map.Entry<String, XRPGSkill>> passiveIterator = handler.getSkills().entrySet().iterator();
-            while (passiveIterator.hasNext()){
+            while (passiveIterator.hasNext()) {
                 Map.Entry<String, XRPGSkill> skillEntry = passiveIterator.next();
 
                 final XRPGSkill skill = skillEntry.getValue();
@@ -616,7 +617,7 @@ public class XRPGPlayer {
     //                              //
     //////////////////////////////////
 
-    public int getSetLevel(String setId){
+    public int getSetLevel(String setId) {
         Integer level = armorSetLevels.get(setId);
 
         if (level != null) return level;
@@ -624,53 +625,64 @@ public class XRPGPlayer {
         return 0;
     }
 
-    public int increaseSetLevel(String setId){
+    public int increaseSetLevel(String setId) {
         ArmorSetData armorset = XRPG.getInstance().getArmorManager().getArmorSet(setId);
+        if (armorset == null) return 0;
         Integer level = armorSetLevels.get(setId);
-        if (level != null){
+        //Edit existing set
+        if (level != null) {
 
             final int oldLevel = level;
             level += 1;
             armorSetLevels.put(setId, level);
 
-            if (armorset != null){
-                HashMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(oldLevel, level);
-                if (effects != null){
-                    armorSetEffects.put(setId, effects);
-                }
+            HashMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(oldLevel, level);
+            if (effects != null) {
+                armorSetEffects.put(setId, effects);
             }
+
             return level;
         }
+        //New set
         armorSetLevels.put(setId, 1);
+
+        HashMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(0, 1);
+        if (effects != null) {
+            if (effects.isEmpty()){
+                Bukkit.getLogger().warning("Effects are empty");
+            }
+            armorSetEffects.put(setId, effects);
+        }
+
         return 1;
     }
 
-    public int decreaseSetLevel(String setId){
+    public int decreaseSetLevel(String setId) {
         final int level = armorSetLevels.get(setId) - 1;
-        if (level == 0){
+        if (level == 0) {
             armorSetLevels.remove(setId);
             armorSetEffects.remove(setId);
             return 0;
         }
         armorSetLevels.put(setId, level);
         ArmorSetData armorset = XRPG.getInstance().getArmorManager().getArmorSet(setId);
-        if (armorset != null){
+        if (armorset != null) {
             HashMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(level + 1, level);
-            if (effects != null){
+            if (effects != null) {
                 armorSetEffects.put(setId, effects);
             }
         }
         return level;
     }
 
-    public void runArmorEffects(Event event, ArmorSetTriggerType type){
-        for (HashMap<ArmorSetTriggerType, ArmorEffect> e :this.armorSetEffects.values()) {
+    public void runArmorEffects(Event event, ArmorSetTriggerType type) {
+        for (HashMap<ArmorSetTriggerType, ArmorEffect> e : this.armorSetEffects.values()) {
             ArmorEffect effect = e.get(type);
             if (effect != null) effect.activate(event);
         }
     }
 
-    public void getArmorSetAmount(){
+    public void getArmorSetAmount() {
         player.sendMessage("Amount: " + armorSetEffects.size());
     }
 
@@ -728,10 +740,9 @@ public class XRPGPlayer {
         }
 
 
-
         PlayerData playerData = new PlayerData(this.classId, this.lastClassChangeTime, this.lastBookReceivedTime, this.isClassEnabled);
         if (StringUtils.isNotBlank(this.classId)) {
-            playerData.addClassData(this.classId, new ClassData(this.level, player.getHealth(),this.currentExp, (byte) this.currentMana, this.levelMana, this.healthLevel, this.skillUpgradePoints, this.skillUnlockPoints, skills, this.spellKeybinds));
+            playerData.addClassData(this.classId, new ClassData(this.level, player.getHealth(), this.currentExp, (byte) this.currentMana, this.levelMana, this.healthLevel, this.skillUpgradePoints, this.skillUnlockPoints, skills, this.spellKeybinds));
         }
 
         return playerData;

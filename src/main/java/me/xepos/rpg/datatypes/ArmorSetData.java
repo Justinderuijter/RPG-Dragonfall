@@ -142,14 +142,22 @@ public class ArmorSetData {
         newLevel = getHighestAvailableLevel(newLevel);
         if (oldLevel == newLevel) return null;
 
+        Bukkit.getLogger().info("EventSection = " + newLevel);
         ConfigurationSection eventSection = bonusSection.getConfigurationSection(String.valueOf(newLevel));
 
         HashMap<ArmorSetTriggerType, ArmorEffect> armorEffects = new HashMap<>();
-        if (eventSection == null) return armorEffects;
+        if (eventSection == null){
+            Bukkit.getLogger().warning("EventSection does not exist for " + setName + "!");
+            return armorEffects;
+        }
 
         for (String eventKey:eventSection.getKeys(false)) {
             ConfigurationSection eventVariables = eventSection.getConfigurationSection(eventKey);
-            if (eventVariables == null) continue;
+            Bukkit.getLogger().info("EventKey is " + eventKey);
+            if (eventVariables == null) {
+                Bukkit.getLogger().warning("EventVariables are null for " + setName + "!");
+                continue;
+            }
             ArmorSetTriggerType triggerType = ArmorSetTriggerType.valueOf(eventKey.toUpperCase());
 
             HashMap<ArmorSetTriggerType, List<IConditionComponent>> conditions = new HashMap<>();
@@ -158,7 +166,10 @@ public class ArmorSetData {
             HashMap<ArmorSetTriggerType, List<IEffectComponent>> effects = new HashMap<>();
             effects.put(triggerType, ArmorEffectFactory.getEffects(eventVariables, triggerType));
 
-            ArmorEffect armorEffect = new ArmorEffect(100, -1, ConditionType.AND, conditions.get(triggerType), effects.get(triggerType));
+            final double cooldown = eventVariables.getDouble("cooldown", -1);
+            final double chance = eventVariables.getDouble("chance", 100);
+
+            ArmorEffect armorEffect = new ArmorEffect(chance, cooldown, ConditionType.AND, conditions.get(triggerType), effects.get(triggerType));
             armorEffects.put(triggerType, armorEffect);
         }
 
@@ -195,9 +206,11 @@ public class ArmorSetData {
     }
 
     private int getHighestAvailableLevel(int level){
-        if (level > highestBonus) return highestBonus;
+        Bukkit.getLogger().info("getHighestAvailableLevel input: " + level);
+        if (level >= highestBonus) return highestBonus;
+        if (level == lowestBonus) return lowestBonus;
 
-        for (int i = level; i > lowestBonus; i--) {
+        for (int i = level; i >= lowestBonus; i--) {
             if (bonusSection.contains(String.valueOf(i))){
                 return i;
             }

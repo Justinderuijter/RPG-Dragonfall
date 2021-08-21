@@ -3,6 +3,7 @@ package me.xepos.rpg.datatypes;
 import me.xepos.rpg.datatypes.armorconditions.ConditionType;
 import me.xepos.rpg.datatypes.armorconditions.IConditionComponent;
 import me.xepos.rpg.datatypes.armoreffects.IEffectComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 
 import java.util.List;
@@ -27,13 +28,15 @@ public class ArmorEffect {
 
     public void activate(Event event){
         if (System.currentTimeMillis() > lastUse + cooldown * 1000) {
-
+            Bukkit.getLogger().info("Passed cooldown check");
             boolean canProc = true;
             if (!conditionComponents.isEmpty()){
+                Bukkit.getLogger().info("Conditions is NOT empty");
                 canProc = conditionType == ConditionType.AND ? canTriggerAND(event) : canTriggerOR(event);
             }
 
             if (canProc) {
+                Bukkit.getLogger().info("Procing effects");
                 for (IEffectComponent effect : effects) {
                     effect.activate(event);
                 }

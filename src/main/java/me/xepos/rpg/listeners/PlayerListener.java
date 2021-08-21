@@ -17,10 +17,7 @@ import me.xepos.rpg.utils.PacketUtils;
 import me.xepos.rpg.utils.SpellmodeUtils;
 import me.xepos.rpg.utils.Utils;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -224,6 +221,11 @@ public class PlayerListener implements Listener {
     public void onPlayerConsumeItem(PlayerItemConsumeEvent e) {
         Player player = e.getPlayer();
         XRPGPlayer xrpgPlayer = playerManager.getXRPGPlayer(player);
+        if (plugin.getConfig().getBoolean("extra-feature.disable-milk-drinking", false) && e.getItem().getType() == Material.MILK_BUCKET){
+            e.setCancelled(true);
+            return;
+        }
+
         if (xrpgPlayer != null) {
             xrpgPlayer.getPassiveEventHandler("CONSUME_ITEM");
         }
