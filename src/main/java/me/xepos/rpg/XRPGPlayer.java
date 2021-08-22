@@ -59,7 +59,7 @@ public class XRPGPlayer {
 
     //Armor
     private final HashMap<String, Integer> armorSetLevels = new HashMap<>();
-    private final HashMap<String, HashMap<ArmorSetTriggerType, ArmorEffect>> armorSetEffects = new HashMap<>();
+    private final HashMap<String, EnumMap<ArmorSetTriggerType, ArmorEffect>> armorSetEffects = new HashMap<>();
 
     public XRPGPlayer(UUID playerId, PlayerData playerData) {
         XRPG plugin = XRPG.getInstance();
@@ -636,7 +636,7 @@ public class XRPGPlayer {
             level += 1;
             armorSetLevels.put(setId, level);
 
-            HashMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(oldLevel, level);
+            EnumMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(oldLevel, level);
             if (effects != null) {
                 armorSetEffects.put(setId, effects);
             }
@@ -646,7 +646,7 @@ public class XRPGPlayer {
         //New set
         armorSetLevels.put(setId, 1);
 
-        HashMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(0, 1);
+        EnumMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(0, 1);
         if (effects != null) {
             if (effects.isEmpty()){
                 Bukkit.getLogger().warning("Effects are empty");
@@ -667,7 +667,7 @@ public class XRPGPlayer {
         armorSetLevels.put(setId, level);
         ArmorSetData armorset = XRPG.getInstance().getArmorManager().getArmorSet(setId);
         if (armorset != null) {
-            HashMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(level + 1, level);
+            EnumMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(level + 1, level);
             if (effects != null) {
                 armorSetEffects.put(setId, effects);
             }
@@ -676,7 +676,7 @@ public class XRPGPlayer {
     }
 
     public void runArmorEffects(Event event, ArmorSetTriggerType type) {
-        for (HashMap<ArmorSetTriggerType, ArmorEffect> e : this.armorSetEffects.values()) {
+        for (EnumMap<ArmorSetTriggerType, ArmorEffect> e : this.armorSetEffects.values()) {
             ArmorEffect effect = e.get(type);
             if (effect != null) effect.activate(event);
         }

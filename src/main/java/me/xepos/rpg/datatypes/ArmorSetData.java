@@ -138,14 +138,14 @@ public class ArmorSetData {
     }
 
     @Nullable
-    public HashMap<ArmorSetTriggerType, ArmorEffect> getEffectsForLevel(int oldLevel, int newLevel){
+    public EnumMap<ArmorSetTriggerType, ArmorEffect> getEffectsForLevel(int oldLevel, int newLevel){
         newLevel = getHighestAvailableLevel(newLevel);
         if (oldLevel == newLevel) return null;
 
         Bukkit.getLogger().info("EventSection = " + newLevel);
         ConfigurationSection eventSection = bonusSection.getConfigurationSection(String.valueOf(newLevel));
 
-        HashMap<ArmorSetTriggerType, ArmorEffect> armorEffects = new HashMap<>();
+        EnumMap<ArmorSetTriggerType, ArmorEffect> armorEffects = new EnumMap<>(ArmorSetTriggerType.class);
         if (eventSection == null){
             Bukkit.getLogger().warning("EventSection does not exist for " + setName + "!");
             return armorEffects;
