@@ -124,7 +124,7 @@ public final class XRPG extends JavaPlugin {
         this.armorManager = new ArmorManager();
 
 
-        for (Map.Entry<String, ArmorSetData> entry :new ArmorLoader(this).initialize().entrySet()) {
+        for (Map.Entry<String, ArmorSet> entry :new ArmorLoader(this).initialize().entrySet()) {
             armorManager.addArmorSet(entry.getKey(), entry.getValue());
         }
 

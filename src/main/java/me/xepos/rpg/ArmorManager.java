@@ -1,24 +1,24 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.datatypes.ArmorSetData;
+import me.xepos.rpg.datatypes.ArmorSet;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Set;
 
 public class ArmorManager {
-    private final HashMap<String, ArmorSetData> armorSets;
+    private final HashMap<String, ArmorSet> armorSets;
 
     public ArmorManager(){
         this.armorSets = new HashMap<>();
     }
 
     @Nullable
-    public ArmorSetData getArmorSet(String armorSetId){
+    public ArmorSet getArmorSet(String armorSetId){
         return armorSets.get(armorSetId);
     }
 
-    public void addArmorSet(String armorSetId, ArmorSetData set){
+    public void addArmorSet(String armorSetId, ArmorSet set){
         armorSets.put(armorSetId, set);
     }
 

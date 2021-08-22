@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 @SuppressWarnings("unused")
-public class ArmorSetData {
+public class ArmorSet {
     private final String setId;
     private final String setName;
     private final ConfigurationSection itemSection;
@@ -29,7 +29,7 @@ public class ArmorSetData {
     private int lowestBonus;
     private int highestBonus;
 
-    public ArmorSetData(String setId, ConfigurationSection configurationSection){
+    public ArmorSet(String setId, ConfigurationSection configurationSection){
         this.setId = setId;
         this.setName = configurationSection.getString("name");
         this.itemSection = configurationSection.getConfigurationSection("items");

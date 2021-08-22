@@ -626,7 +626,7 @@ public class XRPGPlayer {
     }
 
     public int increaseSetLevel(String setId) {
-        ArmorSetData armorset = XRPG.getInstance().getArmorManager().getArmorSet(setId);
+        ArmorSet armorset = XRPG.getInstance().getArmorManager().getArmorSet(setId);
         if (armorset == null) return 0;
         Integer level = armorSetLevels.get(setId);
         //Edit existing set
@@ -665,7 +665,7 @@ public class XRPGPlayer {
             return 0;
         }
         armorSetLevels.put(setId, level);
-        ArmorSetData armorset = XRPG.getInstance().getArmorManager().getArmorSet(setId);
+        ArmorSet armorset = XRPG.getInstance().getArmorManager().getArmorSet(setId);
         if (armorset != null) {
             EnumMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(level + 1, level);
             if (effects != null) {

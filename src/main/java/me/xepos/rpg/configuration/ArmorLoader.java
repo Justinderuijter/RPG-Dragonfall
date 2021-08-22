@@ -1,7 +1,7 @@
 package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.XRPG;
-import me.xepos.rpg.datatypes.ArmorSetData;
+import me.xepos.rpg.datatypes.ArmorSet;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -13,10 +13,10 @@ public class ArmorLoader extends XRPGLoader{
         super(plugin, "armor", "armorsets");
     }
 
-    public HashMap<String, ArmorSetData> initialize() {
+    public HashMap<String, ArmorSet> initialize() {
         extractAllSkillData();
 
-        HashMap<String, ArmorSetData> configurationHashMap = new HashMap<>();
+        HashMap<String, ArmorSet> configurationHashMap = new HashMap<>();
 
         for (File file : getLoaderFolder().listFiles()) {
             if (!file.getName().endsWith(".yml")) continue;
@@ -25,7 +25,7 @@ public class ArmorLoader extends XRPGLoader{
 
             FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
 
-            configurationHashMap.put(fileName, new ArmorSetData(fileName, fileConfiguration));
+            configurationHashMap.put(fileName, new ArmorSet(fileName, fileConfiguration));
         }
 
         return configurationHashMap;

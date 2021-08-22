@@ -3,7 +3,7 @@ package me.xepos.rpg.commands;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.SkillLoader;
-import me.xepos.rpg.datatypes.ArmorSetData;
+import me.xepos.rpg.datatypes.ArmorSet;
 import me.xepos.rpg.datatypes.ClassInfo;
 import me.xepos.rpg.datatypes.SkillData;
 import me.xepos.rpg.utils.Utils;
@@ -144,9 +144,9 @@ public class XRPGAdminCommand extends BaseCommand {
                 return result;
             case 5:
                 if (strings[1].equalsIgnoreCase("create") && strings[2].equalsIgnoreCase("armorset")){
-                    ArmorSetData armorSetData = plugin.getArmorManager().getArmorSet(strings[3]);
-                    if (armorSetData != null){
-                        for (String tab : armorSetData.getValidPieces()){
+                    ArmorSet armorSet = plugin.getArmorManager().getArmorSet(strings[3]);
+                    if (armorSet != null){
+                        for (String tab : armorSet.getValidPieces()){
                             if (tab.toLowerCase().startsWith(strings[4].toLowerCase())) {
                                 result.add(tab);
                             }
@@ -263,9 +263,9 @@ public class XRPGAdminCommand extends BaseCommand {
                     return true;
                 }
             }else if(strings[2].equalsIgnoreCase("armorset")){
-                ArmorSetData armorSetData = plugin.getArmorManager().getArmorSet(strings[3]);
-                if (armorSetData != null){
-                    ItemStack setItem = armorSetData.generateArmorPiece(strings[4]);
+                ArmorSet armorSet = plugin.getArmorManager().getArmorSet(strings[3]);
+                if (armorSet != null){
+                    ItemStack setItem = armorSet.generateArmorPiece(strings[4]);
                     xrpgTarget.getPlayer().getInventory().addItem(setItem);
                 }
 
