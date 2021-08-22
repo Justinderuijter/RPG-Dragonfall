@@ -6,7 +6,9 @@ import me.xepos.rpg.datatypes.armoreffects.IEffectComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ArmorEffect {
     private final double chance;
@@ -14,6 +16,7 @@ public class ArmorEffect {
     private final ConditionType conditionType;
     private final List<IConditionComponent> conditionComponents;
     private final List<IEffectComponent> effects;
+    private final List<AttributeModifierData> permanentModifiers;
 
     private long lastUse;
 
@@ -24,23 +27,26 @@ public class ArmorEffect {
         this.cooldown = cooldown;
         this.effects = effects;
         this.lastUse = System.currentTimeMillis();
+        this.permanentModifiers = new ArrayList<>();
     }
 
     public void activate(Event event){
         if (System.currentTimeMillis() > lastUse + cooldown * 1000) {
             Bukkit.getLogger().info("Passed cooldown check");
-            boolean canProc = true;
-            if (!conditionComponents.isEmpty()){
-                Bukkit.getLogger().info("Conditions is NOT empty");
-                canProc = conditionType == ConditionType.AND ? canTriggerAND(event) : canTriggerOR(event);
-            }
-
-            if (canProc) {
-                Bukkit.getLogger().info("Procing effects");
-                for (IEffectComponent effect : effects) {
-                    effect.activate(event);
+            if (this.chance == 100 || this.chance <= ThreadLocalRandom.current().nextDouble() * 100) {
+                Bukkit.getLogger().info("Passed random check");
+                boolean canProc = true;
+                if (!conditionComponents.isEmpty()) {
+                    canProc = conditionType == ConditionType.AND ? canTriggerAND(event) : canTriggerOR(event);
                 }
-                lastUse = System.currentTimeMillis();
+
+                if (canProc) {
+                    Bukkit.getLogger().info("Procing effects");
+                    for (IEffectComponent effect : effects) {
+                        effect.activate(event);
+                    }
+                    lastUse = System.currentTimeMillis();
+                }
             }
         }
     }

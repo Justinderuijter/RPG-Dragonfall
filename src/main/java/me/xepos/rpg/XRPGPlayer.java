@@ -657,6 +657,7 @@ public class XRPGPlayer {
         return 1;
     }
 
+    //TODO: make ArmorSetData class
     public int decreaseSetLevel(String setId) {
         final int level = armorSetLevels.get(setId) - 1;
         if (level == 0) {

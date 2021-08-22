@@ -27,7 +27,7 @@ public class ArmorSetListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onChangeArmor(PlayerArmorChangeEvent event){
         ItemStack newItem = event.getNewItem();
         ItemStack oldItem = event.getOldItem();
@@ -47,7 +47,9 @@ public class ArmorSetListener implements Listener {
                     if (!newSetId.equals(oldSetId)){
                         event.getPlayer().sendMessage("Added " + getSetId(newItem.getItemMeta()));
                         event.getPlayer().sendMessage("removed " + getSetId(oldItem.getItemMeta()));
-                        xrpgPlayer.decreaseSetLevel(oldSetId);
+                        if (xrpgPlayer.decreaseSetLevel(oldSetId) == 0){
+
+                        }
                         xrpgPlayer.increaseSetLevel(newSetId);
                     }
                 }
