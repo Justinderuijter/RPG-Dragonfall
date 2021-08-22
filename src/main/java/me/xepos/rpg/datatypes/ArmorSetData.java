@@ -6,11 +6,16 @@ import java.util.EnumMap;
 
 public class ArmorSetData {
     private byte level;
-    private final EnumMap<ArmorSetTriggerType, ArmorEffect> armorEffects;
+    private EnumMap<ArmorSetTriggerType, ArmorEffect> armorEffects;
 
     public ArmorSetData(byte level, EnumMap<ArmorSetTriggerType, ArmorEffect> armorEffects){
         this.level = level;
         this.armorEffects = armorEffects;
+    }
+
+    public ArmorSetData(byte level){
+        this.level = level;
+        this.armorEffects = new EnumMap<>(ArmorSetTriggerType.class);
     }
 
     public byte getLevel() {
@@ -23,5 +28,9 @@ public class ArmorSetData {
 
     public EnumMap<ArmorSetTriggerType, ArmorEffect> getArmorEffects() {
         return armorEffects;
+    }
+
+    public void setArmorEffects(EnumMap<ArmorSetTriggerType, ArmorEffect> effects) {
+        this.armorEffects = effects;
     }
 }
