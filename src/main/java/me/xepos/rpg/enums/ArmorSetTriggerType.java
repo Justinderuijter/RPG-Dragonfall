@@ -12,5 +12,9 @@ public enum ArmorSetTriggerType {
     KILL_MOB,
     GAIN_EXP,
     GAIN_MCMMO_EXP,
-    DEATH
+    DEATH,
+    SET_BONUS_CHANGE,
+    TIME,
+    TIME_CHANGE_DAY,
+    TIME_CHANGE_NIGHT
 }

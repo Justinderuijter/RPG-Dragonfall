@@ -105,6 +105,13 @@ public class ArmorSet {
             }
             meta.setLore(lore);
             meta.getPersistentDataContainer().set(new NamespacedKey(XRPG.getInstance(), "set"), PersistentDataType.STRING, this.setId);
+
+            final int modelData = specificItemSection.getInt("customModelData", 0);
+            if (modelData != 0){
+                meta.setCustomModelData(modelData);
+            }
+
+
             material.setItemMeta(meta);
 
 

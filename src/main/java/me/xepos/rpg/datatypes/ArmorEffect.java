@@ -3,10 +3,10 @@ package me.xepos.rpg.datatypes;
 import me.xepos.rpg.datatypes.armorconditions.ConditionType;
 import me.xepos.rpg.datatypes.armorconditions.IConditionComponent;
 import me.xepos.rpg.datatypes.armoreffects.IEffectComponent;
-import org.bukkit.Bukkit;
+import me.xepos.rpg.datatypes.armoreffects.IModifierHolder;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -16,7 +16,6 @@ public class ArmorEffect {
     private final ConditionType conditionType;
     private final List<IConditionComponent> conditionComponents;
     private final List<IEffectComponent> effects;
-    private final List<AttributeModifierData> permanentModifiers;
 
     private long lastUse;
 
@@ -27,21 +26,17 @@ public class ArmorEffect {
         this.cooldown = cooldown;
         this.effects = effects;
         this.lastUse = System.currentTimeMillis();
-        this.permanentModifiers = new ArrayList<>();
     }
 
     public void activate(Event event){
         if (System.currentTimeMillis() > lastUse + cooldown * 1000) {
-            Bukkit.getLogger().info("Passed cooldown check");
             if (this.chance == 100 || this.chance <= ThreadLocalRandom.current().nextDouble() * 100) {
-                Bukkit.getLogger().info("Passed random check");
                 boolean canProc = true;
                 if (!conditionComponents.isEmpty()) {
                     canProc = conditionType == ConditionType.AND ? canTriggerAND(event) : canTriggerOR(event);
                 }
 
                 if (canProc) {
-                    Bukkit.getLogger().info("Procing effects");
                     for (IEffectComponent effect : effects) {
                         effect.activate(event);
                     }
@@ -67,5 +62,17 @@ public class ArmorEffect {
             }
         }
         return false;
+    }
+
+    public List<IEffectComponent> getEffectComponents(){
+        return effects;
+    }
+
+    public void triggerModifiers(LivingEntity livingEntity){
+        for (IEffectComponent component:effects) {
+            if (component instanceof IModifierHolder holder){
+                holder.activate(livingEntity);
+            }
+        }
     }
 }

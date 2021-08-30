@@ -42,97 +42,123 @@
 #    effects: <effects are available in enchantments.yml>
 #    # E.g.: - 'INCREASED_DAMAGE:10'
 
-name: '&5&lShadow Armor'
+name: '&d&lNight Stalker Armor'
 settings:
   equipped:
-    - '&a&l(!) &aYou have activated the Shadow set!'
+    - '&a&l(!) &aYou have activated the KOTH set!'
   unequipped:
-    - '&c&l(!) &cYou have deactivated the Shadow set!'
+    - '&c&l(!) &cYou have deactivated the KOTH set!'
 items:
   helmet:
-    name: "&5Shadow Hood"
+    name: "&4Night Stalker Mask"
     material: "DIAMOND_HELMET"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 60
+    customModelData: 40
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []
     #  - 'HIDE_POTION_EFFECTS' # An Example Item Flag
     lore:
-      - ''
-      - '&5&lSHADOW REALM BONUS'
-      - '&5&l(2) &5Instead of dying, you get'
-      - '&5sent into a Shadow State, healing you'
-      - '&5for half of your maximum hp'
-      - '&5and making you invisible'
-      - '&5for 5 seconds.'
-      - '&5This effect impairs your vision'
-      - '&5and has a 30 second cooldown.'
+      - ""
+      - "&4&lNIGHT STALKER SET BONUS"
+      - "&4&l(2) &4You gain 10% bonus movespeed"
+      - "&4during the night."
+      - "&4&l(4) &4You gain 20% bonus damage"
+      - "&4during the night."
   chestplate:
-    name: "&5Shadow Cloak"
+    name: "&4Night Stalker Jacket"
     material: "DIAMOND_CHESTPLATE"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 60
+    customModelData: 40
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []
     #  - 'HIDE_POTION_EFFECTS' # An Example Item Flag
     lore:
-      - ''
-      - '&5&lSHADOW REALM BONUS'
-      - '&5&l(2) &5Instead of dying, you get'
-      - '&5sent into a Shadow State, healing you'
-      - '&5for half of your maximum hp'
-      - '&5and making you invisible'
-      - '&5for 5 seconds.'
-      - '&5This effect impairs your vision'
-      - '&5and has a 30 second cooldown.'
+      - ""
+      - "&4&lNIGHT STALKER SET BONUS"
+      - "&4&l(2) &4You gain 10% bonus movespeed"
+      - "&4during the night."
+      - "&4&l(4) &4You gain 20% bonus damage"
+      - "&4during the night."
   leggings:
-    name: "&5Shadow Leggings"
+    name: "&4Night Stalker Trousers"
     material: "DIAMOND_LEGGINGS"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 60
+    customModelData: 40
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []
     #  - 'HIDE_POTION_EFFECTS' # An Example Item Flag
     lore:
-      - ''
-      - '&5&lSHADOW REALM BONUS'
-      - '&5&l(2) &5Instead of dying, you get'
-      - '&5sent into a Shadow State, healing you'
-      - '&5for half of your maximum hp'
-      - '&5and making you invisible'
-      - '&5for 5 seconds.'
-      - '&5This effect impairs your vision'
-      - '&5and has a 30 second cooldown.'
+      - ""
+      - "&4&lNIGHT STALKER SET BONUS"
+      - "&4&l(2) &4You gain 10% bonus movespeed"
+      - "&4during the night."
+      - "&4&l(4) &4You gain 20% bonus damage"
+      - "&4during the night."
   boots:
-    name: "&5Shadow Long Boots"
+    name: "&4Night Stalker Boots"
     material: "DIAMOND_BOOTS"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 60
+    customModelData: 40
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []
     #  - 'HIDE_POTION_EFFECTS' # An Example Item Flag
     lore:
-      - ''
-      - '&5&lSHADOW REALM BONUS'
-      - '&5&l(2) &5Instead of dying, you get'
-      - '&5sent into a Shadow State, healing you'
-      - '&5for half of your maximum hp'
-      - '&5and making you invisible'
-      - '&5for 5 seconds.'
-      - '&5This effect impairs your vision'
-      - '&5and has a 30 second cooldown.'
+      - ""
+      - "&4&lNIGHT STALKER SET BONUS"
+      - "&4&l(2) &4You gain 10% bonus movespeed"
+      - "&4during the night."
+      - "&4&l(4) &4You gain 20% bonus damage"
+      - "&4during the night."
 bonuses:
   2:
-    DEATH:
-      cooldown: 30
+    TIME_CHANGE_NIGHT:
       effects:
-        - 'SHADOW_STATE'
-        - 'HEAL:50%'
+        - 'ADD_MODIFIER:NIGHT_STALKER:GENERIC_MOVEMENT_SPEED:0.1'
+    TIME_CHANGE_DAY:
+      effects:
+        - 'REMOVE_MODIFIER:NIGHT_STALKER'
+    SET_BONUS_CHANGE:
+      conditions:
+        - 'TIME:12969:24000'
+      effects:
+        - 'ADD_MODIFIER:NIGHT_STALKER:GENERIC_MOVEMENT_SPEED:0.1'
+  4:
+    TIME_CHANGE_NIGHT:
+      effects:
+        - 'ADD_MODIFIER:NIGHT_STALKER:GENERIC_MOVEMENT_SPEED:0.1'
+    TIME_CHANGE_DAY:
+      effects:
+        - 'REMOVE_MODIFIER:NIGHT_STALKER'
+    SET_BONUS_CHANGE:
+      conditions:
+        - 'TIME:12969:24000'
+      effects:
+        - 'ADD_MODIFIER:NIGHT_STALKER:GENERIC_MOVEMENT_SPEED:0.1'
+    ATTACK_MOB:
+      conditions:
+        - 'TIME:NIGHT'
+      effects:
+        - 'INCREASE_DAMAGE:20%'
+    ATTACK_PLAYER:
+      conditions:
+        - 'TIME:NIGHT'
+      effects:
+        - 'INCREASE_DAMAGE:20%'
+    BOW_PLAYER:
+      conditions:
+        - 'TIME:NIGHT'
+      effects:
+        - 'INCREASE_DAMAGE:20%'
+    BOW_MOB:
+      conditions:
+        - 'TIME:NIGHT'
+      effects:
+        - 'INCREASE_DAMAGE:20%'

@@ -1,11 +1,9 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.datatypes.armorconditions.BossCondition;
-import me.xepos.rpg.datatypes.armorconditions.HealthCondition;
-import me.xepos.rpg.datatypes.armorconditions.IConditionComponent;
-import me.xepos.rpg.datatypes.armorconditions.LMCondition;
+import me.xepos.rpg.datatypes.armorconditions.*;
 import me.xepos.rpg.datatypes.armoreffects.*;
 import me.xepos.rpg.enums.ArmorSetTriggerType;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -139,6 +137,8 @@ public class ArmorEffectFactory {
                             effectComponents.add(new HealComponent(effect));
                         }else if(effectType.get().equalsIgnoreCase("SHADOW_STATE")){
                             effectComponents.add(new ShadowStateComponent(effect));
+                        }else if(effectType.get().equalsIgnoreCase("INCREASE_DROPS")){
+                            effectComponents.add(new IncreaseLootComponent(effect));
                         }
                     }
                 }
@@ -180,6 +180,30 @@ public class ArmorEffectFactory {
                         }
                     }
                 }
+                case SET_BONUS_CHANGE -> {
+                    Optional<String> effectType = Arrays.stream(effect.split(":")).findFirst();
+                    if (effectType.isPresent()){
+                        if (effectType.get().equalsIgnoreCase("ADD_MODIFIER") || effectType.get().equalsIgnoreCase("REMOVE_MODIFIER")) {
+                            effectComponents.add(new ModifierComponent(effect));
+                        }
+                    }
+                }
+                case TIME_CHANGE_DAY -> {
+                    Optional<String> effectType = Arrays.stream(effect.split(":")).findFirst();
+                    if (effectType.isPresent()){
+                        if (effectType.get().equalsIgnoreCase("ADD_MODIFIER") || effectType.get().equalsIgnoreCase("REMOVE_MODIFIER")) {
+                            effectComponents.add(new ModifierComponent(effect));
+                        }
+                    }
+                }
+                case TIME_CHANGE_NIGHT -> {
+                    Optional<String> effectType = Arrays.stream(effect.split(":")).findFirst();
+                    if (effectType.isPresent()){
+                        if (effectType.get().equalsIgnoreCase("ADD_MODIFIER") || effectType.get().equalsIgnoreCase("REMOVE_MODIFIER")) {
+                            effectComponents.add(new ModifierComponent(effect));
+                        }
+                    }
+                }
             }
         });
 
@@ -195,10 +219,10 @@ public class ArmorEffectFactory {
             String conditionArgs = "";
 
             if (condition.contains(":")){
-                coreCondition = condition.substring(0, condition.indexOf(':') - 1);
+                coreCondition = condition.substring(0, condition.indexOf(':'));
                 conditionArgs =  condition.substring(condition.indexOf(':') + 1);
             }
-
+            Bukkit.getLogger().info("Core condition: " + coreCondition);
 
             switch (coreCondition.toUpperCase()){
                 case "BOSS":
@@ -209,6 +233,18 @@ public class ArmorEffectFactory {
                     break;
                 case "LMCondition":
                     conditionComponents.add(new LMCondition(levelledKey, conditionArgs));
+                    break;
+                case "TIME":
+                    conditionComponents.add(new TimeCondition(conditionArgs));
+                    break;
+                case "TIME_CHANGE_DAY":
+                    conditionComponents.add(new TimeChangeDayCondition());
+                    break;
+                case "TIME_CHANGE_NIGHT":
+                    conditionComponents.add(new TimeChangeNightCondition());
+                    break;
+                case "IN_WATER":
+                    conditionComponents.add(new InWaterCondition(conditionArgs));
                     break;
             }
         }

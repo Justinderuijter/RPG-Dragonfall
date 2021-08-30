@@ -256,6 +256,7 @@ public final class Utils {
     @SuppressWarnings("all")
     public static boolean removeUniqueModifier(LivingEntity entity, AttributeModifierData modifierData) {
         if (entity == null || modifierData == null || modifierData.getAttributeModifier() == null || modifierData.getAttribute() == null){
+            Bukkit.getLogger().warning("Something went wrong while removing a modifier!");
             return false;
         }
 

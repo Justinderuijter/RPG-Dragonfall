@@ -54,7 +54,7 @@ items:
     material: "DIAMOND_HELMET"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 0
+    customModelData: 20
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []
@@ -69,7 +69,7 @@ items:
     material: "DIAMOND_CHESTPLATE"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 0
+    customModelData: 20
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []
@@ -84,7 +84,7 @@ items:
     material: "DIAMOND_LEGGINGS"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 0
+    customModelData: 20
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []
@@ -99,7 +99,7 @@ items:
     material: "DIAMOND_BOOTS"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 0
+    customModelData: 20
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []

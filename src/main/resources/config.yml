@@ -86,6 +86,10 @@ safety-options:
   #This is useful in case the server crashes.
   modifier-check-on-join: true
 
+time-manager:
+  tick-interval: 20
+  default-world: "world"
+
 garbage-collection:
   # Time that should pass between garbage collection.
   # Set to 0 to disable garbage collection.

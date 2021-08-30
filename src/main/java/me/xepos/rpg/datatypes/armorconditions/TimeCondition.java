@@ -10,7 +10,18 @@ public class TimeCondition implements IConditionComponent{
     private int maxTime;
 
     public TimeCondition(String arg){
-        final String[] args = arg.split("-");
+        final String[] args = arg.split(":");
+
+        if (args.length == 1){
+            if (args[0].equalsIgnoreCase("DAY")){
+                this.minTime = 12969;
+                this.maxTime = 24000;
+            }else if(args[0].equalsIgnoreCase("NIGHT")){
+                this.minTime = 1;
+                this.maxTime = 12968;
+            }
+            return;
+        }
 
         try{
             this.minTime = Integer.parseInt(args[0]);
@@ -36,6 +47,9 @@ public class TimeCondition implements IConditionComponent{
             return time >= minTime && time <= maxTime;
         } else if (event instanceof PlayerEvent e){
             final long time = e.getPlayer().getWorld().getTime();
+            Bukkit.getLogger().info("min: " + minTime);
+            Bukkit.getLogger().info("max: " + maxTime);
+            Bukkit.getLogger().info("current: " + time);
             return time >= minTime && time <= maxTime;
         }
         return false;

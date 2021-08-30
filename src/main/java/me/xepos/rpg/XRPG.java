@@ -17,6 +17,7 @@ import me.xepos.rpg.dependencies.combat.protection.ProtectionSetFactory;
 import me.xepos.rpg.dependencies.combat.pvptoggle.IPvPToggle;
 import me.xepos.rpg.dependencies.combat.pvptoggle.PvPToggleFactory;
 import me.xepos.rpg.dependencies.hooks.AEnchantsHook;
+import me.xepos.rpg.dugcore.TimeManager;
 import me.xepos.rpg.listeners.*;
 import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.tasks.ManaTask;
@@ -63,6 +64,7 @@ public final class XRPG extends JavaPlugin {
 
     //
     private DependencyManager dependencyManager;
+    private TimeManager timeManager;
 
     //Classes
     private static HashMap<String, ClassInfo> classInfo;
@@ -118,6 +120,7 @@ public final class XRPG extends JavaPlugin {
         this.playerManager = new PlayerManager(this);
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager(skillLoader);
         this.dependencyManager = new DependencyManager();
+        this.timeManager = new TimeManager(this);
 
         ConfigurationSection featureSection = getConfig().getConfigurationSection("extra-features");
 

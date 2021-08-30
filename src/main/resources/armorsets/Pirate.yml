@@ -42,97 +42,156 @@
 #    effects: <effects are available in enchantments.yml>
 #    # E.g.: - 'INCREASED_DAMAGE:10'
 
-name: '&5&lShadow Armor'
+name: '&6&lPirate Armor'
 settings:
   equipped:
-    - '&a&l(!) &aYou have activated the Shadow set!'
+    - '&a&l(!) &aYou have activated the KOTH set!'
   unequipped:
-    - '&c&l(!) &cYou have deactivated the Shadow set!'
+    - '&c&l(!) &cYou have deactivated the KOTH set!'
 items:
   helmet:
-    name: "&5Shadow Hood"
+    name: "&6Pirate Hat"
     material: "DIAMOND_HELMET"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 60
+    customModelData: 50
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []
     #  - 'HIDE_POTION_EFFECTS' # An Example Item Flag
     lore:
-      - ''
-      - '&5&lSHADOW REALM BONUS'
-      - '&5&l(2) &5Instead of dying, you get'
-      - '&5sent into a Shadow State, healing you'
-      - '&5for half of your maximum hp'
-      - '&5and making you invisible'
-      - '&5for 5 seconds.'
-      - '&5This effect impairs your vision'
-      - '&5and has a 30 second cooldown.'
+      - ""
+      - "&6&lNIGHT STALKER SET BONUS"
+      - "&6&l(2) &6Your attacks deal"
+      - "&620% bonus damage if you"
+      - "&6or your target are in water."
+      - "&6&l(4) &6Your attacks deal"
+      - "&650% bonus damage if you"
+      - "&6or your target are in water."
+      - "&6Additionally increases drops"
+      - "&6from monsters by 50%"
   chestplate:
-    name: "&5Shadow Cloak"
+    name: "&6Pirate Waistcoat"
     material: "DIAMOND_CHESTPLATE"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 60
+    customModelData: 50
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []
     #  - 'HIDE_POTION_EFFECTS' # An Example Item Flag
     lore:
-      - ''
-      - '&5&lSHADOW REALM BONUS'
-      - '&5&l(2) &5Instead of dying, you get'
-      - '&5sent into a Shadow State, healing you'
-      - '&5for half of your maximum hp'
-      - '&5and making you invisible'
-      - '&5for 5 seconds.'
-      - '&5This effect impairs your vision'
-      - '&5and has a 30 second cooldown.'
+      - ""
+      - "&6&lNIGHT STALKER SET BONUS"
+      - "&6&l(2) &6Your attacks deal"
+      - "&620% bonus damage if you"
+      - "&6or your target are in water."
+      - "&6&l(4) &6Your attacks deal"
+      - "&650% bonus damage if you"
+      - "&6or your target are in water."
+      - "&6Additionally increases drops"
+      - "&6from monsters by 50%"
   leggings:
-    name: "&5Shadow Leggings"
+    name: "&6Pirate Stockings"
     material: "DIAMOND_LEGGINGS"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 60
+    customModelData: 50
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []
     #  - 'HIDE_POTION_EFFECTS' # An Example Item Flag
     lore:
-      - ''
-      - '&5&lSHADOW REALM BONUS'
-      - '&5&l(2) &5Instead of dying, you get'
-      - '&5sent into a Shadow State, healing you'
-      - '&5for half of your maximum hp'
-      - '&5and making you invisible'
-      - '&5for 5 seconds.'
-      - '&5This effect impairs your vision'
-      - '&5and has a 30 second cooldown.'
+      - ""
+      - "&6&lNIGHT STALKER SET BONUS"
+      - "&6&l(2) &6Your attacks deal"
+      - "&620% bonus damage if you"
+      - "&6or your target are in water."
+      - "&6&l(4) &6Your attacks deal"
+      - "&650% bonus damage if you"
+      - "&6or your target are in water."
+      - "&6Additionally increases drops"
+      - "&6from monsters by 50%"
   boots:
-    name: "&5Shadow Long Boots"
+    name: "&6Pirate Long Boots"
     material: "DIAMOND_BOOTS"
     # Custom Model Data (for 1.13+ servers with custom item packs)
     # Set custom model data integer
-    customModelData: 60
+    customModelData: 50
     # Item Flags
     # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html
     itemFlags: []
     #  - 'HIDE_POTION_EFFECTS' # An Example Item Flag
     lore:
-      - ''
-      - '&5&lSHADOW REALM BONUS'
-      - '&5&l(2) &5Instead of dying, you get'
-      - '&5sent into a Shadow State, healing you'
-      - '&5for half of your maximum hp'
-      - '&5and making you invisible'
-      - '&5for 5 seconds.'
-      - '&5This effect impairs your vision'
-      - '&5and has a 30 second cooldown.'
+      - ""
+      - "&6&lNIGHT STALKER SET BONUS"
+      - "&6&l(2) &6Your attacks deal"
+      - "&620% bonus damage if you"
+      - "&6or your target are in water."
+      - "&6&l(4) &6Your attacks deal"
+      - "&650% bonus damage if you"
+      - "&6or your target are in water."
+      - "&6Additionally increases drops"
+      - "&6from monsters by 50%"
 bonuses:
   2:
-    DEATH:
-      cooldown: 30
+    ATTACK_MOB:
+      conditions:
+        - 'IN_WATER:%attacker%'
+        - 'IN_WATER:%victim%'
+      condition-type: 'OR'
       effects:
-        - 'SHADOW_STATE'
-        - 'HEAL:50%'
+        - 'INCREASE_DAMAGE:20%'
+    ATTACK_PLAYER:
+      conditions:
+        - 'IN_WATER:%attacker%'
+        - 'IN_WATER:%victim%'
+      condition-type: 'OR'
+      effects:
+        - 'INCREASE_DAMAGE:20%'
+    BOW_MOB:
+      conditions:
+        - 'IN_WATER:%attacker%'
+        - 'IN_WATER:%victim%'
+      condition-type: 'OR'
+      effects:
+        - 'INCREASE_DAMAGE:20%'
+    BOW_PLAYER:
+      conditions:
+        - 'IN_WATER:%attacker%'
+        - 'IN_WATER:%victim%'
+      condition-type: 'OR'
+      effects:
+        - 'INCREASE_DAMAGE:20%'
+  4:
+    ATTACK_MOB:
+      conditions:
+        - 'IN_WATER:%attacker%'
+        - 'IN_WATER:%victim%'
+      condition-type: 'OR'
+      effects:
+        - 'INCREASE_DAMAGE:50%'
+      ATTACK_PLAYER:
+        conditions:
+          - 'IN_WATER:%attacker%'
+          - 'IN_WATER:%victim%'
+        condition-type: 'OR'
+        effects:
+          - 'INCREASE_DAMAGE:50%'
+      BOW_MOB:
+        conditions:
+          - 'IN_WATER:%attacker%'
+          - 'IN_WATER:%victim%'
+        condition-type: 'OR'
+        effects:
+          - 'INCREASE_DAMAGE:50%'
+      BOW_PLAYER:
+        conditions:
+          - 'IN_WATER:%attacker%'
+          - 'IN_WATER:%victim%'
+        condition-type: 'OR'
+        effects:
+          - 'INCREASE_DAMAGE:50%'
+      KILL_MOB:
+        effects:
+          - 'INCREASE_DROPS:50%'

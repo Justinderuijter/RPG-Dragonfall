@@ -624,9 +624,16 @@ public class XRPGPlayer {
         return 0;
     }
 
-    public int increaseSetLevel(String setId) {
+    /**
+     * Increases the level of a set for the XRPGPlayer object this is called on.
+     *
+     * @param setId: The unique identifier for the set of which the level will be increased.
+     * @return returns the instance of ArmorSetData that belongs to the setId if the bonuses were changed,
+     * if there were no changes to the bonuses, this will return null.
+     */
+    public ArmorSetData increaseSetLevel(String setId) {
         ArmorSet armorset = XRPG.getInstance().getArmorManager().getArmorSet(setId);
-        if (armorset == null) return 0;
+        if (armorset == null) return null;
         ArmorSetData armorSetData = this.armorSetData.get(setId);
         //Edit existing set
         if (armorSetData != null) {
@@ -638,47 +645,67 @@ public class XRPGPlayer {
             EnumMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(oldLevel, newLevel);
             if (effects != null) {
                 armorSetData.setArmorEffects(effects);
+                return armorSetData;
             }
-
-            return newLevel;
-        }
-        //New set
-        EnumMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(0, 1);
-        if (effects != null) {
-            if (effects.isEmpty()){
-                Bukkit.getLogger().warning("Effects are empty");
-            }
-            this.armorSetData.put(setId, new ArmorSetData((byte) 1, effects));
         }else{
-            this.armorSetData.put(setId, new ArmorSetData((byte) 1));
-        }
+            //New set
+            EnumMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(0, 1);
+            if (effects != null) {
+                if (effects.isEmpty()){
+                    Bukkit.getLogger().warning("Effects are empty");
+                }
+                armorSetData = new ArmorSetData((byte) 1, effects);
+                this.armorSetData.put(setId, armorSetData);
 
-        return 1;
+                return armorSetData;
+            }else{
+                this.armorSetData.put(setId, new ArmorSetData((byte) 1));
+            }
+        }
+        return null;
     }
 
-    public int decreaseSetLevel(String setId) {
+    /**
+     * Reduces the level of a set for the XRPGPlayer object this is called on.
+     *
+     * @param setId: The unique identifier for the set of which the level will be decreased.
+     * @return returns the instance of ArmorSetData that belongs to the setId if the bonuses were changed,
+     * if there were no changes to the bonuses, this will return null.
+     * The returned ArmorSetData will be snapshot of the data before the changes, and can
+     * thus not be changed through this instance.
+     */
+    public ArmorSetData decreaseSetLevel(String setId) {
         ArmorSetData armorSetData = this.armorSetData.get(setId);
         final byte level = (byte) (armorSetData.getLevel() - 1);
 
         if (level == 0) {
-            this.armorSetData.remove(setId);
-            return 0;
+            return this.armorSetData.remove(setId);
         }
         armorSetData.setLevel(level);
         ArmorSet armorset = XRPG.getInstance().getArmorManager().getArmorSet(setId);
         if (armorset != null) {
+            //If effects is null, armor bonus hasn't changed.
             EnumMap<ArmorSetTriggerType, ArmorEffect> effects = armorset.getEffectsForLevel(level + 1, level);
             if (effects != null) {
+                ArmorSetData oldData = new ArmorSetData(armorSetData);
                 armorSetData.setArmorEffects(effects);
+                return oldData;
             }
         }
-        return level;
+        return null;
     }
 
     public void runArmorEffects(Event event, ArmorSetTriggerType type) {
         for (ArmorSetData armorSetData : this.armorSetData.values()) {
             ArmorEffect effect = armorSetData.getArmorEffects().get(type);
             if (effect != null) effect.activate(event);
+        }
+    }
+
+    public void runArmorEffects(Player player, ArmorSetTriggerType type) {
+        for (ArmorSetData armorSetData : this.armorSetData.values()) {
+            ArmorEffect effect = armorSetData.getArmorEffects().get(type);
+            if (effect != null) effect.triggerModifiers(player);
         }
     }
 
